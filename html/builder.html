@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Builder - Fsh API</title>
+    <!-- Boiler plate------ -->
+    <link rel="icon" href="https://fsh.plus/fsh.png" type="image/png">
+    <meta name="description" content="Fsh api builder, test endpoints in your browser and the copy the request code.">
+    <!-- ------- -->
+    <link rel="stylesheet" href="https://fsh.plus/NewStyle.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://fsh.plus/fsh.png"/>
+    <meta name="theme-color" content="#a89c9b">
+    <!-- ------------------ -->
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+    <link rel="stylesheet" href="./highlight/styles/atom-one-dark.min.css">
+    <script src="./highlight/highlight.min.js"></script>
+  </head>
+  <body>
+    <h1>Api builder</h1>
+    <p>Get and test endpoints in your browser</p>
+    <noscript>This page requires JavaScript to function</noscript>
+    <form id="builder">
+      <label>https://api.fsh.plus/</label>
+      <select name="endpoint" id="end">
+        <option value="/" disabled selected>Select endpoint</option>
+        {end}
+      </select>
+      <label id="params"></label>
+    </form>
+    <div style="margin-bottom: 15px"></div>
+    <button id="test">Test</button>
+    <h2>Response:</h2>
+    <div style="background-color: #000; color: #fff; text-align: left; max-height: 800px;">
+      <pre style="padding: 5px;"><code style="overflow: scroll; max-height: 800px;" id="res" class="language-json">Click test to see response</code></pre>
+    </div>
+    <div style="margin: 15px"></div>
+    <button id="cor">Copy response</button>
+    <h2>Code:</h2>
+  <div style="width: 50%; float: left">
+    <h3>Nodejs</h3>
+    <div style="text-align: center; width: 95%; background-color: #000; padding: 5px;">
+        <p style="text-align: left">/* -- Auto code by fsh -- */</p>
+        <pre style="text-align: left"><code class="language-javascript" id="co" style="overflow: scroll">// Click test to see code</code></pre>
+    </div>
+    <div style="margin-bottom: 15px"></div>
+    <button id="cop">Copy nodejs code</button>
+    <div style="margin-bottom: 30px"></div>
+  </div>
+  <div style="text-align: center; width: 50%; float: right">
+    <h3>Python</h3>
+    <div style="width: 95%; background-color: #000; padding: 5px;">
+        <p style="text-align: left"># -- Auto code by fsh -- #</p>
+        <pre style="text-align: left"><code class="language-python" id="copy" style="overflow: scroll"># Click test to see code</code></pre>
+    </div>
+    <div style="margin-bottom: 15px"></div>
+    <button id="copyp">Copy python code</button>
+    <div style="margin-bottom: 30px"></div>
+  </div>
+    <script>
+      var y = document.getElementById("params")
+      var r = [];
+      var cu = ["", ""];
+      document.getElementById("end").onchange = (event) => {
+        var inputText = event.target.value;
+        let re = "";
+        let o = [];
+        r = [];
+        fetch(`./params?file=.${inputText}.js`).then(async response => {
+          re = await response.text();
+          re = re.split(",")
+          if (re.length > 1) {
+            // very bad way to allow more than 2 inputs
+            for (i = -2; i <= re.length / 2;) {
+              i += 2
+              if (String(re[i+1]) != "undefined") {
+                o.push(`${re[i]}=<input id="${Math.ceil(i/2)}" placeholder="${re[i+1]=="true" ? "Required" : "Optional"}">`);
+                r.push(re[i])
+              }
+            }
+            y.innerHTML = `?${o.join("&")}`
+          } else {
+            y.innerHTML = ""
+          }
+        })
+      }
+      document.getElementById("test").onclick = (event) => {
+        if (document.getElementById("end").value == "/") {
+          document.getElementById("res").innerHTML = "Please select a endpoint"
+          return;
+        }
+        let yy = document.getElementById("params").innerHTML
+        let u = yy.split("input").length - 1;
+        let f = yy.split("input");
+        f = f.slice(1, f.length);
+        let oo = [];
+        if (u > 0) {
+          let i = 0
+          f.forEach(t => {
+            if (String(document.getElementById(i).value) != "") {
+              oo.push(r[i] + "=" + document.getElementById(i).value.replaceAll(" ","%20"))
+            }
+            i += 1
+          })
+        }
+        let url = `https://api.fsh.plus${document.getElementById("end").value}${oo.length > 0 ? "?" : ""}${oo.join("&")}`;
+        fetch(url).then(async response => {
+          document.getElementById("res").innerHTML = String(await response.text()).replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+          cu[0] = `(async () => {
+  const res = await fetch('${url}')
+  console.log(await res.json())
+})()`
+          cu[1] = `import requests
+response = requests.request("GET", "${url}")
+print(response.json())`
+          document.getElementById("co").innerHTML = cu[0];
+          document.getElementById("copy").innerHTML = cu[1];
+          hljs.highlightAll();
+        })
+      }
+      document.getElementById("cop").onclick = (event) => {
+        navigator.clipboard.writeText(cu[0])
+      }
+      document.getElementById("copyp").onclick = (event) => {
+        navigator.clipboard.writeText(cu[1])
+      }
+      document.getElementById("cor").onclick = (event) => {
+        navigator.clipboard.writeText(document.getElementById("res").innerHTML.replaceAll("&gt;", '>').replaceAll("&lt;", '<'))
+      }
+    </script>
+  </body>
+</html>
