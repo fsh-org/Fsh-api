@@ -7,7 +7,6 @@ let path = require('path')
 const stream = require('stream');
 let nanoid;
 
-// get packages that use import bc boooooo
 (async()=>{
   const nanid = await import('nanoid');
   nanoid = nanid.nanoid
