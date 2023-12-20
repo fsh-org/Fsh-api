@@ -51,7 +51,14 @@ function makeid(length) {
 }
 function sid() {
   var characters = '89ab';
-  return characters.charAt(Math.floor(Math.random() * characters.length));
+  return characters.charAt(Math.floor(Math.random() * 4));
+}
+function upd(namespace) {
+  if (namespace == "url") namespace = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+  if (namespace == "dns") namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+  if (namespace == "oid") namespace = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
+  if (namespace == 'x500') namespace = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
+  return namespace;
 }
 
 module.exports = {
@@ -67,39 +74,17 @@ module.exports = {
     }
     switch (req.query["version"]) {
       case 'help':
-        res.send(`Version list (uses DCE 1.1, ISO/IEC 11578:1996 variant)
-<br><br>
-3 - predictible uuid from name, requires "space" and "name" parameters, space must be exactly url, dns, oid, x500 or a valid uuid<br>
-4 - random unique uuid<br>
-5 - same as 3 but uses a different hashing algorithym<br>
-nil - non unique uuid for testing
-<br><br>
-More soon`)
+        res.send(`Version list (uses DCE 1.1, ISO/IEC 11578:1996 variant)<br><br>3 - predictible uuid from name, requires "space" and "name" parameters, space must be exactly url, dns, oid, x500 or a valid uuid<br>4 - random unique uuid<br>5 - same as 3 but uses a different hashing algorithym<br>nil - non unique uuid for testing<br><br>More soon`)
         return;
       case "5":
-        namespace = req.query["space"];
+      case "3":
+        namespace = upd(req.query["space"]);
         name = req.query["name"];
-
-        if (namespace == "url") namespace = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
-        if (namespace == "dns") namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
-        if (namespace == "oid") namespace = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
-        if (namespace == 'x500') namespace = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
                 
-        res.send(`{"uuid": "${generateVersion5UUID(namespace, name)}"}`)
+        res.send(`{"uuid": "${req.query['version'] == '5' ? generateVersion5UUID(namespace, name) : generateVersion3UUID(namespace, name)}"}`)
         return;
       case "4":
         res.send(`{"uuid": "${makeid(8)}-${makeid(4)}-3${makeid(3)}-${sid()}${makeid(3)}-${makeid(12)}"}`)
-        return;
-      case "3":
-        namespace = req.query["space"];
-        name = req.query["name"];
-
-        if (namespace == "url") namespace = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
-        if (namespace == "dns") namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
-        if (namespace == "oid") namespace = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
-        if (namespace == 'x500') namespace = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
-                
-        res.send(`{"uuid": "${generateVersion3UUID(namespace, name)}"}`)
         return;
       case "nil":
         res.send(`{"uuid": "00000000-0000-0000-0000-000000000000"}`)
