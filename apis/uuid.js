@@ -4,6 +4,43 @@ const crypto = require("crypto")
 let namespace;
 let name;
 
+function generateVersion5UUID(namespace, name) {
+  // Parse the namespace UUID
+  const namespaceBuffer = Buffer.from(namespace.replace(/-/g, ''), 'hex');
+
+  // Concatenate and hash using SHA-1
+  const combinedData = Buffer.concat([namespaceBuffer, Buffer.from(name)]);
+  const hashValue = crypto.createHash('sha1').update(combinedData).digest();
+
+  // Modify version and variant bits
+  const uuidBytes = Buffer.from(hashValue);
+  uuidBytes[6] = (uuidBytes[6] & 0x0f) | 0x50;
+  uuidBytes[8] = (uuidBytes[8] & 0x3f) | 0x80;
+
+  // Format the UUID
+  const uuidString = `${uuidBytes.toString('hex', 0, 4)}-${uuidBytes.toString('hex', 4, 6)}-${uuidBytes.toString('hex', 6, 8)}-${uuidBytes.toString('hex', 8, 10)}-${uuidBytes.toString('hex', 10, 16)}`
+
+  return uuidString;
+}
+function generateVersion3UUID(namespace, name) {
+  // Parse the namespace UUID
+  const namespaceBuffer = Buffer.from(namespace.replace(/-/g, ''), 'hex');
+
+  // Concatenate and hash
+  const combinedData = Buffer.concat([namespaceBuffer, Buffer.from(name)]);
+  const hashValue = md5(combinedData);
+
+  // Modify version and variant bits
+  const uuidBytes = Buffer.from(hashValue, 'hex');
+  uuidBytes[6] = (uuidBytes[6] & 0x0f) | 0x30;
+  uuidBytes[8] = (uuidBytes[8] & 0x3f) | 0x80;
+
+  // Format the UUID
+  const uuidString = `${uuidBytes.toString('hex', 0, 4)}-${uuidBytes.toString('hex', 4, 6)}-${uuidBytes.toString('hex', 6, 8)}-${uuidBytes.toString('hex', 8, 10)}-${uuidBytes.toString('hex', 10)}`
+
+  return uuidString;
+}
+
 function makeid(length) {
   var result = '';
   var characters = 'abcdef0123456789';
@@ -41,25 +78,6 @@ More soon`)
     }
     switch (req.query["version"]) {
       case "5":
-        function generateVersion5UUID(namespace, name) {
-          // Parse the namespace UUID
-          const namespaceBuffer = Buffer.from(namespace.replace(/-/g, ''), 'hex');
-
-          // Concatenate and hash using SHA-1
-          const combinedData = Buffer.concat([namespaceBuffer, Buffer.from(name)]);
-          const hashValue = crypto.createHash('sha1').update(combinedData).digest();
-
-          // Modify version and variant bits
-          const uuidBytes = Buffer.from(hashValue);
-          uuidBytes[6] = (uuidBytes[6] & 0x0f) | 0x50;
-          uuidBytes[8] = (uuidBytes[8] & 0x3f) | 0x80;
-
-          // Format the UUID
-          const uuidString = `${uuidBytes.toString('hex', 0, 4)}-${uuidBytes.toString('hex', 4, 6)}-${uuidBytes.toString('hex', 6, 8)}-${uuidBytes.toString('hex', 8, 10)}-${uuidBytes.toString('hex', 10, 16)}`
-
-          return uuidString;
-        }
-
         namespace = req.query["space"];
         name = req.query["name"];
 
@@ -67,10 +85,8 @@ More soon`)
         if (namespace == "dns") namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
         if (namespace == "oid") namespace = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
         if (namespace == 'x500') namespace = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
-        
-        let version5UUID = generateVersion5UUID(namespace, name);
-        
-        res.send(`{"uuid": "${version5UUID}"}`)
+                
+        res.send(`{"uuid": "${generateVersion5UUID(namespace, name)}"}`)
         return;
         break;
       case "4":
@@ -78,26 +94,6 @@ More soon`)
         return;
         break;
       case "3":
-
-        function generateVersion3UUID(namespace, name) {
-          // Parse the namespace UUID
-          const namespaceBuffer = Buffer.from(namespace.replace(/-/g, ''), 'hex');
-
-          // Concatenate and hash
-          const combinedData = Buffer.concat([namespaceBuffer, Buffer.from(name)]);
-          const hashValue = md5(combinedData);
-
-          // Modify version and variant bits
-          const uuidBytes = Buffer.from(hashValue, 'hex');
-          uuidBytes[6] = (uuidBytes[6] & 0x0f) | 0x30;
-          uuidBytes[8] = (uuidBytes[8] & 0x3f) | 0x80;
-
-          // Format the UUID
-          const uuidString = `${uuidBytes.toString('hex', 0, 4)}-${uuidBytes.toString('hex', 4, 6)}-${uuidBytes.toString('hex', 6, 8)}-${uuidBytes.toString('hex', 8, 10)}-${uuidBytes.toString('hex', 10)}`
-
-          return uuidString;
-        }
-
         namespace = req.query["space"];
         name = req.query["name"];
 
@@ -105,10 +101,8 @@ More soon`)
         if (namespace == "dns") namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
         if (namespace == "oid") namespace = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
         if (namespace == 'x500') namespace = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
-        
-        let version3UUID = generateVersion3UUID(namespace, name);
-        
-        res.send(`{"uuid": "${version3UUID}"}`)
+                
+        res.send(`{"uuid": "${generateVersion3UUID(namespace, name)}"}`)
         return;
         break;
       case "nil":
