@@ -1,4 +1,4 @@
-var md5 = require('md5');
+var md5 = require('md5');
 const crypto = require("crypto")
 
 let namespace;
@@ -65,8 +65,9 @@ module.exports = {
       res.send(`{"uuid": "${makeid(8)}-${makeid(4)}-4${makeid(3)}-${sid()}${makeid(3)}-${makeid(12)}"}`)
       return;
     }
-    if (req.query["version"] == "help") {
-      res.send(`Version list (uses DCE 1.1, ISO/IEC 11578:1996 variant)
+    switch (req.query["version"]) {
+      case 'help':
+        res.send(`Version list (uses DCE 1.1, ISO/IEC 11578:1996 variant)
 <br><br>
 3 - predictible uuid from name, requires "space" and "name" parameters, space must be exactly url, dns, oid, x500 or a valid uuid<br>
 4 - random unique uuid<br>
@@ -74,9 +75,7 @@ module.exports = {
 nil - non unique uuid for testing
 <br><br>
 More soon`)
-      return;
-    }
-    switch (req.query["version"]) {
+        return;
       case "5":
         namespace = req.query["space"];
         name = req.query["name"];
@@ -88,11 +87,9 @@ More soon`)
                 
         res.send(`{"uuid": "${generateVersion5UUID(namespace, name)}"}`)
         return;
-        break;
       case "4":
         res.send(`{"uuid": "${makeid(8)}-${makeid(4)}-3${makeid(3)}-${sid()}${makeid(3)}-${makeid(12)}"}`)
         return;
-        break;
       case "3":
         namespace = req.query["space"];
         name = req.query["name"];
@@ -104,11 +101,9 @@ More soon`)
                 
         res.send(`{"uuid": "${generateVersion3UUID(namespace, name)}"}`)
         return;
-        break;
       case "nil":
         res.send(`{"uuid": "00000000-0000-0000-0000-000000000000"}`)
         return;
-        break;
     }
     try {
       res.send(`{"err":"true","msg":"No valid version specified"}`)
