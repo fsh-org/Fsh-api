@@ -25,6 +25,9 @@ function abbreviateNumber(number, negative) {
     short = abbreviations[exp];
   }
 
+  if (re.endsWith(".00")) re = re.replace('.00','');
+  if (re.endsWith("0")) re = re.split("").slice(0,re.split("").length-1).join("");
+  
   return {
     number: `${negative ? "-" : ""}${re}`,
     short: short || "",
@@ -63,7 +66,7 @@ module.exports = {
     //f = BigInt(Number(String(f).slice(0, f.length-(h*3-2)))/100)
     f = String(f).slice(0, f.length-(h*3)) + '.' + String(f).slice(f.length-(h*3), f.length-(h*3-2))
     res.send(`{"number": "${f}", "short": "${abr[h-1] || ""}", "long": "${abl[h-1] || ""}"}`)*/
-    let num = Number(req.query["number"].replace(" ","+"))
+    let num = Number(String(req.query["number"]||0).replace(" ","+"))
     let neg = num<0;
     num = Math.abs(num)
     res.json(abbreviateNumber(num, neg))
