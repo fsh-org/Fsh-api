@@ -20,7 +20,9 @@ module.exports = {
       return;
     }
     if (req.query["type"] == "decode") {
-      res.send(`{"text": "${Buffer.from(req.query["text"], 'Base64').toString('UTF8')}"}`)
+      res.json({
+        text: Buffer.from(req.query["text"], 'Base64').toString('UTF8')
+      })
       return;
     }
     res.status(400)
