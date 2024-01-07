@@ -18,7 +18,9 @@ module.exports = {
       return;
     }
     if (req.query["type"] == "decode") {
-      res.send(`{"text": "${Buffer.from(req.query["text"], 'Hex').toString('UTF8')}"}`)
+      res.json({
+        text: Buffer.from(req.query["text"], 'Hex').toString('UTF8')
+      })
       return;
     }
     res.send(`{"error": true, "msg": "type not valid"}`)
