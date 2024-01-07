@@ -109,7 +109,7 @@
           })
         }
         let url = `https://api.fsh.plus${document.getElementById("end").value}${oo.length > 0 ? "?" : ""}${oo.join("&")}`;
-        fetch(url).then(async response => {
+        fetch(url.replace('https://api.fsh.plus','.')).then(async response => {
           document.getElementById("res").innerHTML = String(await response.text()).replaceAll("<", "&lt;").replaceAll(">", "&gt;")
           cu[0] = `(async () => {
   const res = await fetch('${url}')
