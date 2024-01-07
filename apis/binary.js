@@ -5,7 +5,7 @@ function toBin(str) {
   return chunkString(str, 1).map(e=>{return e.charCodeAt(0).toString(2).padStart(8, '0')}).join('')
 }
 function toStr(bin) {
-  return chunkString(bin.split('_').slice(-1)[0], Number(bin.split('_')[0].split('~')[0]) || 8).map(e=>{return String.fromCharCode(parseInt(e, 2))}).join('').replaceAll('\n','\\n')
+  return chunkString(bin.split('_').slice(-1)[0], Number(bin.includes('_') ? bin.split('_')[0].split('~')[0] : 8) || 8).map(e=>{return String.fromCharCode(parseInt(e, 2))}).join('').replaceAll('\n','\\n')
 }
 
 module.exports = {
