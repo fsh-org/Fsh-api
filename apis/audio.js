@@ -1,0 +1,33 @@
+const fs = require('fs');
+const ytdl = require('ytdl-core');
+
+module.exports = {
+  path: '/audio',
+  info: 'Download a youtube video into a mp3',
+  type: 'get',
+  params: ["id", true],
+  category: "image",
+
+  async execute(req, res) {
+    let id = req.query['id'];
+
+    let downloadOptions = {
+      quality: 'highest',
+      filter: 'audio'
+    };
+    let videoUrl = 'https://www.youtube.com/watch?v='+id
+    ytdl(videoUrl, downloadOptions)
+      .pipe(fs.createWriteStream(`images/audio/${id}.mp3`))
+      .on('finish', () => {
+        res.json({
+          audio: `https://api.fsh.plus/images/audio/${id}.mp3`
+        })
+      })
+      .on('error', (error) => {
+        res.json({
+          err: true,
+          msg: 'Could not download'
+        })
+      });
+  }
+}

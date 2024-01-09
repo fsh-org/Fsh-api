@@ -1,21 +1,33 @@
-const ytstream = require('yt-stream');
 const fs = require('fs');
+const ytdl = require('ytdl-core');
 
 module.exports = {
   path: '/video',
-  info: 'info',
+  info: 'Download a youtube video into a mp4',
   type: 'get',
-  params: ["h", true],
-  category: "hidden",
+  params: ["id", true],
+  category: "image",
   
   async execute(req, res) {
-        const stream = await ytstream.stream(`https://www.youtube.com/watch?v=dQw4w9WgXcQ`, {
-            quality: 'high',
-            type: 'audioandvideo',
-            highWaterMark: 1048576 * 32
-        });
-        stream.stream.pipe(fs.createWriteStream('images/video/some_song.mp4'));
-        console.log(stream.video_url);
-        console.log(stream.url);
+    let id = req.query['id'];
+
+    let downloadOptions = {
+      quality: 'highest',
+      filter: 'audioandvideo'
+    };
+    let videoUrl = 'https://www.youtube.com/watch?v='+id
+    ytdl(videoUrl, downloadOptions)
+      .pipe(fs.createWriteStream(`images/video/${id}.mp4`))
+      .on('finish', () => {
+        res.json({
+          video: `https://api.fsh.plus/images/video/${id}.mp4`
+        })
+      })
+      .on('error', (error) => {
+        res.json({
+          err: true,
+          msg: 'Could not download'
+        })
+      });
   }
 }
