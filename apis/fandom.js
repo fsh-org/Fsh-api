@@ -50,6 +50,7 @@ module.exports = {
       data = data.split("\n").filter(e=>{return e.replaceAll(/ |	|\n/g, '').length}).join("\n")
       // Make prettier
       data = data.replaceAll("<p><br>", "<p>")
+      data = data.replaceAll("<p><br />", "<p>")
       data = data.replaceAll("\n</p>", "</p>")
       data = data.replaceAll("<p>\n", "<p>")
       data = data.replaceAll("</p><p>", "</p>\n<p>")
