@@ -19,6 +19,13 @@ module.exports = {
       return;
     }
 
+    if (fs.existsSync(`images/video/${id}.mp4`)) {
+      res.json({
+        audio: `https://api.fsh.plus/images/video/${id}.mp4`
+      })
+      return;
+    }
+
     let downloadOptions = {
       quality: 'highest',
       filter: 'audioandvideo'
