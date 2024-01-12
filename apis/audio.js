@@ -11,7 +11,7 @@ module.exports = {
   async execute(req, res) {
     let id = req.query['id'];
 
-    if (!ytdl.validateID(id)) {
+    if (!id || !ytdl.validateID(id)) {
       res.json({
         err: true,
         msg: 'Invalid id'
