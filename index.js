@@ -1,11 +1,3 @@
-/*  -- Chat --
-halp idk what to do
-express? or http
-express
-
-how to make so every file in /apis is page for a api
-*/
-
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -96,7 +88,41 @@ app.get('/', (req,res)=>{
 <h3>Image</h3>
 <ty class="centerAPI">
   ${img}
-</ty>`;
+</ty>
+<!--<h3>Test</h3>
+<style>
+details{
+  border:var(--col) 1px solid;
+  border-radius:0.5rem;
+  padding:5px;
+  margin:5px;
+  text-align:left;
+}
+summary::before {
+  content: var(--tex);
+  background-color: var(--col);
+  margin-left:2px;
+  margin-right:2px;
+  border-radius:0.25rem;
+  padding:0px 2px;
+}
+.t-get {
+  --tex: "Get";
+  --col: #88f;
+}
+.t-post {
+  --tex: "Post";
+  --col: #f88;
+}
+</style>
+<details class="t-get">
+<summary>/potat | arguments</summary>
+long description
+</details>
+<details class="t-post">
+<summary>/potat | arguments</summary>
+long description
+</details>-->`;
   res.send(fs.readFileSync('html/index.html', 'utf8').replaceAll("{a}", h))
 })
 
