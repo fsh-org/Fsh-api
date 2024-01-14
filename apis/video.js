@@ -21,7 +21,7 @@ module.exports = {
 
     if (fs.existsSync(`images/video/${id}.mp4`)) {
       res.json({
-        audio: `https://api.fsh.plus/images/video/${id}.mp4`
+        video: `https://api.fsh.plus/images/video/${id}.mp4`
       })
       return;
     }
