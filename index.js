@@ -71,9 +71,14 @@ app.get('/', (req,res)=>{
     }
     let r = h.join(" ");
     if (apiFile.params.length > 1) {
-      r = ` <ss style="background-color:#444;">{ ${r} }</ss>`
+      //r = ` <ss style="background-color:#444;">{ ${r} }</ss>`
+      r = ` | ${r}`
     }
-	  h = `<p><b>${apiFile.path}</b>${r} <ss style="background-color:#${apiFile.type == "get" ? "464" : "#644"};">[${apiFile.type}]</ss> - ${apiFile.info}</p>`;
+	  //h = `<p><b>${apiFile.path}</b>${r} <ss style="background-color:#${apiFile.type == "get" ? "464" : "#644"};">[${apiFile.type}]</ss> - ${apiFile.info}</p>`;
+    h = `<details class="t-${apiFile.type}">
+  <summary>${apiFile.path}${r}</summary>
+  ${apiFile.info}
+</details>`
     if (apiFile.category == "text") {
       txt = txt+h;
     }
@@ -81,40 +86,11 @@ app.get('/', (req,res)=>{
       img = img+h;
     }
   }
-  h = `<h3>Text</h3>
-<ty class="centerAPI">
+  h = `<h2>Text</h2>
   ${txt}
-</ty>
-<h3>Image</h3>
-<ty class="centerAPI">
+<h2>Image</h2>
   ${img}
-</ty>
 <!--<h3>Test</h3>
-<style>
-details{
-  border:var(--col) 1px solid;
-  border-radius:0.5rem;
-  padding:5px;
-  margin:5px;
-  text-align:left;
-}
-summary::before {
-  content: var(--tex);
-  background-color: var(--col);
-  margin-left:2px;
-  margin-right:2px;
-  border-radius:0.25rem;
-  padding:0px 2px;
-}
-.t-get {
-  --tex: "Get";
-  --col: #88f;
-}
-.t-post {
-  --tex: "Post";
-  --col: #f88;
-}
-</style>
 <details class="t-get">
 <summary>/potat | arguments</summary>
 long description

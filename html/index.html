@@ -31,13 +31,10 @@
     </a>
     <h2 style="margin-top:-20px">API</h2>
     <br>
+    <h1>Endpoints</h1>
     <a href="/builder"><button>Api builder</button></a>
-    <h2>Documentation</h2>
-    <ty class="centerAPI">
-      <p><ss style="background-color:#446">[]</ss> - Request type (ex: get, post, put)</p>
-      <p><ss style="background-color:#444">{}</ss> - Parameters (ex: ?value=t) types: (optional) &lt;required&gt;</p>
-    </ty>
-    <h2>Endpoints</h2>
+    <button onclick="Array.from(document.getElementsByTagName('details')).forEach(e=>{e.setAttribute('open', 'true')})">Open all</button>
+    <button onclick="Array.from(document.getElementsByTagName('details')).forEach(e=>{e.removeAttribute('open')})">Close all</button>
     {a}
     <div style="margin-bottom: 50px"></div>
   </body>
