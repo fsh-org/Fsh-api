@@ -25,10 +25,14 @@ module.exports = {
     if (req.query["model"] == "dall-e") {
       let img = await fetch(`https://hercai.onrender.com/v3/text2image?prompt=${req.query["text"].replaceAll(" ","%20")}`);
       img = await img.json();
-/*      let buf = await fetch(img.url);
-      buf = await buf.arrayBuffer();
-      buf = Buffer.from(buf)
-      let data = `data:image/png;base64,` + await buf.toString('base64');*/
+      if ((String(img.status)||'2').startsWith('4')) {
+        res.status(500)
+        res.json({
+          err: true,
+          msg: 'Error, check prompt'
+        })
+        return;
+      }
       res.json({link: img.url});
       return;
     }
