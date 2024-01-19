@@ -21,7 +21,8 @@ module.exports = {
 
     if (fs.existsSync(`images/video/${id}.mp4`)) {
       res.json({
-        video: `https://api.fsh.plus/images/video/${id}.mp4`
+        video: `https://api.fsh.plus/images/video/${id}.mp4`,
+        download: `https://api.fsh.plus/download/video/${id}.mp4`
       })
       return;
     }
@@ -37,7 +38,8 @@ module.exports = {
         .pipe(fs.createWriteStream(`images/video/${id}.mp4`))
         .on('finish', () => {
           res.json({
-            video: `https://api.fsh.plus/images/video/${id}.mp4`
+            video: `https://api.fsh.plus/images/video/${id}.mp4`,
+            download: `https://api.fsh.plus/download/video/${id}.mp4`
           })
         })
         .on('error', (error) => {

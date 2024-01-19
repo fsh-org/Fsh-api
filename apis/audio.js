@@ -21,7 +21,8 @@ module.exports = {
 
     if (fs.existsSync(`images/audio/${id}.mp3`)) {
       res.json({
-        audio: `https://api.fsh.plus/images/audio/${id}.mp3`
+        audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
+        download: `https://api.fsh.plus/download/audio/${id}.mp3`
       })
       return;
     }
@@ -37,7 +38,8 @@ module.exports = {
         .pipe(fs.createWriteStream(`images/audio/${id}.mp3`))
         .on('finish', () => {
           res.json({
-            audio: `https://api.fsh.plus/images/audio/${id}.mp3`
+            audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
+            download: `https://api.fsh.plus/download/audio/${id}.mp3`
           })
         })
         .on('error', (error) => {
