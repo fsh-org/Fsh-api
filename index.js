@@ -116,6 +116,19 @@ app.get("/styleapi.css", (req, res) => {
   res.sendFile(path.join(__dirname, 'html/styleAPI.css'))
 })
 
+app.get('/download/:filename', (req, res) => {
+  const filename = req.params.filename;
+  if (!fs.existsSync(path.join(__dirname, 'images', filename))) {res.send('no file');return;}
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+  res.sendFile(path.join(__dirname, 'images', filename))
+})
+app.get('/download/:dir/:filename', (req, res) => {
+  const filename = req.params.filename;
+  if (!fs.existsSync(path.join(__dirname, 'images', req.params.dir, filename))) {res.send('no file');return;}
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+  res.sendFile(path.join(__dirname, 'images', req.params.dir, filename))
+})
+
 /* -- Make last path, this takes all remaining paths -- */
 app.all('*', (req,res)=>{
   if(apis.has(req.path)){

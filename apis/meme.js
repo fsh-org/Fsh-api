@@ -11,7 +11,7 @@ module.exports = {
     if (req.query["a"] == null) {
       fs.readdir('meme', async (err, files) => {
         let x = Math.floor(Math.random() * files.length);
-        res.send(`{"link":"https://fsh-api.inventionpro.repl.co/meme?a=${files[x]}"}`)
+        res.send(`{"link":"https://api.fsh.plus/meme?a=${files[x]}"}`)
       });
     } else {
       if (req.query["a"].includes("..")) {
