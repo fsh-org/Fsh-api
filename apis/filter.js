@@ -61,6 +61,12 @@ module.exports = {
     }
     tt.push(hh[0])
 
-    res.send(`{"bad": ${tt[0] || tt[1] || tt[2] ? "true" : "false"}, "swear": ${tt[0] ? "true" : "false"}, "slur": ${tt[1] ? "true" : "false"}, "adult": ${tt[2] ? "true" : "false"}, "censor": "${response}"}`)
+    res.json({
+      bad: tt[0] || tt[1] || tt[2] ? "true" : "false",
+      swear: tt[0] ? "true" : "false",
+      slur: tt[1] ? "true" : "false",
+      adult: tt[2] ? "true" : "false",
+      censor: response
+    })
   }
 }
