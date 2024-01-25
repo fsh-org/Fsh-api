@@ -11,7 +11,7 @@ module.exports = {
 
     let rs;
     try {
-      rs = String(mexp.eval(req.url.split('line=')[1].split('&')[0].replaceAll('%20','')));
+      rs = String(mexp.eval(req.url.split('line=')[1].split('&')[0].replaceAll('%20','').replaceAll('**','^')));
     } catch (err) {
       rs = 'invalid expression'
     }
