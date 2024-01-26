@@ -25,14 +25,12 @@
     <h1>Api builder</h1>
     <p>Get and test endpoints in your browser</p>
     <noscript>This page requires JavaScript to function</noscript>
-    <form id="builder">
-      <label>https://api.fsh.plus/</label>
-      <select name="endpoint" id="end">
-        <option value="/" disabled selected>Select endpoint</option>
-        {end}
-      </select>
-      <label id="params"></label>
-    </form>
+    <label>https://api.fsh.plus/</label>
+    <select name="endpoint" id="end">
+      <option value="/" disabled selected>Select endpoint</option>
+      {end}
+    </select>
+    <label id="params"></label>
     <div style="margin-bottom: 15px"></div>
     <button id="test">Test</button>
     <h2>Response:</h2>
