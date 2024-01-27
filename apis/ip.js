@@ -6,6 +6,6 @@ module.exports = {
   category: "text",
   execute(req, res){
     // don't abuse req.ip pls
-    res.send(`{"ip":"${req.ip}"}`)
+    res.send(`{"ip":"${req.ip.replace('::ffff:','')}"}`)
   }
 }
