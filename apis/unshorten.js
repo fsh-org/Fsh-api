@@ -1,7 +1,20 @@
 const https = require('https');
 const http = require('http');
 
-async function unshorten(url){
+async function unshorten(url) {
+  if (url.startsWith('https://link.fsh.plus/')) {
+    return new Promise((resolve, reject) => {
+      try {
+        (async () => {
+          let h = await fetch('https://link.fsh.plus/get/'+url.split('/')[3])
+          h = await h.json();
+          resolve(h.link)
+        })()
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
   return new Promise((resolve, reject) => {
     try {
       const tracer = (urls, protocol = https) => {
