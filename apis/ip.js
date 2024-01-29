@@ -5,7 +5,11 @@ module.exports = {
   params: [],
   category: "text",
   execute(req, res){
-    // don't abuse req.ip pls
-    res.send(`{"ip":"${req.ip.replace('::ffff:','')}"}`)
+    // don't abuse pls
+    res.json({
+      ip: req.ip.replace('::ffff:',''),
+      public: req.clientIp,
+      cf: req.headers['cf-connecting-ip'] || 'None'
+    })
   }
 }
