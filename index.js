@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 var bodyParser = require('body-parser')
+const requestIp = require('request-ip');
 
 const path = require("path")
 const fs = require("fs")
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(bodyParser.json());
+app.use(requestIp.mw());
 
 //app.use('/api', express.static('apis'))
 //app.use(express.static('html'))
