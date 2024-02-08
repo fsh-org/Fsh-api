@@ -6,11 +6,17 @@ module.exports = {
   category: "text",
   execute(req, res){
     if (!req.query["type"]) {
-      res.send(`{"error": true, "msg": "No conversion type recived"}`)
+      res.json({
+        err: true,
+        msg: "No conversion type recived"
+      })
       return;
     }
     if (!req.query["text"]) {
-      res.send(`{"error": true, "msg": "No text recived"}`)
+      res.json({
+        err: true,
+        msg: "No text recived"
+      })
       return;
     }
     if (req.query["type"] == "encode") {
@@ -23,6 +29,9 @@ module.exports = {
       })
       return;
     }
-    res.send(`{"error": true, "msg": "type not valid"}`)
+    res.json({
+      err: true,
+      msg: "type not valid"
+    })
   }
 }

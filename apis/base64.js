@@ -7,12 +7,18 @@ module.exports = {
   execute(req, res){
     if (!req.query["type"]) {
       res.status(400)
-      res.send(`{"error": true, "msg": "No conversion type recived"}`)
+      res.json({
+        err: true,
+        msg: "No conversion type recived"
+      })
       return;
     }
     if (!req.query["text"]) {
       res.status(400)
-      res.send(`{"error": true, "msg": "No text recived"}`)
+      res.json({
+        err: true,
+        msg: "No text recived"
+      })
       return;
     }
     if (req.query["type"] == "encode") {
@@ -26,6 +32,9 @@ module.exports = {
       return;
     }
     res.status(400)
-    res.send(`{"error": true, "msg": "type not valid"}`)
+    res.json({
+      err: true,
+      msg: "type not valid"
+    })
   }
 }
