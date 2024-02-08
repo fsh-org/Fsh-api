@@ -16,7 +16,7 @@ ty {
 }
 
 /* -- New styles -- */
-/* Api def */
+/* Request type */
 details {
   border: var(--col) 1px solid;
   border-radius: 0.5rem;
@@ -43,4 +43,17 @@ summary::before {
 .t-post {
   --tex: "Post";
   --col: #f88;
+}
+/* Argument type */
+.r-m {
+    display: inline-block;
+    background: #777;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    padding: 0px 10px;
+}
+.r-o {
+    display: inline-block;
+    background: #777;
+    clip-path: inset(0 0 0 0 round 50%);
+    padding: 0px 10px;
 }

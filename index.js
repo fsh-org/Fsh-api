@@ -55,53 +55,40 @@ app.get('/', (req,res)=>{
   let h = "";
   let txt = "";
   let img = "";
+  let count = 0;
   for (const file of apisFiles) {
   	const apiFile = require(file);
+    if ((apiFile.category || 'hidden') != 'hidden') count += 1;
     h = [];
-    if (apiFile.params.length > 1) {
-      // added very shitty thing to make more than 2 arguments possible, why didn't it work before? i don't f*cking know
-      for (i = -2; i <= apiFile.params.length / 2;) {
-        i += 2
-        if (apiFile.params[i + 1] == true) {
-          h.push(`&lt;${apiFile.params[i]}&gt;`);
-        } else {
-          if (apiFile.params[i + 1] == false) {
-            h.push(`(${apiFile.params[i]})`);
-          }
+    if ((apiFile.params || []).length > 1) {
+      apiFile.params.forEach(g => {
+        if (apiFile.params.indexOf(g) % 2 == 0) {
+          h.push(`<div class="r-${apiFile.params[apiFile.params.indexOf(g)+1] ? 'm' : 'o'}">${g}</div>`)
         }
-      }
+      })
     }
     let r = h.join(" ");
-    if (apiFile.params.length > 1) {
-      //r = ` <ss style="background-color:#444;">{ ${r} }</ss>`
+    if ((apiFile.params || []).length > 1) {
       r = ` | ${r}`
     }
-	  //h = `<p><b>${apiFile.path}</b>${r} <ss style="background-color:#${apiFile.type == "get" ? "464" : "#644"};">[${apiFile.type}]</ss> - ${apiFile.info}</p>`;
     h = `<details class="t-${apiFile.type}">
   <summary>${apiFile.path}${r}</summary>
   ${apiFile.info}
-</details>`
-    if (apiFile.category == "text") {
-      txt = txt+h;
-    }
-    if (apiFile.category == "image") {
-      img = img+h;
+</details>`;
+    switch (apiFile.category) {
+      case 'text':
+        txt += h;
+        break;
+      case 'image':
+        img += h;
+        break;
     }
   }
   h = `<h2>Text</h2>
   ${txt}
 <h2>Image</h2>
-  ${img}
-<!--<h3>Test</h3>
-<details class="t-get">
-<summary>/potat | arguments</summary>
-long description
-</details>
-<details class="t-post">
-<summary>/potat | arguments</summary>
-long description
-</details>-->`;
-  res.send(fs.readFileSync('html/index.html', 'utf8').replaceAll("{a}", h))
+  ${img}`;
+  res.send(fs.readFileSync('html/index.html', 'utf8').replace("{a}", h).replace("{b}", count))
 })
 
 app.get("/builder", (req, res) => {
