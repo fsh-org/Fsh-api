@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="sl-theme-dark">
+  <head>
+    <title>Fsh Requests</title>
+    <!-- Boiler plate------ -->
+    <link rel="icon" href="https://fsh.plus/fsh.png" type="image/png">
+    <meta name="description" content="Fsh Requests">
+    <!-- ------- -->
+    <!--<link rel="stylesheet" href="https://fsh.plus/NewStyle.css">-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://fsh.plus/fsh.png"/>
+    <meta name="theme-color" content="#a89c9b">
+    <!-- ------------------ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/themes/dark.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/shoelace.js" ></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/badge/badge.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/details/details.js"></script>
+    <style>
+      * {
+        font-family: Arial;
+      }
+      .rab {
+        background-color:#333;
+        margin:4px;
+        padding:4px;
+        border-radius:1rem;
+        height: 20%;
+        max-height: 35px;
+        display: flex;
+      }
+      option {
+        color: #fff;
+        background-color: #000;
+      }
+      body {
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+        width: 100%;
+        height: 100%;
+      }
+      .dso[open] {
+        overflow: scroll;
+        max-width: 70vw;
+      }
+      iframe {
+        width:100%;
+      }
+      input {
+        min-width:0;
+      }
+    </style>
+  </head>
+  <body>
+    <sl-split-panel position="25" style="height:100vh;--min:25%;--max:75%;" snap="50%">
+      <div slot="start" style="overflow-y:auto">
+        <sl-tab-group>
+          <sl-tab slot="nav" panel="param">Params</sl-tab>
+          <sl-tab slot="nav" panel="body">Body</sl-tab>
+          <sl-tab slot="nav" panel="head">Headers</sl-tab>
+          <sl-tab slot="nav" panel="auth">Auth</sl-tab>
+
+          <sl-tab-panel name="param"><div style="display:flex;"><input><input><button><svg width="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#f00" d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg></button></div></sl-tab-panel>
+          <sl-tab-panel name="body"><sl-textarea id="body" resize="auto" style="width: 100%;height: 100%;box-sizing: border-box;"></sl-textarea></sl-tab-panel>
+          <sl-tab-panel name="head"><sl-switch></sl-switch></sl-tab-panel>
+          <sl-tab-panel name="auth">
+            <div id="AuthIn"><p>No auth</p></div>
+            <sl-select value="None" id="auth" style="position:absolute;bottom:0;width:25%;">
+              <sl-option value="None">None</sl-option>
+              <sl-option value="Basic">Basic</sl-option>
+              <sl-option value="Bearer">Bearer</sl-option>
+              <sl-option value="Url">Url @</sl-option>
+            </sl-select>
+            <script>
+              document.getElementsByTagName('sl-select')[0].addEventListener('sl-change', function(e) {
+                switch (document.getElementsByTagName('sl-select')[0].value) {
+                  case 'None':
+                    document.getElementById('AuthIn').innerHTML = '<p>No auth</p>'
+                    break;
+                  case 'Basic':
+                    document.getElementById('AuthIn').innerHTML = '<p>Basic auth</p><sl-input id="BU" placeholder="User"></sl-input><sl-input id="BP" placeholder="Password" type="password" password-toggle></sl-input>'
+                    break;
+                  case 'Bearer':
+                    document.getElementById('AuthIn').innerHTML = '<p>Bearer token</p><label>Prefix:</label><select id="BP" value="Bearer"><option value="Bearer">Bearer</option><option value="Bot">Bot</option><option value="">None</option></select><sl-input id="BT" placeholder="Token" type="password" password-toggle></sl-input>'
+                    break;
+                  case 'Url':
+                    document.getElementById('AuthIn').innerHTML = '<p>Url @ auth</p><sl-input id="UU" placeholder="User"></sl-input><sl-input id="UP" placeholder="Password" type="password" password-toggle></sl-input>'
+                    break;
+                }
+              })
+            </script>
+          </sl-tab-panel>
+        </sl-tab-group>
+      </div>
+      <div slot="end" style="overflow-y:auto">
+        <div class="rab">
+          <select id="type" value="GET" style="border:none;background:none;">
+            <option value="GET">GET</option>
+            <option value="HEAD">HEAD</option>
+            <option value="POST">POST</option>
+            <option value="DELETE">DELETE</option>
+            <option value="CONNECT">CONNECT</option>
+            <option value="OPTIONS">OPTIONS</option>
+            <option value="TRACE">TRACE</option>
+            <option value="PATCH">PATCH</option>
+          </select>
+          <sl-divider vertical style="--color:#666"></sl-divider>
+          <input id="url" placeholder="https://fsh.plus" style="border:none;background:none;flex: 1;" onkeyup="if(event.key=='Enter'){send()}">
+          <button onclick="send()" style="border-radius:0.5rem;border:none;height:100%;">Send <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom:-3px;fill:#fff;" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
+        </div>
+        <p id="res"></p>
+      </div>
+    </sl-split-panel>
+    <script>
+      function send() {
+        // Fetch settings
+        let url = document.getElementById('url').value;
+        let con = {
+          method: document.getElementById('type').value,
+          headers: {}
+        }
+        // Fetch body
+        if (!['GET','HEAD'].includes(con.method)) {
+          con.body = document.getElementById('body').value
+        }
+        // Auth
+function b64EncodeUnicode(str) {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+    function toSolidBytes(match, p1) {
+      return String.fromCharCode('0x' + p1);
+  }));
+}
+        if (document.getElementsByTagName('sl-select')[0].value != 'None') {
+          switch(document.getElementsByTagName('sl-select')[0].value) {
+            case 'Basic':
+              con.headers.Authorization = 'Basic '+b64EncodeUnicode(document.getElementById('BU').value+":"+document.getElementById('BP').value)
+              break;
+            case 'Bearer':
+              con.headers.Authorization = document.getElementById('BP').value+(document.getElementById('BP').value.length ? ' ' : '')+document.getElementById('BT').value;
+              break;
+            case 'Url':
+              url = url.replace('://','://'+document.getElementById('UU').value+'.'+document.getElementById('UP').value+'@')
+              break;
+          }
+        }
+        // The fetch
+        fetch(url, con).then(async e => {
+          let s = String(e.status);
+          let q = e.headers.get('content-type').split(';')[0];
+          let x = "";
+          for (var pair of e.headers.entries()) {
+            x += pair[0]+ ': '+ pair[1]+'\n';
+          }
+          let y = await e.text();
+          document.getElementById('res').innerHTML = `<label>Response</label>
+<sl-badge variant="${['neutral','neutral','success','warning','danger','danger'][s.split('')[0]] || 'neutral'}">${s}</sl-badge>
+<sl-badge variant="neutral">${q}</sl-badge>
+<sl-details summary="Headers"><pre>${x}</pre></sl-details>
+<sl-details summary="Response text" class="dso" style="max-height:50vh;"><pre>${y.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre></sl-details>
+<sl-details summary="IFrame"><p>Links adapted to point to site</p><iframe id="ifr"></iframe></sl-details>`;
+          if (q.includes('image/')) {
+            document.getElementById('ifr').src = url
+          } else {
+            document.getElementById('ifr').contentDocument.write(y.replaceAll(/(?:src|href)="(?!http|ws)/g, function(match){return match.replace('="', '="'+document.getElementById('url').value.split('?')[0].split('#')[0].replace('://','##').split('/').filter(e=>e.length).join('/').replace('##','://'))}))
+          }
+        })
+      }
+    </script>
+  </body>
+</html>

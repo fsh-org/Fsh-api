@@ -63,6 +63,8 @@ module.exports = {
       data = data.replaceAll("\n</th>", "</th>")
       data = data.replaceAll("\n</td>", "</td>")
       data = data.replaceAll("<i></i>", "")
+      data = data.replaceAll(/<tbody>|<\/tbody>/g, "")
+      data = data.replaceAll("</center><center>", "</center>\n<center>")
       data = data.replaceAll(/<div.+?>[^¬]+?<\/div>/g, function(match){
         return match.replaceAll(/<div.+?>|<\/div>/g, '')
       })
@@ -89,8 +91,7 @@ module.exports = {
         data = data.replaceAll(/<ul.*?>|<\/ul>/g, "")
         data = data.replaceAll(/<[a-zA-Z0-9]{1,4}> /g, function(match){return match.slice(0, match.length-2)})
         data = data.replaceAll(/<\/.{1,5}>/g, "")
-        data = data.replaceAll(/<(p|code|img|tbody|tr|table).*?>/g, "")
-        data = data.replaceAll(/<img.*?>/g, "")
+        data = data.replaceAll(/<.{0,1}(p|code|img|tbody|tr|table|center).*?>/g, "")
         data = data.replaceAll('<br>', "\n")
         data = data.replaceAll(/<h.>/g, function(match){
           return new Array(Math.min(3, Number(match.replaceAll(/[a-zA-Z<> \-().,%:;_\n\/\[\]]/g,""))+1)).join("#")+" "
