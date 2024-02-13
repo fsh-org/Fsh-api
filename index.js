@@ -105,6 +105,14 @@ app.get("/styleapi.css", (req, res) => {
   res.sendFile(path.join(__dirname, 'html/styleAPI.css'))
 })
 
+app.get("/builder", (req, res) => {
+  res.sendFile(path.join(__dirname, 'html/builder.html'))
+})
+
+app.get("/requests", (req, res) => {
+  res.sendFile(path.join(__dirname, 'html/requests.html'))
+})
+
 app.get('/download/:filename', (req, res) => {
   const filename = req.params.filename;
   if (!fs.existsSync(path.join(__dirname, 'images', filename))) {res.send('no file');return;}
@@ -116,6 +124,27 @@ app.get('/download/:dir/:filename', (req, res) => {
   if (!fs.existsSync(path.join(__dirname, 'images', req.params.dir, filename))) {res.send('no file');return;}
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.sendFile(path.join(__dirname, 'images', req.params.dir, filename))
+})
+
+app.get('/pt', async(req, res) => {
+  try {
+    let opt = {
+      method: req.query['method'] || 'GET',
+      headers: {
+        authorization: 'Bearer '+req.query['key'],
+        'content-type': 'application/json'
+      }
+    }
+    if (opt.method != 'GET') opt.body = req.query['body'] || '';
+    let da = await fetch (req.query['url'], opt);
+    da = await da.json();
+    res.json(da)
+  } catch (err) {
+    res.json({
+      err: true,
+      msg: err
+    })
+  }
 })
 
 /* -- Make last path, this takes all remaining paths -- */
