@@ -132,13 +132,27 @@ app.get('/pt', async(req, res) => {
       method: req.query['method'] || 'GET',
       headers: {
         authorization: 'Bearer '+req.query['key'],
-        'content-type': 'application/json'
+        "Accept": "application/json",
+        "Content-Type": "application/json"
       }
     }
-    if (opt.method != 'GET') opt.body = req.query['body'] || '';
+    if (opt.method != 'GET') {
+      opt.body = req.query['body'] || '';
+      try {
+        JSON.parse(opt.body);
+      } catch (e) {
+        opt.headers['Content-Type'] = 'text/plain'
+      }
+    }
     let da = await fetch (req.query['url'], opt);
-    da = await da.json();
-    res.json(da)
+    if (da.status == 204) {res.send('ok');return;}
+    if ((da.headers.get('Content-Type')||'').includes('text/')) {
+      da = await da.text();
+      res.send(da)
+    } else {
+      da = await da.json();
+      res.json(da)
+    }
   } catch (err) {
     res.json({
       err: true,
