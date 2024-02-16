@@ -26,7 +26,7 @@
     "nanoid": "^4.0.2",
     "node-fetch": "^3.2.6",
     "request-ip": "^3.3.0",
-    "sharp": "^0.33.0",
+    "sharp": "^0.33.2",
     "ytdl-core": "^4.11.5"
   }
 }
