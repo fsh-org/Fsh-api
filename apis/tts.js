@@ -1,30 +1,31 @@
 const fs = require("fs");
-const hfimport = require('@huggingface/inference');
-const hf = new hfimport.HfInference(process.env['ai']);
+const { getAudioBuffer } = require('simple-tts-mp3');
 
 module.exports = {
 	path: '/tts',
-	info: 'Generates text with ai',
+	info: 'Generates text to speach audio',
 	type: 'get',
-	params: ["text", true, "model", false],
-	category: "hidden",
-	execute(req, res) {
-    (async () => {
-    try{
-      if(!req.query["text"]) {
-        res.send('mini docs<br>text=[TEXT] - Text for speech<br>Optional:<br>model=[Model] - Very high level but allows for better results');
-        return;
-      };
-      let img = await hf.textToSpeech({
-        model: req.query["model"] || 'espnet/kan-bayashi_ljspeech_vits',
-        inputs: req.query["text"]
+	params: ["text", true, "lang", false],
+	category: "image",
+  
+	async execute(req, res) {
+    if (!req.query['text']) {
+      res.json({
+        err: true,
+        msg: 'Include text'
       })
-      console.log(img)
-      res.send(img)
-    } catch (err) {
-      res.status(500)
-      res.send(`{"err":true,"msg":"${err}"}`)
+      return;
     }
-    })()
+    getAudioBuffer(req.query['text'], req.query['lang'] || 'en')
+      .then(buffer => {
+        var binaryString = '';
+        for (var i = 0; i < buffer.length; i++) {
+            binaryString += String.fromCharCode(buffer[i]);
+        }
+
+        res.json({
+          audio: 'data:audio/wav;base64,' + btoa(binaryString)
+        })
+      });
 	}
 }
