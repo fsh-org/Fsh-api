@@ -8,7 +8,7 @@ module.exports = {
   category: "image",
 
   async execute(req, res) {
-    if (!req.body) {
+    if (!req.body || !req.body.length) {
       res.json({
         err: true,
         msg: 'You must pass a image in the request body'
@@ -40,6 +40,20 @@ module.exports = {
                 image: 'data:image/png;base64,' + outputBuffer.toString('base64')
               })
             })
+            .catch(err => {
+              res.json({
+                err: true,
+                msg: 'Could not generate'
+              })
+              return;
+            })
+        })
+        .catch(err => {
+          res.json({
+            err: true,
+            msg: 'Could not generate'
+          })
+          return;
         })
     })
   }

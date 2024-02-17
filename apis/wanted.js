@@ -1,8 +1,8 @@
 const sharp = require('sharp');
 
 module.exports = {
-  path: '/invert',
-  info: 'Inverts a image (pass image in body)',
+  path: '/wanted',
+  info: 'Wanted poster image insert',
   type: 'post',
   params: [],
   category: "image",
@@ -16,12 +16,19 @@ module.exports = {
       return;
     }
     sharp(req.body)
-      .negate({ alpha: false })
+      .resize(200, 200)
       .toBuffer()
-      .then(outputBuffer => {
-        res.json({
-          image: 'data:image/png;base64,' + outputBuffer.toString('base64')
-        })
+      .then(buff => {
+        sharp('effects/wanted.png')
+          .composite([
+            { input: buff, gravity: 'center', top: 110, left: 53 }
+          ])
+          .toBuffer()
+          .then(outputBuffer => {
+            res.json({
+              image: 'data:image/png;base64,' + outputBuffer.toString('base64')
+            })
+          })
       })
       .catch(err => {
         res.json({
