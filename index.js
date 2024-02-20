@@ -11,9 +11,13 @@ const apis = new Map();
 
 app.use(cors())
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: false,
+  limit: '1gb'
 }));
-app.use(bodyParser.raw({ type: '*/*' }));
+app.use(bodyParser.raw({
+  type: '*/*',
+  limit: '1gb'
+}));
 app.use(requestIp.mw());
 
 //app.use('/api', express.static('apis'))
