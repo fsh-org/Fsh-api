@@ -1,0 +1,41 @@
+const sharp = require('sharp');
+
+module.exports = {
+  path: '/hue',
+  info: 'Change the hue (0-360) of a image (pass image in body)',
+  type: 'post',
+  params: ['hue', true],
+  category: "image",
+
+  async execute(req, res) {
+    if (!req.query['hue']) {
+      res.json({
+        err: true,
+        msg: 'You must include a hue param (0-360)'
+      })
+      return;
+    }
+    if (!req.body || !req.body.length) {
+      res.json({
+        err: true,
+        msg: 'You must pass a image in the request body'
+      })
+      return;
+    }
+    sharp(req.body)
+      .modulate({ hue: Number(req.query['hue']) })
+      .toBuffer()
+      .then(outputBuffer => {
+        res.json({
+          image: 'data:image/png;base64,' + outputBuffer.toString('base64')
+        })
+      })
+      .catch(err => {
+        res.json({
+          err: true,
+          msg: 'Could not generate'
+        })
+        return;
+      })
+  }
+}
