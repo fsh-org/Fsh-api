@@ -57,9 +57,12 @@ module.exports = {
       data = data.replaceAll("<p></p>\n", "")
       data = data.replaceAll(/href="\/wiki/g, 'href="'+Url.split("/wiki")[0]+'/wiki')
       data = data.replaceAll(/ title=".+?"/g, '')
-      data = data.replaceAll("&lt;", "<")
-      data = data.replaceAll("&gt;", ">")
-      data = data.replaceAll("&amp;", "&")
+      data = data
+        .replaceAll("&lt;", "<")
+        .replaceAll("&gt;", ">")
+        .replaceAll("&amp;", "&")
+        .replaceAll('&#160;', ' ')
+        .replaceAll('&nbsp;', ' ')
       data = data.replaceAll("\n</th>", "</th>")
       data = data.replaceAll("\n</td>", "</td>")
       data = data.replaceAll("<i></i>", "")
@@ -80,7 +83,14 @@ module.exports = {
         data = data.replaceAll(/<i.*?>|<\/i>|<sup.*?>|<\/sup>|<abbr.*?>|<\/abbr>/g, "*")
         data = data.replaceAll(/<b.*?>|<\/b>|<em.*?>|<\/em>|<strong.*?>|<\/strong>/g, "**")
         data = data.replaceAll(/<kbd.*?>|<\/kbd>/g, "`")
-        data = data.replaceAll('<ul>','')
+        data = data.replaceAll(/<li>[^¬]*?<ul>[^¬]*?<\/ul><\/li>/g, function(match){
+          match = match.split('ul>')
+          match[1] = match[1].replaceAll('<li>', '  - ')
+          match = match.join('ul>')
+          return match
+        })
+        data = data.replaceAll(/<li.*?>/g, "- ")
+        data = data.replaceAll(/<ul.*?>|<\/ul>/g, "")
         data = data.replaceAll(/<u.*?>|<\/u>/g, "__")
         data = data.replaceAll(/<s.*?>|<\/s>/g, "~~")
         data = data.replaceAll('\n<th','| <th')
@@ -88,7 +98,6 @@ module.exports = {
         data = data.replaceAll(/\n<td.*?>/g,'| ')
         data = data.replaceAll(/<td.*?>/g,'| ')
         data = data.replaceAll('</td>',' ')
-        data = data.replaceAll(/<ul.*?>|<\/ul>/g, "")
         data = data.replaceAll(/<[a-zA-Z0-9]{1,4}> /g, function(match){return match.slice(0, match.length-2)})
         data = data.replaceAll(/<\/.{1,5}>/g, "")
         data = data.replaceAll(/<.{0,1}(p|code|img|tbody|tr|table|center).*?>/g, "")
@@ -96,7 +105,6 @@ module.exports = {
         data = data.replaceAll(/<h.>/g, function(match){
           return new Array(Math.min(3, Number(match.replaceAll(/[a-zA-Z<> \-().,%:;_\n\/\[\]]/g,""))+1)).join("#")+" "
         })
-        data = data.replaceAll(/<li.*?>/g, "* ")
         data = data.replaceAll("<dl><dd>", "  ")
       }
 
