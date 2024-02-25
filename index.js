@@ -88,10 +88,16 @@ app.get('/', (req,res)=>{
         break;
     }
   }
-  h = `<h2>Text</h2>
+  
+  h = `<div style="flex:1">
+  <h2>Text</h2>
   ${txt}
-<h2>Image</h2>
-  ${img}`;
+</div>
+<div style="flex:1">
+  <h2>Image</h2>
+  ${img}
+</div>`;
+  
   res.send(fs.readFileSync('html/index.html', 'utf8').replace("{a}", h).replace("{b}", count))
 })
 
