@@ -20,8 +20,6 @@ app.use(bodyParser.raw({
 }));
 app.use(requestIp.mw());
 
-//app.use('/api', express.static('apis'))
-//app.use(express.static('html'))
 app.use('/highlight', express.static('highlight'))
 app.use('/images', express.static('images'))
 
@@ -134,6 +132,31 @@ app.get('/download/:dir/:filename', (req, res) => {
   if (!fs.existsSync(path.join(__dirname, 'images', req.params.dir, filename))) {res.send('no file');return;}
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.sendFile(path.join(__dirname, 'images', req.params.dir, filename))
+})
+
+app.post('/request', async(req, res) => {
+  try {
+    let url = req.query['url'];
+    url = (url.includes('://') ? '' : 'https://') + url;
+    let da = await fetch(url, JSON.parse(req.body));
+    let cont = await da.text();
+    
+    let hed = {}
+    da.headers.forEach((value, key) => {
+      hed[key] = value;
+    });
+    
+    res.json({
+      headers: hed,
+      status: da.status,
+      content: cont
+    })
+  } catch (err) {
+    res.json({
+      err: true,
+      msg: err
+    })
+  }
 })
 
 app.get('/pt', async(req, res) => {
