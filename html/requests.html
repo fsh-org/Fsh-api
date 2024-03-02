@@ -12,6 +12,8 @@
     <meta property="og:image" content="https://fsh.plus/fsh.png"/>
     <meta name="theme-color" content="#a89c9b">
     <!-- ------------------ -->
+    <link rel="manifest" href="/requests.json">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/themes/dark.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/shoelace.js" ></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/badge/badge.js"></script>
@@ -56,6 +58,17 @@
       }
       input {
         min-width:0;
+      }
+      .card-api {
+        background-color: #444;
+        padding: 5px;
+        border-radius: 0.5rem;
+        margin-bottom: 5px;
+        cursor: pointer;
+        transition: 1s;
+      }
+      .card-api:hover {
+        background-color: #333;
       }
     </style>
   </head>
@@ -115,8 +128,8 @@
           <select id="type" value="GET" style="border:none;background:none;">
             <option value="GET">GET</option>
             <option value="HEAD">HEAD</option>
-            <option value="PUT">POST</option>
-            <option value="POST">PUT</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
             <option value="DELETE">DELETE</option>
             <option value="CONNECT">CONNECT</option>
             <option value="OPTIONS">OPTIONS</option>
@@ -125,7 +138,23 @@
           </select>
           <sl-divider vertical style="--color:#666"></sl-divider>
           <input id="url" placeholder="https://fsh.plus" style="border:none;background:none;flex: 1;" onkeyup="if(event.key=='Enter'){send()}">
-          <button onclick="send()" style="border-radius:0.5rem;border:none;height:100%;">Send <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom:-3px;fill:#fff;" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
+          <button onclick="document.getElementById('apis').showModal()" style="margin-right:5px;border-radius:0.75rem;border:none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15" fill="#fff"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
+          <dialog style="border-radius:0.5rem" id="apis">
+            <h1 style="margin:0">Fsh endpoints</h1>
+            <div id="lis" style="max-height:75vh;overflow-y:auto;border:2px #ccc solid;border-radius:0.5rem;padding:10px;padding-top:-20px;"></div>
+            <script>
+              fetch('/apis').then(async da => {
+                da = await da.json();
+                document.getElementById('lis').innerHTML = Object.keys(da.endpoints).map(ee => {
+                  return `<div onclick="document.getElementById('url').value='api.fsh.plus/${ee}';document.getElementById('type').value='${da.endpoints[ee].type.toUpperCase()}';" class="card-api">
+  <p style="margin:0;">/${ee} | ${da.endpoints[ee].category}</p>
+  <label style="cursor:pointer">${da.endpoints[ee].info}</label>
+</div>`
+                }).join('')
+              })
+            </script>
+          </dialog>
+          <button onclick="send()" style="border-radius:0.75rem;border:none;height:100%;">Send <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom:-3px;fill:#fff;" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
         </div>
         <p id="res"></p>
       </div>
@@ -188,7 +217,7 @@
         // The fetch
         fetch('/request?url='+encodeURIComponent(url), {method:'post',body:JSON.stringify(con)}).then(async e => {
           e = await e.json();
-          
+         
           let s = String(e.status);
           let q = e.headers['content-type'].split(';')[0];
           let x = "";
@@ -212,7 +241,7 @@
               return match.replace('"', '"'+uri).replace(/(?<!\/|\/\/|:)\/.+?\/\.\//, '/').replace('/./', '/').replace(/(?!\/)\/.+?\/\..\//, '/')
             })
             y = y.replace('data-color-mode="auto"','data-color-mode="dark"')
-            
+           
             document.getElementById('ifr').contentDocument.write(y)
           }
         })
