@@ -120,6 +120,9 @@ app.get("/builder", (req, res) => {
 app.get("/requests", (req, res) => {
   res.sendFile(path.join(__dirname, 'html/requests.html'))
 })
+app.get("/requests.json", (req, res) => {
+  res.sendFile(path.join(__dirname, 'html/requests.json'))
+})
 
 app.get('/download/:filename', (req, res) => {
   const filename = req.params.filename;
