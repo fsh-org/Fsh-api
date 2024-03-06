@@ -20,6 +20,17 @@ app.use(bodyParser.raw({
 }));
 app.use(requestIp.mw());
 
+app.use(function(req,res,next){
+  res.json = function(json) {
+    res.set('content-type', 'application/json')
+    if (json.err) {
+      res.status(400)
+    }
+    res.send(JSON.stringify(json, null, 2))
+  }
+  next()
+})
+
 app.use('/highlight', express.static('highlight'))
 app.use('/images', express.static('images'))
 
@@ -141,8 +152,13 @@ app.post('/request', async(req, res) => {
   try {
     let url = req.query['url'];
     url = (url.includes('://') ? '' : 'https://') + url;
+
+    let now = (new Date()/1);
+    
     let da = await fetch(url, JSON.parse(req.body));
     let cont = await da.text();
+
+    now = (new Date()/1) - now;
     
     let hed = {}
     da.headers.forEach((value, key) => {
@@ -152,6 +168,7 @@ app.post('/request', async(req, res) => {
     res.json({
       headers: hed,
       status: da.status,
+      time: now,
       content: cont
     })
   } catch (err) {
