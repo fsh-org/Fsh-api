@@ -222,11 +222,12 @@
           let q = e.headers['content-type'].split(';')[0];
           let x = "";
           for (var pair of Object.entries(e.headers)) {
-            x += pair[0]+ ': '+ pair[1]+'\n';
+            x += `<b>${pair[0]}</b>: <label style="color:#ccc">${pair[1]}</label>\n`;
           }
           let y = e.content;
           document.getElementById('res').innerHTML = `<label>Response</label>
-<sl-badge variant="${['neutral','neutral','success','warning','danger','danger'][s.split('')[0]] || 'neutral'}">${s}</sl-badge>
+<sl-badge variant="${['neutral','primary','success','warning','danger','danger'][s.split('')[0]] || 'neutral'}">${s}</sl-badge>
+<sl-badge variant="${e.time > 500 ? 'danger' : 'primary'}">${e.time}ms</sl-badge>
 <sl-badge variant="neutral">${q}</sl-badge>
 <sl-details summary="Headers"><pre>${x}</pre></sl-details>
 <sl-details summary="Response text" class="dso"><pre>${y.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre></sl-details>
