@@ -6,7 +6,7 @@ module.exports = {
   info: 'Download a youtube video into a mp3',
   type: 'get',
   params: ["id", true],
-  category: "image",
+  category: "audio",
 
   async execute(req, res) {
     let id = req.query['id'];
