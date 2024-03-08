@@ -21,7 +21,8 @@ module.exports = {
   category: "text",
   
   async execute(req, res) {
-    if (req.query["url"] == null) {
+    let uri = req.query["url"];
+    if (uri == null) {
       res.status(400);
       res.json({
         err: true,
@@ -29,8 +30,11 @@ module.exports = {
       });
       return;
     } // thx for doing it, im too stupid; no me; you are the one who did it, you smart;
+    if (!uri.includes('://')) {
+      uri = 'https://'+uri
+    }
     try {
-      let request = await fetch(req.query["url"], {
+      let request = await fetch(uri, {
         follow: 20,
         redirect: "follow",
         headers: {

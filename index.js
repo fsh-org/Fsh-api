@@ -66,8 +66,7 @@ for (const file of apisFiles) {
 /* -- Main pages -- */
 app.get('/', (req,res)=>{
   let h = "";
-  let txt = "";
-  let img = "";
+  let sec = {};
   let count = 0;
   for (const file of apisFiles) {
   	const apiFile = require(file);
@@ -88,23 +87,20 @@ app.get('/', (req,res)=>{
   <summary>${apiFile.path}${r}</summary>
   ${apiFile.info}
 </details>`;
-    switch (apiFile.category) {
-      case 'text':
-        txt += h;
-        break;
-      case 'image':
-        img += h;
-        break;
-    }
+    sec[apiFile.category] = (sec[apiFile.category]||'')+h;
   }
   
   h = `<div style="flex:1">
   <h2>Text</h2>
-  ${txt}
+  ${sec['text']}
 </div>
 <div style="flex:1">
   <h2>Image</h2>
-  ${img}
+  ${sec['image']}
+</div>
+<div style="width:300px">
+  <h2>Audio</h2>
+  ${sec['audio']}
 </div>`;
   
   res.send(fs.readFileSync('html/index.html', 'utf8').replace("{a}", h).replace("{b}", count))

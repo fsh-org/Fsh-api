@@ -35,9 +35,9 @@ async function getUrl(url) {
 
 module.exports = {
   path: '/join',
-  info: 'Join two image urls together',
+  info: 'Join two or more image urls together',
   type: 'get',
-  params: ["one", true, "two", true, "three", false, "four", false, "five", false, "six", false, "seven", false, "eight", false, "nine", false],
+  params: ["bg", false, "one", true, "two", true, "three", false, "four", false, "five", false, "six", false, "seven", false, "eight", false, "nine", false],
   category: "image",
 
   async execute(req, res) {
@@ -51,72 +51,134 @@ module.exports = {
     let eight = req.query['eight']
     let nine = req.query['nine']
 
-    if (!one || !two) {
+    let images = [one, two, three, four, five, six, seven, eight, nine];
+    images = images.filter(e => (e || '').length);
+
+    if (images.length < 2) {
       res.json({
         err: true,
-        msg: 'You must include both "one" and "two" parameters'
+        msg: 'You must include at least two images'
       })
       return;
     }
 
-    one = await getUrl(one);
-    if (!one) {
-      res.json({
-        err: true,
-        msg: 'Could not get images'
-      })
-      return;
+    for (let i=0;i<images.length;i++) {
+      images[i] = await getUrl(images[i])
     }
-    two = await getUrl(two);
-    if (!two) {
+    images = images.filter(e => (e || '').length)
+
+    if (images.length < 2) {
       res.json({
         err: true,
-        msg: 'Could not get images'
+        msg: 'Too many images failed to load'
       })
       return;
     }
 
-    three = await getUrl(three);
-    four = await getUrl(four);
-    five = await getUrl(five);
-    six = await getUrl(six);
-    seven = await getUrl(seven);
-    eight = await getUrl(eight);
-    nine = await getUrl(nine);
-
-    let layers = [
-      {input: one, gravity: 'northwest'},
-      {input: two, gravity: 'northeast'}
-    ];
-
-    if (three) {
-      layers.push({input: three, gravity: 'southwest'})
-    }
-    if (four) {
-      layers.push({input: four, gravity: 'southeast'})
-    }
-    if (five) {
-      layers.push({input: five, gravity: 'north'})
-    }
-    if (six) {
-      layers.push({input: six, gravity: 'south'})
-    }
-    if (seven) {
-      layers.push({input: seven, gravity: 'east'})
-    }
-    if (eight) {
-      layers.push({input: eight, gravity: 'west'})
-    }
-    if (nine) {
-      layers.push({input: nine, gravity: 'center'})
+    let layers;
+    let w;
+    let h;
+    switch (images.length) {
+      case 2:
+        w = size*2+5
+        h = size
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'northeast'}
+        ];
+        break;
+      case 3:
+        w = size*2+5
+        h = size*2+5
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'northeast'},
+          {input: images[2], gravity: 'southwest'}
+        ];
+        break;
+      case 4:
+        w = size*2+5
+        h = size*2+5
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'northeast'},
+          {input: images[2], gravity: 'southwest'},
+          {input: images[3], gravity: 'southeast'}
+        ];
+        break;
+      case 5:
+        w = size*3+10
+        h = size*2+5
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'north'},
+          {input: images[2], gravity: 'northeast'},
+          {input: images[3], gravity: 'southwest'},
+          {input: images[4], gravity: 'south'}
+        ];
+        break;
+      case 6:
+        w = size*3+10
+        h = size*2+5
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'north'},
+          {input: images[2], gravity: 'northeast'},
+          {input: images[3], gravity: 'southwest'},
+          {input: images[4], gravity: 'south'},
+          {input: images[5], gravity: 'southeast'}
+        ];
+        break;
+      case 7:
+        w = size*3+10
+        h = size*3+10
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'north'},
+          {input: images[2], gravity: 'northeast'},
+          {input: images[3], gravity: 'west'},
+          {input: images[4], gravity: 'center'},
+          {input: images[5], gravity: 'east'},
+          {input: images[6], gravity: 'southwest'}
+        ];
+        break;
+      case 8:
+        w = size*3+10
+        h = size*3+10
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'north'},
+          {input: images[2], gravity: 'northeast'},
+          {input: images[3], gravity: 'west'},
+          {input: images[4], gravity: 'center'},
+          {input: images[5], gravity: 'east'},
+          {input: images[6], gravity: 'southwest'},
+          {input: images[7], gravity: 'south'}
+        ];
+        break;
+      case 9:
+        w = size*3+10
+        h = size*3+10
+        layers = [
+          {input: images[0], gravity: 'northwest'},
+          {input: images[1], gravity: 'north'},
+          {input: images[2], gravity: 'northeast'},
+          {input: images[3], gravity: 'west'},
+          {input: images[4], gravity: 'center'},
+          {input: images[5], gravity: 'east'},
+          {input: images[6], gravity: 'southwest'},
+          {input: images[7], gravity: 'south'},
+          {input: images[8], gravity: 'southeast'}
+        ];
+        break;
     }
     
     sharp({
       create: {
-        width: five || six || seven || eight || nine ? (size*3)+10 : (size*2)+5,
-        height: (three || four ? seven || eight || nine ? (size*3)+10 : (size*2)+5 : size),
+        width: w,
+        height: h,
         channels: 4,
-        background: '#000'
+        background: (req.query['bg'] ? '#'+req.query['bg'] : '#000')
       }
     })
       .composite(layers)

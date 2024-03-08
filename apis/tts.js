@@ -6,7 +6,7 @@ module.exports = {
 	info: 'Generates text to speach audio',
 	type: 'get',
 	params: ["text", true, "lang", false],
-	category: "image",
+	category: "audio",
   
 	async execute(req, res) {
     if (!req.query['text']) {
