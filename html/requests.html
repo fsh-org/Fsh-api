@@ -189,7 +189,8 @@
           con.body = document.getElementById('body').value
         }
         // Params
-        url = url+'?'+Array.from(document.getElementById('para').children).map(e => `${e.children[0].value}=${e.children[1].value}`).filter(e => e != '=').join('&')
+        let par = Array.from(document.getElementById('para').children).map(e => `${e.children[0].value}=${e.children[1].value}`).filter(e => e != '=').join('&');
+        url = url+(par ? (url.includes('?') ? '&' : '?')+par : '')
         // Headers
         Array.from(document.getElementById('hed').children).forEach(e => {
           if(e.children[0].value.length) con.headers[e.children[0].value] = e.children[1].value
