@@ -32,13 +32,16 @@ module.exports = {
   category: "audio",
 
   async execute(req, res) {
-    if (!req.query['text']) {
+    let text = req.query['text'];
+    if ((text || '').length < 1) {
       res.json({
         err: true,
         msg: 'You must include text'
       })
+      return;
     }
-    const audiobuffer = sam.buf8(req.query['text']);
+    
+    const audiobuffer = sam.buf8(text);
 
     let realbuffer = new Uint8Array(44 + audiobuffer.length);
     let pos = 0;
