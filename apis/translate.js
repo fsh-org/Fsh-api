@@ -16,8 +16,16 @@ module.exports = {
       return;
     }
 
-    const trans = await translate(req.query['text'], { to: req.query['lang'] });
-
+    try {
+      const trans = await translate(req.query['text'], { to: req.query['lang'] });
+    } catch (err) {
+      res.json({
+        err: true,
+        msg: 'Could not translate'
+      })
+      return;
+    }
+    
     res.json({
       text: trans.text,
       source: trans.raw.src

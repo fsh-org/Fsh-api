@@ -7,6 +7,12 @@ const requestIp = require('request-ip');
 const path = require("path")
 const fs = require("fs")
 
+let process = require('process');
+process.on('uncaughtException', function(err) {
+  console.log('Error!');
+  console.log(err);
+});
+
 const apis = new Map();
 
 app.use(cors())

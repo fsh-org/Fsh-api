@@ -26,6 +26,13 @@ module.exports = {
         res.json({
           audio: 'data:audio/wav;base64,' + btoa(binaryString)
         })
-      });
+      })
+      .catch(err => {
+        res.json({
+          err: true,
+          msg: 'Could not convert'
+        })
+        return;
+      })
 	}
 }
