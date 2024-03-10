@@ -46,10 +46,19 @@ module.exports = {
     let realbuffer = new Uint8Array(44 + audiobuffer.length);
     let pos = 0;
 
-    let write = buffer => {
-      realbuffer.set(buffer, pos);
-      pos += buffer.length;
-    };
+    let write;
+    try {
+      write = buffer => {
+        realbuffer.set(buffer, pos);
+        pos += buffer.length;
+      };
+    } catch (err) {
+      res.json({
+        err: true,
+        msg: 'Could not convert'
+      })
+      return;
+    }
 
     write(text2Uint8Array('RIFF'));
     write(Uint32ToUint8Array(audiobuffer.length + 28));
