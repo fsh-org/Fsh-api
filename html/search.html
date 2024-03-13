@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Fsh API</title>
+    <!-- Boiler plate------ -->
+    <link rel="icon" href="https://fsh.plus/fsh.png" type="image/png">
+    <meta name="description" content="Fsh api search, search between all of our endpoints.">
+    <!-- ------- -->
+    <link rel="stylesheet" href="https://fsh.plus/NewStyle.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://fsh.plus/fsh.png"/>
+    <meta name="theme-color" content="#a89c9b">
+    <!-- ------------------ -->
+    <link rel="stylesheet" href="./styleapi.css">
+  </head>
+  <body>
+    <div class="search">
+      <input placeholder="Search..." id="search" onkeyup="search()">
+      <svg onclick="search()" height="14" style="margin-right:10px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#fff" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+    </div>
+    <div style="text-align:center">
+      <label id="count"></label>
+    </div>
+    <div id="view"></div>
+    <script>
+      document.getElementById('search').value = (new URL(location.href).searchParams.get('q') || '')
+      let data;
+      function search() {
+        let search = document.getElementById('search').value;
+        let filtered = [];
+        Object.keys(data.endpoints).forEach(end => {
+          if (data.endpoints[end].path.includes(search) || data.endpoints[end].info.includes(search) || data.endpoints[end].params.join(',').includes(search)) {
+            filtered.push(data.endpoints[end])
+          }
+        })
+        document.getElementById('count').innerHTML = 'Results: '+filtered.length;
+        document.getElementById('view').innerHTML = filtered.map(e => `<details class="t-${e.type}">
+  <summary>${e.path}${e.params.length ? ' | '+e.params.map(t => (typeof t) == 'boolean'?'':`<div class="r-${e.params[e.params.indexOf(t)+1] ? 'm' : 'o'}">${t}</div>`).join(' ') : ''}</summary>
+  ${e.info}
+</details>`).join('')
+      }
+      fetch('https://api.fsh.plus/apis').then(async dat => {
+        dat = await dat.json();
+        data = dat;
+        search()
+      })
+      </script>  
+  </body>
+</html>
