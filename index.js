@@ -1,3 +1,7 @@
+// Fsh api
+
+let process = require('process');
+
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -7,7 +11,6 @@ const requestIp = require('request-ip');
 const path = require("path")
 const fs = require("fs")
 
-let process = require('process');
 process.on('uncaughtException', function(err) {
   console.log('Error!');
   console.log(err);
@@ -110,6 +113,10 @@ app.get('/', (req,res)=>{
 </div>`;
   
   res.send(fs.readFileSync('html/index.html', 'utf8').replace("{a}", h).replace("{b}", count))
+})
+
+app.get("/search", (req, res) => {
+  res.sendFile(path.join(__dirname, 'html/search.html'))
 })
 
 app.get("/builder", (req, res) => {

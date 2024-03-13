@@ -46,14 +46,29 @@ summary::before {
 }
 /* Argument type */
 .r-m {
-    display: inline-block;
-    background: #777;
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    padding: 0px 10px;
+  display: inline-block;
+  background: #777;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  padding: 0px 10px;
 }
 .r-o {
-    display: inline-block;
-    background: #777;
-    clip-path: inset(0 0 0 0 round 50%);
-    padding: 0px 10px;
+  display: inline-block;
+  background: #777;
+  clip-path: inset(0 0 0 0 round 50%);
+  padding: 0px 10px;
+}
+
+/* Search */
+.search {
+  background-color: #222;
+  width: fit-content;
+  border-radius: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.search input {
+  border: none;
+  width: 50vw;
+  min-width: 0;
+  max-width: 400px;
 }
