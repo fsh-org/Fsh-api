@@ -16,8 +16,9 @@ module.exports = {
       return;
     }
 
+    let trans;
     try {
-      const trans = await translate(req.query['text'], { to: req.query['lang'] });
+      trans = await translate(req.query['text'], { to: req.query['lang'] });
     } catch (err) {
       res.json({
         err: true,
