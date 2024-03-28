@@ -40,7 +40,6 @@ app.use(function(req,res,next){
   next()
 })
 
-app.use('/highlight', express.static('highlight'))
 app.use('/images', express.static('images'))
 
 /* -- Mark the files with fs to var apis -- */
