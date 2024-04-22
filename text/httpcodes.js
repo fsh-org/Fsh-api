@@ -449,23 +449,11 @@ module.exports = {
     "type": "Unofficial",
     "standard": "Esri"
   },
-  "509": {
-    "code": 509,
-    "title": "Bandwidth Limit Exceeded",
-    "type": "Unofficial",
-    "standard": "Apache Web Server, cPanel"
-  },
   "529": {
     "code": 529,
     "title": "Site is overloaded",
     "type": "Unofficial",
     "standard": "Qualys, SSLLabs"
-  },
-  "530": {
-    "code": 530,
-    "title": "Site is frozen | Origin DNS Error",
-    "type": "Unofficial",
-    "standard": "Pantheon Systems | Shopify"
   },
   "540": {
     "code": 540,
@@ -512,12 +500,6 @@ module.exports = {
   "449": {
     "code": 449,
     "title": "Retry With",
-    "type": "Unofficial",
-    "standard": "Internet Information Services"
-  },
-  "451": {
-    "code": 451,
-    "title": "Redirect",
     "type": "Unofficial",
     "standard": "Internet Information Services"
   },
@@ -576,7 +558,7 @@ module.exports = {
     "standard": "Cloudflare"
   },
   "000": {
-    "code": 000,
+    "code": '000',
     "title": "Headers Too Big or Too Many Requests",
     "type": "Unofficial",
     "standard": "AWS Elastic Load Balancing"
