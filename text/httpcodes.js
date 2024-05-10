@@ -3,13 +3,13 @@ module.exports = {
     "code": 100,
     "title": "Continue",
     "type": "Informational",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "101": {
     "code": 101,
     "title": "Switching Protocols",
     "type": "Informational",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "102": {
     "code": 102,
@@ -28,19 +28,19 @@ module.exports = {
     "code": 200,
     "title": "Ok",
     "type": "Success",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "201": {
     "code": 201,
     "title": "Created",
     "type": "Success",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "202": {
     "code": 202,
     "title": "Accepted",
     "type": "Success",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "203": {
     "code": 203,
@@ -52,19 +52,19 @@ module.exports = {
     "code": 204,
     "title": "No Content",
     "type": "Success",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "205": {
     "code": 205,
     "title": "Reset Content",
     "type": "Success",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "206": {
     "code": 206,
     "title": "Partial Content",
     "type": "Success",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "207": {
     "code": 207,
@@ -89,19 +89,19 @@ module.exports = {
     "code": 300,
     "title": "Multiple Choices",
     "type": "Redirection",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "301": {
     "code": 301,
     "title": "Moved Permanently",
     "type": "Redirection",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "302": {
     "code": 302,
     "title": "Found",
     "type": "Redirection",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "303": {
     "code": 303,
@@ -113,7 +113,7 @@ module.exports = {
     "code": 304,
     "title": "Not Modified",
     "type": "Redirection",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "305": {
     "code": 305,
@@ -125,7 +125,7 @@ module.exports = {
     "code": 306,
     "title": "Switch Proxy",
     "type": "Redirection",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "307": {
     "code": 307,
@@ -137,116 +137,116 @@ module.exports = {
     "code": 308,
     "title": "Permanent Redirect",
     "type": "Redirection",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
 
   "400": {
     "code": 400,
     "title": "Bad Request",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "401": {
     "code": 401,
     "title": "Unauthorized",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "402": {
     "code": 402,
     "title": "Payment Required",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "403": {
     "code": 403,
     "title": "Forbidden",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "404": {
     "code": 404,
     "title": "Not Found",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "405": {
     "code": 405,
     "title": "Method Not Allowed",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "406": {
     "code": 406,
     "title": "Not Acceptable",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "407": {
     "code": 407,
     "title": "Proxy Authentication Required",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "408": {
     "code": 408,
     "title": "Request Timeout",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "409": {
     "code": 409,
     "title": "Conflict",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "410": {
     "code": 410,
     "title": "Gone",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "411": {
     "code": 411,
     "title": "Length Required",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "412": {
     "code": 412,
     "title": "Precondition Failed",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "413": {
     "code": 413,
     "title": "Payload Too Large",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "414": {
     "code": 414,
     "title": "URI Too Long",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "415": {
     "code": 415,
     "title": "Unsupported Media Type",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "416": {
     "code": 416,
     "title": "Range Not Satisfiable",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "417": {
     "code": 417,
     "title": "Expectation Failed",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "418": {
     "code": 418,
@@ -258,13 +258,13 @@ module.exports = {
     "code": 421,
     "title": "Misdirected Request",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "422": {
     "code": 422,
     "title": "Unprocessable Content",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "423": {
     "code": 423,
@@ -288,7 +288,7 @@ module.exports = {
     "code": 426,
     "title": "Upgrade Required",
     "type": "Client Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "428": {
     "code": 428,
@@ -319,37 +319,37 @@ module.exports = {
     "code": 500,
     "title": "Internal Server Error",
     "type": "Server Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "501": {
     "code": 501,
     "title": "Not Implemented",
     "type": "Server Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "502": {
     "code": 502,
     "title": "Bad Gateway",
     "type": "Server Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "503": {
     "code": 503,
     "title": "Service Unavailable",
     "type": "Server Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "504": {
     "code": 504,
     "title": "Gateway Timeout",
     "type": "Server Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "505": {
     "code": 505,
     "title": "HTTP Version Not Supported",
     "type": "Server Error",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "506": {
     "code": 506,
@@ -377,7 +377,7 @@ module.exports = {
   },
   "510": {
     "code": 510,
-    "title": "Not Extended",
+    "title": "Not Extended (Obsolete)",
     "type": "Server Error",
     "standard": "RFC 2774"
   },
@@ -465,13 +465,13 @@ module.exports = {
     "code": 589,
     "title": "Network read timeout error",
     "type": "Unofficial",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "599": {
     "code": 599,
     "title": "Network Connect Timeout Error",
     "type": "Unofficial",
-    "standard": "Base"
+    "standard": "HTTP/1.0"
   },
   "770": {
     "code": 770,

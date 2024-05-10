@@ -63,25 +63,29 @@ module.exports = {
       let html = await request.text();
 
       if (req.query['linkback']) {
-        html = html.replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
-          if (match.startsWith('//')) {
-            return match.replace('"', '"https:');
-          }
-          let url = (req.query['url'].split('?')[0] + '/');
-          if (match.includes('="/')) {
+        html = html
+          .replaceAll(/srcset=".+?"/g, function(match) {
+            return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
+          })
+          .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
+            if (match.startsWith('//')) {
+              return match.replace('"', '"https:');
+            }
+            let url = (req.query['url'].split('?')[0] + '/');
+            if (match.includes('="/')) {
+              return match
+                .replace('"', '"'+url)
+                .replace('://','||')
+                .replace('//','/')
+                .replace('||','://');
+            }
+  
             return match
               .replace('"', '"'+url)
-              .replace('://','||')
-              .replace('//','/')
-              .replace('||','://');
-          }
-
-          return match
-            .replace('"', '"'+url)
-            .replace(/(?<!\/|\/\/|:)\/.+?\/\.\//, '/')
-            .replace('/./', '/')
-            .replace(/(?!\/)\/.+?\/\..\//, '/')
-        })
+              .replace(/(?<!\/|\/\/|:)\/.+?\/\.\//, '/')
+              .replace('/./', '/')
+              .replace(/(?!\/)\/.+?\/\..\//, '/')
+          })
       }
       
       res.send(html);

@@ -10,7 +10,7 @@ module.exports = {
   async execute(req, res) {
     if (req.query['code']) {
       let code = codes[String(req.query['code'])];
-      if (code?.length) {
+      if (code.title?.length) {
         res.json(code)
       } else {
         res.json({
