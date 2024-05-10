@@ -15,23 +15,53 @@ module.exports = {
       })
       return;
     }
+
     sharp(req.body)
-      .modulate({ brightness: 5, saturation: 5, gamma: 2 })
-      .tint('red')
-      .blur(2)
-      .sharpen()
-      .toBuffer()
-      .then(outputBuffer => {
-        res.json({
-          image: 'data:image/png;base64,' + outputBuffer.toString('base64')
-        })
-      })
-      .catch(err => {
-        res.json({
-          err: true,
-          msg: 'Could not generate'
-        })
-        return;
+      .metadata()
+      .then(metadata => {
+        let w = metadata.width;
+        let h = metadata.height;
+        sharp(req.body)
+          .resize(Math.floor(w/2), Math.floor(h/2))
+          .blur(1)
+          .normalise({ lower: 20, upper: 80 })
+          .modulate({ brightness: 1.5, saturation: 3, gamma: 1.5 })
+          .tint('red')
+          .convolve({
+            width: 3,
+            height: 3,
+            kernel: [
+              0, -1, 0,
+              -1, 5, -1,
+              0, -1, 0
+            ]
+          })
+          .sharpen()
+          .toBuffer()
+          .then(outputBuffer => {
+            sharp(outputBuffer)
+              .resize(w, h)
+              .toBuffer()
+              .then(outputBuffer => {
+                res.json({
+                  image: 'data:image/png;base64,' + outputBuffer.toString('base64')
+                })
+              })
+              .catch(err => {
+                res.json({
+                  err: true,
+                  msg: 'Could not generate'
+                })
+                return;
+              })
+          })
+          .catch(err => {
+            res.json({
+              err: true,
+              msg: 'Could not generate'
+            })
+            return;
+          })
       })
   }
 }

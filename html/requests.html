@@ -306,12 +306,16 @@
           } else if (q != 'text/html' && ['text', 'application'].includes(q.split('/')[0])) {
             document.getElementById('ifr').contentDocument.write('<pre>'+y+'</pre>')
           } else {
-            y = y.replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
-              if (match.startsWith('//')) {return match.replace('"', '"https:');}
-              let uri = (url.split('?')[0] + '/');
-              if (match.includes('="/')) {return match.replace('"', '"'+uri).replace('://','||').replace('//','/').replace('||','://');}
-              return match.replace('"', '"'+uri).replace(/(?<!\/|\/\/|:)\/.+?\/\.\//, '/').replace('/./', '/').replace(/(?!\/)\/.+?\/\..\//, '/')
-            })
+            y = y
+              .replaceAll(/srcset=".+?"/g, function(match) {
+                return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
+              })
+              .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
+                if (match.startsWith('//')) {return match.replace('"', '"https:');}
+                let uri = (url.split('?')[0] + '/');
+                if (match.includes('="/')) {return match.replace('"', '"'+uri).replace('://','||').replace('//','/').replace('||','://');}
+                return match.replace('"', '"'+uri).replace(/(?<!\/|\/\/|:)\/.+?\/\.\//, '/').replace('/./', '/').replace(/(?!\/)\/.+?\/\..\//, '/')
+              })
             y = y.replace('data-color-mode="auto"','data-color-mode="dark"')
            
             document.getElementById('ifr').contentDocument.write(y)
