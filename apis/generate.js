@@ -29,7 +29,7 @@ module.exports = {
       }
       let txt = req.query["text"];
       const response = await fetch(
-        "https://api-inference.huggingface.co/models/"+(req.query['model'] || 'google/gemma-7b-it'),
+        "https://api-inference.huggingface.co/models/"+(req.query['model'] || 'google/gemma-2b-it'),
         {
           headers: {
             Authorization: `Bearer ${process.env['ai']}`,
