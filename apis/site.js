@@ -15,10 +15,7 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query.url) {
-      res.json({
-        err: true,
-        msg: 'provide a url'
-      })
+      res.error('Provide a url')
       return;
     }
     let data;
@@ -30,7 +27,7 @@ module.exports = {
         }
       });
     } catch (err) {
-      res.json({err:true,mag:'could not get'})
+      res.error('Could not get')
       return;
     }
     data = await data.text();

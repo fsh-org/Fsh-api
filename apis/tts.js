@@ -10,17 +10,14 @@ module.exports = {
   
 	async execute(req, res) {
     if (!req.query['text']) {
-      res.json({
-        err: true,
-        msg: 'Include text'
-      })
+      res.error('Include text')
       return;
     }
     getAudioBuffer(req.query['text'], req.query['lang'] || 'en')
       .then(buffer => {
         var binaryString = '';
         for (var i = 0; i < buffer.length; i++) {
-            binaryString += String.fromCharCode(buffer[i]);
+          binaryString += String.fromCharCode(buffer[i]);
         }
 
         res.json({
@@ -28,10 +25,7 @@ module.exports = {
         })
       })
       .catch(err => {
-        res.json({
-          err: true,
-          msg: 'Could not convert'
-        })
+        res.error('Could not convert')
         return;
       })
 	}

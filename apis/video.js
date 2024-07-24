@@ -12,10 +12,7 @@ module.exports = {
     let id = req.query['id'];
 
     if (!id || !ytdl.validateID(id)) {
-      res.json({
-        err: true,
-        msg: 'Invalid id'
-      })
+      res.error('Invalid id')
       return;
     }
 
@@ -75,16 +72,10 @@ module.exports = {
           }
         })
         .on('error', (error) => {
-          res.json({
-            err: true,
-            msg: 'Could not download'
-          })
+          res.error('Could not download')
         });
     } catch (err) {
-      res.json({
-        err: true,
-        msg: 'Could not download'
-      })
+      res.error('Could not download')
     }
   }
 }

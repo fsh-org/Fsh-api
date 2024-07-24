@@ -34,10 +34,7 @@ module.exports = {
   async execute(req, res) {
     let text = req.query['text'];
     if ((text || '').length < 1) {
-      res.json({
-        err: true,
-        msg: 'You must include text'
-      })
+      res.error('You must include text')
       return;
     }
     
@@ -53,10 +50,7 @@ module.exports = {
         pos += buffer.length;
       };
     } catch (err) {
-      res.json({
-        err: true,
-        msg: 'Could not convert'
-      })
+      res.error('Could not convert', 500)
       return;
     }
 
@@ -77,6 +71,6 @@ module.exports = {
 
     res.json({
       audio: `data:audio/wav;base64,${Buffer.from(realbuffer).toString('base64')}`
-    });
+    })
   }
 }

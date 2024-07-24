@@ -56,37 +56,25 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query["type"]) {
-      res.status(400)
-      res.json({
-        err: true,
-        msg: "No conversion type recived"
-      })
+      res.error('No conversion type recived')
       return;
     }
     if (!req.query["number"]) {
-      res.status(400)
-      res.json({
-        err: true,
-        msg: "No input recived"
-      })
+      res.error('No input recived')
       return;
     }
-    if (req.query["type"] == "encode") {
+    if (req.query["type"] === "encode") {
       res.json({
         result: numberToRoman(Number(req.query["number"]))
       })
       return;
     }
-    if (req.query["type"] == "decode") {
+    if (req.query["type"] === "decode") {
       res.json({
         result: romanToNumber(req.query["number"])
       })
       return;
     }
-    res.status(400)
-    res.json({
-      err: true,
-      msg: "type not valid"
-    })
+    res.error('Type not valid')
   }
 }

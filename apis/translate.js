@@ -9,10 +9,7 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query['text'] || !req.query['lang']) {
-      res.json({
-        err: true,
-        msg: 'You must include both text and lang params'
-      })
+      res.error('You must include both text and lang params')
       return;
     }
 
@@ -20,10 +17,7 @@ module.exports = {
     try {
       trans = await translate(req.query['text'], { to: req.query['lang'] });
     } catch (err) {
-      res.json({
-        err: true,
-        msg: 'Could not translate'
-      })
+      res.error('Could not translate', 500)
       return;
     }
     

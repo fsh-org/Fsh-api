@@ -7,25 +7,23 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query["url"]) {
-      res.status(400)
       res.send('url query necesary<br>Add discord=true for discord formating')
-      return;
-    }
-    if (!req.query["url"].includes("fandom.com")) {
-      res.status(400)
-      res.send("URL must be from fandom")
       return;
     }
 
     let Url = req.query['url'];
     if (!Url.includes("://")) Url = 'https://'+Url;
 
+    if (!req.query["url"].match(/https\:\/\/[a-z0-9]+?\.fandom\.com/)) {
+      res.error('URL must be from fandom')
+      return;
+    }
+
     let data = await fetch(Url);
     data = await data.text();
     
     if (data.includes("There is currently no text in this page.")||data.includes("ou can't always catc")||data.includes(`<title>Bad title |`)) {
-      res.status(400)
-      res.send("Page doesn't exist")
+      res.error("Page doesn't exist")
       return;
     }
 
@@ -75,7 +73,7 @@ module.exports = {
       })
 
       // Discord formatting?
-      if (req.query["discord"] == "true") {
+      if (req.query["discord"] === "true") {
         data = data.replaceAll(/<a href=".+?">.+?<\/a>/g, function(match){
           if (match.split(">")[1].split('<')[0] == match.split('"')[1]) return match.split('"')[1];
           if (match.split(">")[1].split('<')[0] == "") return '';
@@ -114,8 +112,7 @@ module.exports = {
       // Remove non necesary new lines
       data = data.split("\n").filter(e=>{return e.replaceAll(/ |	|\n/g, '').length}).join("\n")
     } catch (err) {
-      res.status(500)
-      res.send("error formatting data")
+      res.error('Error formatting data', 500)
       return;
     }
 
@@ -125,7 +122,6 @@ module.exports = {
       return;
     }
 
-    res.status(200)
     res.set('Content-Type', 'text/plain');
     res.send(data)
   }

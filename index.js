@@ -31,11 +31,18 @@ app.use(requestIp.mw());
 
 app.use(function(req,res,next){
   res.json = function(json) {
-    res.set('content-type', 'application/json')
+    res.set('content-type', 'application/json');
+    // DEPRACATED
     if (json.err) {
       res.status(400)
     }
-    res.send(JSON.stringify(json, null, 2))
+    // ----------
+    res.send(JSON.stringify(json, null, 2));
+  }
+  res.error = function(msg, code=400) {
+    res.status(code);
+    res.set('content-type', 'application/json');
+    res.send(JSON.stringify({err: true, msg: msg}, null, 2));
   }
   next()
 })

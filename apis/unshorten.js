@@ -52,32 +52,23 @@ module.exports = {
   type: 'get',
   params: ["url", true],
   category: "text",
-  execute(req, res){
-  (async()=>{
-  if(!req.query.url){
-    res.setHeader("Content-Type", 'application/json');
-    res.send(JSON.stringify({
-      error: 'No url provided: ?url='
-    }, null, 4))
-    return
-          }
-  let url = req.query.url;
-  if(!/https:\/\/|http:\/\//g.test(url)){
-    url = `https://${url}`;
-  }
-  try {
-  let unshort = await unshorten(url)
-  res.setHeader("Content-Type", 'application/json');
-    return res.send(JSON.stringify({
-      url: unshort
-    }, null, 4))
+
+  async execute(req, res) {
+    if(!req.query['url']) {
+      res.error('No url provided: ?url=')
+      return;
+    }
+    let url = req.query.url;
+    if(!/https:\/\/|http:\/\//g.test(url)){
+      url = `https://${url}`;
+    }
+    try {
+      let unshort = await unshorten(url)
+      res.json({
+        url: unshort
+      })
     } catch (err) {
-    res.setHeader("Content-Type", 'application/json');
-    res.send(JSON.stringify({
-      error: 'Unknown error',
-      msg: `${err}`
-    }, null, 4))
+      res.error('Could not unshorten')
+    }
   }
-  })()
-}
 }

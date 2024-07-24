@@ -2,11 +2,11 @@ module.exports = {
   path: '/generate',
   info: 'Generates text with ai',
   type: 'get',
-  params: ["text", true, "model", false, "conversation", false],
+  params: ['text', true, 'model', false, 'conversation', false],
   category: "text",
 
   async execute(req, res) {
-    try{
+    try {
       if(!req.query["text"]) {
         res.send('mini docs<br>text=[TEXT] - Text for generation<br>Optional:<br>model=[Model] - Very high level but allows for better text<br>when generating text a object will be automaticly created with all the past conversation (if not set every call will be treated as a new conversation)');
         return;
@@ -61,11 +61,7 @@ module.exports = {
         }
       })
     } catch (err) {
-      res.status(500)
-      res.json({
-        err: true,
-        msg: err
-      })
+      res.error(err, 500)
     }
   }
 }

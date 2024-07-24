@@ -37,7 +37,7 @@ module.exports = {
   path: '/join',
   info: 'Join two or more image urls together',
   type: 'get',
-  params: ["bg", false, "one", true, "two", true, "three", false, "four", false, "five", false, "six", false, "seven", false, "eight", false, "nine", false],
+  params: ['bg', false, 'one', true, 'two', true, 'three', false, 'four', false, 'five', false, 'six', false, 'seven', false, 'eight', false, 'nine', false],
   category: "image",
 
   async execute(req, res) {
@@ -55,10 +55,7 @@ module.exports = {
     images = images.filter(e => (e || '').length);
 
     if (images.length < 2) {
-      res.json({
-        err: true,
-        msg: 'You must include at least two images'
-      })
+      res.error('You must include at least two images')
       return;
     }
 
@@ -68,10 +65,7 @@ module.exports = {
     images = images.filter(e => (e || '').length)
 
     if (images.length < 2) {
-      res.json({
-        err: true,
-        msg: 'Too many images failed to load'
-      })
+      res.error('Too many images failed to load')
       return;
     }
 
@@ -190,10 +184,7 @@ module.exports = {
         })
       })
       .catch(err => {
-        res.json({
-          err: true,
-          msg: 'Could not generate'
-        })
+        res.error('Could not generate')
         return;
       })
   }

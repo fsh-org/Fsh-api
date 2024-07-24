@@ -11,7 +11,7 @@ function uwuify(text) {
     .replace(/th/g, "d")
     .replace(/TH/g, "D")
     .replace(/ove/g, "uv")
-    .replace(/(?:\.|!|\?)/g, function(match){return`${[" ;w;", " ;;w;;", " ;u;", " owo", " uwu", " >.<", " >.>", " :3", "~ ", "~~ "][Math.floor(Math.random()*10)]}${match}`});
+    .replace(/(?:\.|!|\?)/g, function(match){return`${[" ;w;", " ;;w;;", " ;u;", " owo", " uwu", " >.<", " :3", "~ ", "~~ "][Math.floor(Math.random()*10)]}${match}`});
 
   return text;
 }
@@ -25,10 +25,7 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query['text']) {
-      res.json({
-        err: true,
-        msg: 'You must include the text param'
-      })
+      res.error('You must include the text param')
       return;
     }
     

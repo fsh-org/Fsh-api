@@ -7,24 +7,25 @@ module.exports = {
   type: 'get',
   params: [],
   category: "image",
-  execute(req, res){
-    if (req.query["a"] == null) {
-      fs.readdir('meme', async (err, files) => {
-        let x = Math.floor(Math.random() * files.length);
-        res.send(`{"link":"https://api.fsh.plus/meme?a=${files[x]}"}`)
-      });
-    } else {
+
+  async execute(req, res) {
+    if (req.query["a"]) {
       if (req.query["a"].includes("..")) {
-        res.status(400)
-        res.send("no");
+        res.error('no', 401)
         return;
       }
       try {
         res.sendFile(path.join(__dirname, `../meme/${req.query["a"]}`))
       } catch (err) {
-        res.status(400)
-        res.send("err")
+        res.error('could not send image', 500)
       }
+    } else {
+      fs.readdir('meme', async (err, files) => {
+        let x = Math.floor(Math.random() * files.length);
+        res.json({
+          link: "https://api.fsh.plus/meme?a="+files[x]
+        })
+      })
     }
   }
 }

@@ -7,12 +7,6 @@ let adulttxt = fs.readFileSync("text/adult.txt", 'utf8').split(',');
 function bad(text, words, sie) {
   let copy = text
   for (let w in words) {
-    /*let t = []
-    for (let i in words[w].split("")) {
-      t.push(sie)
-    }
-    t = t.join("")*/
-    // oh sh! no longer counted as bad
     let t = new Array(words[w].length + 1).join(sie);
     let reg = new RegExp(words[w], "ig")
     copy = copy.replaceAll(reg, t)
@@ -24,9 +18,10 @@ module.exports = {
   path: '/filter',
   info: 'Tells if sentence has bad words and censors them',
   type: 'get',
-  params: ["text", true, "char", false, "category", false],
+  params: ['text', true, 'char', false, 'category', false],
   category: "text",
-  execute(req, res){
+
+  async execute(req, res) {
     let response;
     if (req.method == "POST") {
       response = req.body.text
@@ -34,7 +29,13 @@ module.exports = {
       response = req.query["text"]
     }
     if (!response) {
-      res.send('{"bad": false, "swear": false, "slur": false, "adult": false, "censor": ""}')
+      res.json({
+        bad: false,
+        swear: false,
+        slur: false,
+        adult: false,
+        censor: ""
+      })
       return;
     }
     const sie = req.query["char"] || "#";

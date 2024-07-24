@@ -12,37 +12,30 @@ module.exports = {
   path: '/binary',
   info: 'Encode and decode binary and utf8 (set type to encode/dedcode)',
   type: 'get',
-  params: ["type", true, "text", true],
+  params: ['type', true, 'text', true],
   category: "text",
-  execute(req, res){
+
+  async execute(req, res){
     if (!req.query["type"]) {
-      res.status(400)
-      res.json({
-        err: true,
-        msg: "No conversion type recived"
-      })
+      res.error('No conversion type recived')
       return;
     }
     if (!req.query["text"]) {
-      res.status(400)
+      res.error('No text recived')
+      return;
+    }
+    if (req.query["type"] === "encode") {
       res.json({
-        err: true,
-        msg: "No text recived"
+        text: toBin(req.query["text"])
       })
       return;
     }
-    if (req.query["type"] == "encode") {
-      res.send(`{"text": "${toBin(req.query["text"])}"}`)
+    if (req.query["type"] === "decode") {
+      res.json({
+        text: toStr(req.query["text"])
+      })
       return;
     }
-    if (req.query["type"] == "decode") {
-      res.send(`{"text": "${toStr(req.query["text"])}"}`)
-      return;
-    }
-    res.status(400)
-    res.json({
-      err: true,
-      msg: "type not valid"
-    })
+    res.error('Type not valid')
   }
 }

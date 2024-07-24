@@ -4,8 +4,8 @@ module.exports = {
   type: 'get',
   params: [],
   category: "text",
-  execute(req, res){
-    // don't abuse pls
+
+  async execute(req, res) {
     res.json({
       ip: req.ip.replace('::ffff:',''),
       public: req.clientIp,

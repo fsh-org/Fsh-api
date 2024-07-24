@@ -11,13 +11,7 @@ module.exports = {
     ser = ser.pages.filter(p=>p.description!=="Topics referred to by the same term")[0];
     let data = await fetch(`https://api.wikimedia.org/core/v1/wikipedia/en/page/${ser.key}/html`);
     if (!data.ok) {
-      res.json({
-        title: '',
-        img: '',
-        data: '',
-        err: true,
-        msg: 'could not get page'
-      })
+      res.error('Could not get page')
       return;
     }
     data = await data.text();

@@ -6,14 +6,11 @@ module.exports = {
   category: "text",
   
   async execute(req, res) {
-    if (!req.query['text']) {
-      res.json({
-        err: true,
-        msg: 'Missing text param'
-      })
+    let txt = req.query['text'];
+    if (!txt) {
+      res.error('Missing text param')
       return;
     }
-    let txt = req.query['text'];
     let gg = [];
     for (i in txt) {
       if ((Number(i)+1)%2 == 0) {

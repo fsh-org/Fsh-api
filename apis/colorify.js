@@ -9,17 +9,11 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query['hex']) {
-      res.json({
-        err: true,
-        msg: 'You must include a hex param (no #)'
-      })
+      res.error('You must include a hex param (no #)')
       return;
     }
     if (!req.body || !req.body.length) {
-      res.json({
-        err: true,
-        msg: 'You must pass a image in the request body'
-      })
+      res.error('You must pass a image in the request body')
       return;
     }
     sharp(req.body)
@@ -36,22 +30,19 @@ module.exports = {
           .toBuffer()
           .then(buff => {
             sharp(req.body)
-            .composite([
-              { input: buff, gravity: 'center', blend: 'screen' }
-            ])
-            .toBuffer()
-            .then(outputBuffer => {
-              res.json({
-                image: 'data:image/png;base64,' + outputBuffer.toString('base64')
+              .composite([
+                { input: buff, gravity: 'center', blend: 'screen' }
+              ])
+              .toBuffer()
+              .then(outputBuffer => {
+                res.json({
+                  image: 'data:image/png;base64,' + outputBuffer.toString('base64')
+                })
               })
-            })
           })
       })
       .catch(err => {
-        res.json({
-          err: true,
-          msg: 'Could not generate'
-        })
+        res.error('Could not generate')
         return;
       })
   }
