@@ -13,10 +13,7 @@ module.exports = {
       if (code.title?.length) {
         res.json(code)
       } else {
-        res.json({
-          err: true,
-          msg: "code not found"
-        })
+        res.error('Code not found')
       }
     } else {
       let keys = Object.keys(codes);

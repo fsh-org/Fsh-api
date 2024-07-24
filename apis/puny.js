@@ -9,10 +9,7 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query['domain']) {
-      res.json({
-        err: true,
-        msg: 'You must include a domain'
-      });
+      res.error('You must include a domain')
       return;
     }
 

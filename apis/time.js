@@ -4,20 +4,24 @@ module.exports = {
   type: "get",
   params: ["offset", false],
   category: "text",
-  execute(req, res){
-    let date = req.query["offset"] ? new Date(new Date() + req.query["offset"]) : new Date()
-    res.send(`{
-  "unix": ${Math.floor(date.getTime() / 1000)},
-  "unix_ms": ${date.getTime()/1},
-  "year": ${date.getFullYear()},
-  "month": ${date.getMonth() + 1},
-  "day-week": ${date.getDay()},
-  "day": ${date.getDate()},
-  "hour": ${(date.getHours())},
-  "minute": ${date.getMinutes()},
-  "second": ${date.getSeconds()},
-  "ms": ${date.getMilliseconds()},
-  "date": "${date}"
-}`)
+
+  async execute(req, res) {
+    let date = req.query["offset"] ? new Date(new Date() + Number(req.query["offset"])) : new Date()
+    res.json({
+      unix: Math.floor(date.getTime() / 1000),
+      unix_ms: date.getTime()/1,
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day_week: date.getDay(),
+      day: date.getDate(),
+      hour: (date.getHours()),
+      minute: date.getMinutes(),
+      second: date.getSeconds(),
+      ms: date.getMilliseconds(),
+      date: date.toDateString(),
+      gmt: date.toGMTString(),
+      iso: date.toISOString(),
+      utc: date.toUTCString()
+    })
   }
 }

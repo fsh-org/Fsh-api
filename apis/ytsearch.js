@@ -9,10 +9,7 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query['query']) {
-      res.json({
-        err: true,
-        msg: 'Include query'
-      })
+      res.error('Include query')
       return;
     }
     const r = await yts(req.query['query'])

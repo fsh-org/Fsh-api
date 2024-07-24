@@ -14,20 +14,14 @@ module.exports = {
       if (Number(req.query['element'])) {
         let hg = data[Number(req.query['element'])];
         if (!hg) {
-          res.json({
-            err: true,
-            msg: 'Elemenet not found'
-          })
+          res.error('Elemenet not found')
           return;
         }
         res.json(hg)
       } else {
         let hg = data.filter(t => {return String(t.symbol).toLowerCase() == req.query['element'].toLowerCase()})[0];
         if (!hg) {
-          res.json({
-            err: true,
-            msg: 'Elemenet not found'
-          })
+          res.error('Elemenet not found')
           return;
         }
         res.json(hg)

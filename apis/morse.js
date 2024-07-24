@@ -21,19 +21,11 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query["type"]) {
-      res.status(400)
-      res.json({
-        err: true,
-        msg: "No conversion type recived"
-      })
+      res.error('No conversion type recived')
       return;
     }
     if (!req.query["text"]) {
-      res.status(400)
-      res.json({
-        err: true,
-        msg: "No text recived"
-      })
+      res.error('No text recived')
       return;
     }
     if (req.query["type"] == "encode") {
@@ -48,10 +40,6 @@ module.exports = {
       })
       return;
     }
-    res.status(400)
-    res.json({
-      err: true,
-      msg: "type not valid"
-    })
+    res.error('Type not valid')
   }
 }

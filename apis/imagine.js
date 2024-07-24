@@ -22,16 +22,13 @@ module.exports = {
       return;
     }
 
-    try{
+    try {
+      // TODO: Remove dall-e due to their recent changes
       if (req.query["model"] == "dall-e") {
         let img = await fetch(`https://hercai.onrender.com/v3/text2image?prompt=${req.query["text"].replaceAll(" ","%20")}`);
         img = await img.json();
         if ((String(img.status)||'2').startsWith('4')) {
-          res.status(500)
-          res.json({
-            err: true,
-            msg: 'Error, wait a bit or check prompt'
-          })
+          res.error('Error, wait a bit or check prompt', 500)
           return;
         }
         res.json({link: img.url});
@@ -50,11 +47,7 @@ module.exports = {
       fs.createWriteStream(`images/imagine/${itemname}`).write(imgbuffer)
       res.json({link: `https://${req.hostname}/images/imagine/${itemname}`})
     } catch (err) {
-      res.status(500)
-      res.json({
-        err: true,
-        msg: err
-      })
+      res.error(err, 500)
     }
   }
 }

@@ -24,10 +24,7 @@ module.exports = {
           res.send(data);
         })
     } catch(err) {
-      res.json({
-        err: true,
-        msg: 'Could not generate'
-      })
+      res.error('Could not generate')
       return;
     }
   }
