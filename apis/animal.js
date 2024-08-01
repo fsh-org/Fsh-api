@@ -14,7 +14,7 @@ module.exports = {
   async execute(req, res) {
     // No option :(
     if (!req.query["animal"]) {
-      let opt = ["Cat", "Dog", "Fox", "Duck", "Frog", "Bunny", "Shibe", "Fish", "Alpaca", "Bird"].sort();
+      let opt = ["Cat", "Dog", "Fox", "Duck", "Frog", "Bunny", "Fish", "Alpaca", "Bird"].sort();
       res.send(`Avaible animals:<br>- ${opt.join("<br>- ")}`);
       return;
     }
@@ -60,12 +60,6 @@ module.exports = {
         img = await getIM("https://api.bunnies.io/v2/loop/random/?media=gif,png")
         res.json({
           image: img.media[Math.random() > 0.3 ? "poster" : "gif"]
-        })
-        break;
-      case 'shibe':
-        img = await getIM("https://shibe.online/api/shibes")
-        res.json({
-          image: img[0]
         })
         break;
       case 'fish':
