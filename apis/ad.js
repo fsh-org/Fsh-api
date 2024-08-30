@@ -24,7 +24,7 @@ module.exports = {
           .then(outputBuffer => {
             res.json({
               image: 'data:image/png;base64,' + outputBuffer.toString('base64')
-            }) 
+            })
           })
       })
       .catch(err => {

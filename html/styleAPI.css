@@ -18,6 +18,7 @@ ty {
 /* -- New styles -- */
 /* Request type */
 details {
+  color: var(--text-0);
   border: var(--col) 1px solid;
   border-radius: 0.5rem;
   padding: 5px;
@@ -28,39 +29,43 @@ details {
   margin-right: auto;
 }
 summary::before {
+  display: inline-block;
+  width: 3.5ch;
+  text-align: center;
   content: var(--tex);
   background-color: var(--col);
-  margin-left: 2px;
-  margin-right: 2px;
-  border-radius: 0.25rem;
+  margin: 0px 2px;
   padding: 0px 2px;
+  border-radius: 0.25rem;
 }
 /* Type colors/text */
 .t-get {
   --tex: "Get";
-  --col: #88f;
+  --col: #66d;
 }
 .t-post {
   --tex: "Post";
-  --col: #f88;
+  --col: #d66;
 }
 /* Argument type */
 .r-m {
+  color: var(--text-0);
   display: inline-block;
-  background: #777;
+  background: var(--text-3);
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   padding: 0px 10px;
 }
 .r-o {
+  color: var(--text-0);
   display: inline-block;
-  background: #777;
+  background: var(--text-3);
   clip-path: inset(0 0 0 0 round 50%);
   padding: 0px 10px;
 }
 
 /* Search */
 .search {
-  background-color: #222;
+  background-color: var(--bg-2);
   width: fit-content;
   border-radius: 1rem;
   margin-left: auto;
