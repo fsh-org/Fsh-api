@@ -2,9 +2,9 @@ const fs = require("fs");
 const { getAudioBuffer } = require('simple-tts-mp3');
 
 module.exports = {
-	path: '/tts',
-	info: 'Generates text to speach audio',
-	type: 'get',
+  path: '/tts',
+  info: 'Generates text to speach audio',
+  type: 'get',
   params: [
     {
       name: 'text',
@@ -17,9 +17,9 @@ module.exports = {
       default: 'en'
     }
   ],
-	category: "audio",
+  category: "audio",
   
-	async execute(req, res) {
+  async execute(req, res) {
     if (!req.query['text']) {
       res.error('Include text')
       return;
@@ -39,5 +39,5 @@ module.exports = {
         res.error('Could not convert')
         return;
       })
-	}
+  }
 }

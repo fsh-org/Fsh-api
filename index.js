@@ -48,14 +48,14 @@ app.use(function(req,res,next){
 })
 
 app.use('/images', express.static('images'))
-app.use('/download', express.static('images'))
 
 app.use(function(req,res,next){
   if (req.url.includes('/download/')) {
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    res.setHeader('Content-Disposition', `attachment; filename=${req.url.split('/download/')[1].split('/').slice(-1)[0]}`);
   }
   next()
 })
+app.use('/download', express.static('images'))
 
 /* -- Mark the files with fs to var apis -- */
 const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
