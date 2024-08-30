@@ -18,7 +18,23 @@ module.exports = {
   path: '/filter',
   info: 'Tells if sentence has bad words and censors them',
   type: 'get',
-  params: ['text', true, 'char', false, 'category', false],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'Hello'
+    },
+    {
+      name: 'char',
+      required: false,
+      default: '#'
+    },
+    {
+      name: 'category',
+      required: false,
+      default: 'adult,swear,slur'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

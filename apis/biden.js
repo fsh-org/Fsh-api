@@ -4,7 +4,13 @@ module.exports = {
   path: '/biden',
   info: 'Make Joe Biden say anything',
   type: 'get',
-  params: ['text', true],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'fsh'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {

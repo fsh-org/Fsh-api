@@ -51,7 +51,18 @@ module.exports = {
   path: '/roman',
   info: 'Encode and decode roman numerals (set type to encode/dedcode)',
   type: 'get',
-  params: ["type", true, "number", true],
+  params: [
+    {
+      name: 'type',
+      required: true,
+      default: 'encode'
+    },
+    {
+      name: 'number',
+      required: true,
+      default: '42'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

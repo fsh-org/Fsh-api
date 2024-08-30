@@ -2,7 +2,18 @@ module.exports = {
   path: '/hex',
   info: 'Encode and decode hexadecimal and utf8 (set type to encode/dedcode)',
   type: 'get',
-  params: ["type", true, "text", true],
+  params: [
+    {
+      name: 'type',
+      required: true,
+      default: 'encode'
+    },
+    {
+      name: 'text',
+      required: true,
+      default: 'fshy'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

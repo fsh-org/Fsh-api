@@ -5,7 +5,13 @@ module.exports = {
   path: '/audio',
   info: 'Download a youtube video into a mp3',
   type: 'get',
-  params: ["id", true],
+  params: [
+    {
+      name: 'id',
+      required: true,
+      default: 'dQw4w9WgXcQ'
+    }
+  ],
   category: "audio",
 
   async execute(req, res) {

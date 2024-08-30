@@ -4,7 +4,13 @@ module.exports = {
   path: '/math',
   info: 'Evaluate a math expression',
   type: 'get',
-  params: ["line", true],
+  params: [
+    {
+      name: 'line',
+      required: true,
+      default: '5+5'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

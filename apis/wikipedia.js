@@ -2,7 +2,13 @@ module.exports = {
   path: '/wikipedia',
   info: 'Get the text content of a wikipedia page',
   type: 'get',
-  params: ['page', true],
+  params: [
+    {
+      name: 'page',
+      required: true,
+      default: 'earth'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

@@ -4,7 +4,13 @@ module.exports = {
   path: '/periodic-table',
   info: 'Get info on a element (search via symbol or number)',
   type: 'get',
-  params: ['element', false],
+  params: [
+    {
+      name: 'element',
+      required: false,
+      default: '1'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

@@ -2,7 +2,18 @@ module.exports = {
   path: '/fandom',
   info: 'Get the contents of a fandom wiki page',
   type: 'get',
-  params: ["url", true, "discord", false],
+  params: [
+    {
+      name: 'url',
+      required: true,
+      default: 'wiki.fandom.com/wiki/page'
+    },
+    {
+      name: 'discord',
+      required: false,
+      default: 'true'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

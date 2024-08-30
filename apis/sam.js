@@ -28,7 +28,13 @@ module.exports = {
   path: '/sam',
   info: 'Make SAM say anything',
   type: 'get',
-  params: ['text', true],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'Hello'
+    }
+  ],
   category: "audio",
 
   async execute(req, res) {

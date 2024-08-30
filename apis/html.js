@@ -17,15 +17,26 @@ module.exports = {
   path: "/html",
   info: "Gets the html of a url (use www. for better results) (set linkback to true for relative paths to become full)",
   type: "get",
-  params: ["url", true, "linkback", false],
+  params: [
+    {
+      name: 'url',
+      required: true,
+      default: 'fsh.plus'
+    },
+    {
+      name: 'linkback',
+      required: false,
+      default: 'false'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {
     let uri = req.query["url"];
-    if (uri == null) {
-      res.error('Url not provided')
+    if (!uri) {
+      res.error('You must provide an url')
       return;
-    } // thx for doing it, im too stupid; no me; you are the one who did it, you smart;
+    }
     if (!uri.includes('://')) {
       uri = 'https://'+uri
     }
@@ -62,23 +73,7 @@ module.exports = {
             return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
           })
           .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
-            if (match.startsWith('//')) {
-              return match.replace('"', '"https:');
-            }
-            let url = (req.query['url'].split('?')[0] + '/');
-            if (match.includes('="/')) {
-              return match
-                .replace('"', '"'+url)
-                .replace('://','||')
-                .replace('//','/')
-                .replace('||','://');
-            }
-  
-            return match
-              .replace('"', '"'+url)
-              .replace(/(?<!\/|\/\/|:)\/.+?\/\.\//, '/')
-              .replace('/./', '/')
-              .replace(/(?!\/)\/.+?\/\..\//, '/')
+            return match.split('"')[0] + '"' + (new URL(match.split('"')[1], uri)) + '"';
           })
       }
       

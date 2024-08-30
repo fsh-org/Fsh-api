@@ -4,11 +4,32 @@ module.exports = {
   path: '/rmqr',
   info: 'Generate a rmqr image (long qr)',
   type: 'get',
-  params: ['text', true, 'strategy', false, 'correction', false, 'size', false],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'fshy'
+    },
+    {
+      name: 'strategy',
+      required: false,
+      default: 'balanced'
+    },
+    {
+      name: 'correction',
+      required: false,
+      default: 'auto'
+    },
+    {
+      name: 'size',
+      required: false,
+      default: '8'
+    }
+  ],
   category: "image",
   
   async execute(req, res) {
-    if (!req.query['text']) {
+    if (!req.query['text']) { 
       res.send('Mini docs<br>text - data to encode<br>strategy - balanced, height or width<br>correction - auto, m (medium 15%) or h (high 30%)')
       return;
     }

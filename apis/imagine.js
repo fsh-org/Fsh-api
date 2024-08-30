@@ -13,12 +13,28 @@ module.exports = {
   path: '/imagine',
   info: 'Generates image with ai',
   type: 'get',
-  params: ["text", true, "negative", false, "model", false],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'A spining gray fish'
+    },
+    {
+      name: 'negative',
+      required: false,
+      default: 'blurry'
+    },
+    {
+      name: 'model',
+      required: false,
+      default: 'SG161222/Realistic_Vision_V1.4'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {
     if (!req.query["text"]) {
-      res.send('mini docs<br>text=[TEXT] - Text to generate image<br>Optional:<br>model=[Model] - Very high level but allows for better images (https://huggingface.co/models?pipeline_tag=text-to-image) [if set to dall-e it has a special model that uses dall-e 3 (no negative and may bot work)]<br>negative=[NON] - Things you dont want to appear (blur)');
+      res.send('mini docs<br>text=[TEXT] - Text to generate image<br>Optional:<br>model=[Model] - Very high level but allows for better images (https://huggingface.co/models?pipeline_tag=text-to-image)<br>negative=[NON] - Things you dont want to appear (blur)');
       return;
     }
 

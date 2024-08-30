@@ -4,7 +4,13 @@ module.exports = {
   path: '/whois',
   info: 'Get whois info on a domain',
   type: 'get',
-  params: ['url', true],
+  params: [
+    {
+      name: 'url',
+      required: true,
+      default: 'fsh.plus'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

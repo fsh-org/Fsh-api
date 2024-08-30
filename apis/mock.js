@@ -2,7 +2,13 @@ module.exports = {
   path: '/mock',
   info: 'Convert text to a mock version',
   type: 'get',
-  params: ["text", true],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'fshy'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

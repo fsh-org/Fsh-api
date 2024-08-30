@@ -64,7 +64,23 @@ module.exports = {
   path: '/uuid',
   info: 'Generates random uuid (set version to help for list of versions)',
   type: 'get',
-  params: ["version", false, "space", false, "name", false],
+  params: [
+    {
+      name: 'version',
+      required: false,
+      default: '4'
+    },
+    {
+      name: 'space',
+      required: false,
+      default: ''
+    },
+    {
+      name: 'name',
+      required: false,
+      default: ''
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

@@ -50,7 +50,13 @@ module.exports = {
   path: '/unshorten',
   info: 'Unshorten shortened URL\'s',
   type: 'get',
-  params: ["url", true],
+  params: [
+    {
+      name: 'url',
+      required: true,
+      default: 'fsh.plus'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

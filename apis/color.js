@@ -4,7 +4,13 @@ module.exports = {
   path: '/color',
   info: 'Get info on a color (hex param without #), leave hex empty for random',
   type: 'get',
-  params: ["hex", false],
+  params: [
+    {
+      name: 'hex',
+      required: false,
+      default: 'ff0000'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

@@ -4,7 +4,13 @@ module.exports = {
   path: '/pixelate',
   info: 'Pixelates a image (pass image in body)',
   type: 'post',
-  params: ['force', false],
+  params: [
+    {
+      name: 'force',
+      required: false,
+      default: '10'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {

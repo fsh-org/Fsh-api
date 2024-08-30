@@ -5,7 +5,18 @@ module.exports = {
   path: '/video',
   info: 'Download a youtube video into a mp4',
   type: 'get',
-  params: ['id', true, 'max', false],
+  params: [
+    {
+      name: 'id',
+      required: true,
+      default: 'dQw4w9WgXcQ'
+    },
+    {
+      name: 'max',
+      required: false,
+      default: '25000000'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {

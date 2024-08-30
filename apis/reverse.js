@@ -2,7 +2,13 @@ module.exports = {
   path: '/reverse',
   info: 'Reverses a string',
   type: 'get',
-  params: ['text', true],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'Hello'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

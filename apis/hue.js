@@ -4,7 +4,13 @@ module.exports = {
   path: '/hue',
   info: 'Change the hue (0-360) of a image (pass image in body)',
   type: 'post',
-  params: ['hue', true],
+  params: [
+    {
+      name: 'hue',
+      required: true,
+      default: '180'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {
