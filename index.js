@@ -204,7 +204,7 @@ app.get('/pt', async(req, res) => {
         "Content-Type": "application/json"
       }
     }
-    if (opt.method != 'GET') {
+    if (['post', 'put'].includes(opt.method.toLowerCase())) {
       opt.body = req.query['body'] || '';
       try {
         JSON.parse(opt.body);
@@ -213,13 +213,16 @@ app.get('/pt', async(req, res) => {
       }
     }
     let da = await fetch (req.query['url'], opt);
-    if (da.status == 204) {res.send('ok');return;}
+    if (da.status === 204) {res.send('ok');return;}
+    let stat = da.status;
     if ((da.headers.get('Content-Type')||'').includes('text/')) {
       da = await da.text();
-      res.send(da)
+      res.status(stat);
+      res.send(da);
     } else {
       da = await da.json();
-      res.json(da)
+      res.status(stat);
+      res.json(da);
     }
   } catch (err) {
     res.json({
