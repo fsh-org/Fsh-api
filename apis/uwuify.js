@@ -20,7 +20,13 @@ module.exports = {
   path: '/uwuify',
   info: 'Make text into uwu speech',
   type: 'get',
-  params: ['text', true],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'Hello'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

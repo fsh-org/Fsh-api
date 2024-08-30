@@ -31,7 +31,7 @@
     </a>
     <h2 style="margin-top:-20px">API</h2>
     <br>
-    <h1>Endpoints ({b})</h1>
+    <h1>Endpoints ({{count}})</h1>
     <a href="/requests"><button>Request testing</button></a>
     <button onclick="Array.from(document.getElementsByTagName('details')).forEach(e=>{e.setAttribute('open', 'true')})">Open all</button>
     <button onclick="Array.from(document.getElementsByTagName('details')).forEach(e=>{e.removeAttribute('open')})">Close all</button>
@@ -50,7 +50,7 @@
     <div class="r-o">Optional</div>
     <br>
     <div style="display:flex">
-      {a}
+      {{endpoints}}
     </div>
     <div style="margin-bottom: 50px"></div>
   </body>

@@ -4,7 +4,13 @@ module.exports = {
   path: '/puny',
   info: 'Convert a domain into punycode',
   type: 'get',
-  params: ['domain', true],
+  params: [
+    {
+      name: 'domain',
+      required: true,
+      default: 'fsh.plus'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

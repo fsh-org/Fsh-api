@@ -4,7 +4,13 @@ module.exports = {
   path: '/md5',
   info: 'Encrypts the text using md5',
   type: 'get',
-  params: ['text', true],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'fshy'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

@@ -48,6 +48,14 @@ app.use(function(req,res,next){
 })
 
 app.use('/images', express.static('images'))
+app.use('/download', express.static('images'))
+
+app.use(function(req,res,next){
+  if (req.url.includes('/download/')) {
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+  }
+  next()
+})
 
 /* -- Mark the files with fs to var apis -- */
 const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
@@ -69,62 +77,84 @@ const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
 
 const apisFiles = getAllFiles('.js', path.join(__dirname, 'apis'))
 
+/* -- Assigning paths to files + Checks -- */
 for (const file of apisFiles) {
 	const apiFile = require(file);
-	if ('execute' in apiFile) {
-		apis.set(apiFile.path, apiFile);
-	} else {
-		console.log(`[WARNING] The command at ${file} is missing a required "execute" property.`);
-	}
+  if (!apiFile['path']) {
+    throw new Error(`[ERROR] The command at ${file} is missing a required "path" property.`);
+  }
+  if (!apiFile['type']) {
+    console.warn(`[WARNING] The command at ${file} is missing "type" property.`);
+  }
+  if (!apiFile['info']) {
+    console.warn(`[WARNING] The command at ${file} is missing "info" property.`);
+  }
+  if (!apiFile['category']) {
+    console.warn(`[WARNING] The command at ${file} is missing "category" property.`);
+  }
+  if ('execute' in apiFile) {
+    apis.set(apiFile.path, apiFile);
+  } else {
+    console.warn(`[WARNING] The command at ${file} is missing "execute" property.`);
+  }
 }
 
 /* -- Main pages -- */
-app.get('/', (req,res)=>{
-  let h = "";
-  let sec = {};
+app.get('/', (req, res) => {
   let count = 0;
+  let html = {
+    text: '',
+    image: '',
+    audio: '',
+    hidden: ''
+  };
+
   for (const file of apisFiles) {
-  	const apiFile = require(file);
-    if ((apiFile.category || 'hidden') != 'hidden') count += 1;
-    h = [];
-    if ((apiFile.params || []).length > 1) {
-      apiFile.params.forEach(g => {
-        if (apiFile.params.indexOf(g) % 2 == 0) {
-          h.push(`<div class="r-${apiFile.params[apiFile.params.indexOf(g)+1] ? 'm' : 'o'}">${g}</div>`)
-        }
+    // Get file
+    const endpoint = require(file);
+    if ((endpoint.category || 'hidden') !== 'hidden') count += 1;
+
+    // Params
+    let params = [];
+    if ((endpoint.params || []).length > 0) {
+      endpoint.params.forEach(param => {
+        params.push(`<div class="r-${param.required ? 'm' : 'o'}">${param.name}</div>`)
       })
     }
-    let r = h.join(" ");
-    if ((apiFile.params || []).length > 1) {
-      r = ` | ${r}`
-    }
-    h = `<details class="t-${apiFile.type}">
-  <summary>${apiFile.path}${r}</summary>
-  ${apiFile.info}
-</details>`;
-    sec[apiFile.category] = (sec[apiFile.category]||'')+h;
+
+    // Detail element
+    html[endpoint.category || 'hidden'] += `<details class="t-${endpoint.type}">
+  <summary>${endpoint.path}${params.length > 0 ? ' | '+params.join(' ') : ''}</summary>
+  ${endpoint.info}
+</details>`
   }
-  
-  h = `<div style="flex:1">
+
+  // Setup final html
+  html = `<div style="flex:1">
   <h2>Text</h2>
-  ${sec['text']}
+  ${html['text']}
 </div>
 <div style="flex:1">
   <h2>Image</h2>
-  ${sec['image']}
+  ${html['image']}
 </div>
 <div style="width:300px">
   <h2>Audio</h2>
-  ${sec['audio']}
+  ${html['audio']}
 </div>`;
-  
-  res.send(fs.readFileSync('html/index.html', 'utf8').replace("{a}", h).replace("{b}", count))
+
+  res.send(fs.readFileSync('html/index.html', 'utf8').replace("{{endpoints}}", html).replace("{{count}}", count))
 })
 
 app.get("/search", (req, res) => {
   res.sendFile(path.join(__dirname, 'html/search.html'))
 })
 
+app.get("/requests", (req, res) => {
+  res.sendFile(path.join(__dirname, 'html/requests.html'))
+})
+
+// TODO: Remove builder or keep it idk
 app.get("/builder", (req, res) => {
   let u = "";
   for (const file of apisFiles) {
@@ -135,34 +165,15 @@ app.get("/builder", (req, res) => {
   res.send(fs.readFileSync('html/builder.html', 'utf8').replaceAll("{end}", u))
 })
 
+/* -- Static media -- */
 app.get("/styleapi.css", (req, res) => {
   res.sendFile(path.join(__dirname, 'html/styleAPI.css'))
-})
-
-app.get("/builder", (req, res) => {
-  res.sendFile(path.join(__dirname, 'html/builder.html'))
-})
-
-app.get("/requests", (req, res) => {
-  res.sendFile(path.join(__dirname, 'html/requests.html'))
 })
 app.get("/requests.json", (req, res) => {
   res.sendFile(path.join(__dirname, 'html/requests.json'))
 })
 
-app.get('/download/:filename', (req, res) => {
-  const filename = req.params.filename;
-  if (!fs.existsSync(path.join(__dirname, 'images', filename))) {res.send('no file');return;}
-  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
-  res.sendFile(path.join(__dirname, 'images', filename))
-})
-app.get('/download/:dir/:filename', (req, res) => {
-  const filename = req.params.filename;
-  if (!fs.existsSync(path.join(__dirname, 'images', req.params.dir, filename))) {res.send('no file');return;}
-  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
-  res.sendFile(path.join(__dirname, 'images', req.params.dir, filename))
-})
-
+/* -- Backend stuff -- */
 app.post('/request', async(req, res) => {
   try {
     let url = req.query['url'];

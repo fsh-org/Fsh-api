@@ -4,7 +4,13 @@ module.exports = {
   path: '/http',
   info: 'Get info on a http code',
   type: 'get',
-  params: ['code', false],
+  params: [
+    {
+      name: 'code',
+      required: false,
+      default: '404'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

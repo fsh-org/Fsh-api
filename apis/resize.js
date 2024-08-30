@@ -4,7 +4,18 @@ module.exports = {
   path: '/resize',
   info: 'Resizes a image',
   type: 'post',
-  params: ['width', true, 'height', true],
+  params: [
+    {
+      name: 'width',
+      required: true,
+      default: '128'
+    },
+    {
+      name: 'height',
+      required: true,
+      default: '128'
+    }
+  ],
   category: "image",
   
   async execute(req, res) {

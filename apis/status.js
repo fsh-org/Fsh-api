@@ -2,7 +2,13 @@ module.exports = {
   path: '/status',
   info: 'Returns a status code',
   type: 'get',
-  params: ['status', true],
+  params: [
+    {
+      name: 'status',
+      required: true,
+      default: '202'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

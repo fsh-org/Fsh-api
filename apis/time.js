@@ -2,7 +2,13 @@ module.exports = {
   path: '/time',
   info: "Gives current time in various ways",
   type: "get",
-  params: ["offset", false],
+  params: [
+    {
+      name: 'offset',
+      required: false,
+      default: '0'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

@@ -4,7 +4,13 @@ module.exports = {
   path: '/colour',
   info: 'Get a preview of a color (hex param without #)',
   type: 'get',
-  params: ["hex", true],
+  params: [
+    {
+      name: 'hex',
+      required: true,
+      default: 'ff00ff'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {

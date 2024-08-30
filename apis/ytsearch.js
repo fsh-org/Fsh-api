@@ -4,7 +4,13 @@ module.exports = {
   path: '/ytsearch',
   info: 'Search youtube',
   type: 'get',
-  params: ['query', true],
+  params: [
+    {
+      name: 'query',
+      required: true,
+      default: 'low quality fish funky town'
+    }
+  ],
   category: "text",
   
   async execute(req, res) {

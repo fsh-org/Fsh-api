@@ -4,7 +4,13 @@ module.exports = {
   path: '/blur',
   info: 'Blur a image (pass image in body)',
   type: 'post',
-  params: ['force', false],
+  params: [
+    {
+      name: 'force',
+      required: false,
+      default: '8'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {

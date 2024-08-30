@@ -2,7 +2,13 @@ module.exports = {
   path: '/fandom-image',
   info: 'Get the image of a fandom wiki page',
   type: 'get',
-  params: ["url", true],
+  params: [
+    {
+      name: 'url',
+      required: true,
+      default: 'wiki.fandom.com/wiki/page'
+    }
+  ],
   category: "image",
   
   async execute(req, res) {

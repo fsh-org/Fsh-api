@@ -2,7 +2,23 @@ module.exports = {
   path: '/generate',
   info: 'Generates text with ai',
   type: 'get',
-  params: ['text', true, 'model', false, 'conversation', false],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'What is a fish'
+    },
+    {
+      name: 'model',
+      required: false,
+      default: 'google/gemma-2b-it'
+    },
+    {
+      name: 'conversation',
+      required: false,
+      default: ''
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

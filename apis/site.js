@@ -10,7 +10,13 @@ module.exports = {
   path: '/site',
   info: 'Get meta title, description and favicon of a website',
   type: 'get',
-  params: ["url", true],
+  params: [
+    {
+      name: 'url',
+      required: true,
+      default: 'fsh.plus'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

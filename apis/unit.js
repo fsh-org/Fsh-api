@@ -30,7 +30,13 @@ module.exports = {
   path: '/unit',
   info: 'Converts number to a abreviation of it (up to Centillion)',
   type: 'get',
-  params: ["number", true],
+  params: [
+    {
+      name: 'number',
+      required: true,
+      default: '69420'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

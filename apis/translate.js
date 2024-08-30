@@ -4,7 +4,18 @@ module.exports = {
   path: '/translate',
   info: 'Transalte text to a language',
   type: 'get',
-  params: ['text', true, 'lang', true],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'Hello'
+    },
+    {
+      name: 'lang',
+      required: true,
+      default: 'es'
+    }
+  ],
   category: "text",
 
   async execute(req, res) {

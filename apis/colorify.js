@@ -4,7 +4,13 @@ module.exports = {
   path: '/colorify',
   info: 'Overlay a color on a image (color must be in hex, no #)',
   type: 'post',
-  params: ['hex', true],
+  params: [
+    {
+      name: 'hex',
+      required: true,
+      default: 'ff00ff'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {

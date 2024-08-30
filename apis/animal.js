@@ -8,7 +8,13 @@ module.exports = {
   path: '/animal',
   info: 'Responds with a image of specified animal (empty for list)',
   type: 'get',
-  params: ["animal", true],
+  params: [
+    {
+      name: 'animal',
+      required: true,
+      default: 'cat'
+    }
+  ],
   category: "image",
 
   async execute(req, res) {

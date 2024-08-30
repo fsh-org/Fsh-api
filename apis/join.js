@@ -37,7 +37,58 @@ module.exports = {
   path: '/join',
   info: 'Join two or more image urls together',
   type: 'get',
-  params: ['bg', false, 'one', true, 'two', true, 'three', false, 'four', false, 'five', false, 'six', false, 'seven', false, 'eight', false, 'nine', false],
+  params: [
+    {
+      name: 'bg',
+      required: false,
+      default: '00000000'
+    },
+    {
+      name: 'one',
+      required: true,
+      default: 'https://fsh.plus/fsh.png'
+    },
+    {
+      name: 'two',
+      required: true,
+      default: 'https://fsh.plus/fsh.png'
+    },
+    {
+      name: 'three',
+      required: false,
+      default: ''
+    },
+    {
+      name: 'four',
+      required: false,
+      default: ''
+    },
+    {
+      name: 'five',
+      required: false,
+      default: ''
+    },
+    {
+      name: 'six',
+      required: false,
+      default: ''
+    },
+    {
+      name: 'seven',
+      required: false,
+      default: ''
+    },
+    {
+      name: 'eight',
+      required: false,
+      default: ''
+    },
+    {
+      name: 'nine',
+      required: false,
+      default: ''
+    },
+  ],
   category: "image",
 
   async execute(req, res) {

@@ -5,7 +5,18 @@ module.exports = {
 	path: '/tts',
 	info: 'Generates text to speach audio',
 	type: 'get',
-	params: ["text", true, "lang", false],
+  params: [
+    {
+      name: 'text',
+      required: true,
+      default: 'Hello'
+    },
+    {
+      name: 'lang',
+      required: false,
+      default: 'en'
+    }
+  ],
 	category: "audio",
   
 	async execute(req, res) {
