@@ -1,34 +1,16 @@
-function pretty(text) {
-  let u = String(text) || "";
-  if (!u.includes("\n")) {
-    return String(u)
-      .replaceAll("><", ">\n<")
-      .replaceAll("{", "{\n")
-      .replaceAll("}", "\n}")
-      .replaceAll("\n\n", "");
-  } else {
-    return u;
-  }
-}
-
 module.exports = {
-  path: "/html",
-  info: "Gets the html of a url (use www. for better results) (linkback for relative to full paths)",
+  path: "/file",
+  info: "Get a file from a url",
   type: "get",
   params: [
     {
       name: 'url',
       required: true,
       default: 'fsh.plus'
-    },
-    {
-      name: 'linkback',
-      required: false,
-      default: 'false'
     }
   ],
   category: "text",
-  
+
   async execute(req, res) {
     let uri = req.query["url"];
     if (!uri) {
@@ -56,26 +38,10 @@ module.exports = {
           "sec-gpc": "1",
         }
       });
-      
-      if (request.headers.get("Content-Type").includes("text/html")) {
-        res.header("Content-Type", "text/plain");
-      } else {
-        res.header("Content-Type", request.headers.get("Content-Type"));
-      }
-      
-      let html = await request.text();
+      request = await request.arrayBuffer();
 
-      if (req.query['linkback']) {
-        html = html
-          .replaceAll(/srcset=".+?"/g, function(match) {
-            return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
-          })
-          .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
-            return match.split('"')[0] + '"' + (new URL(match.split('"')[1], uri)) + '"';
-          })
-      }
-      
-      res.send(html);
+      res.header("Content-Type", 'application/octet-stream');
+      res.send(Buffer.from(request));
     } catch (err) {
       res.error('Could not get', 500);
     }
