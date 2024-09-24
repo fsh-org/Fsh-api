@@ -73,6 +73,7 @@ module.exports = {
           .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
             return match.split('"')[0] + '"' + (new URL(match.split('"')[1], uri)) + '"';
           })
+          .replaceAll('https://google.com/images','https://www.google.com/images')
       }
       
       res.send(html);

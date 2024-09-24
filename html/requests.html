@@ -323,6 +323,7 @@
               .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
                 return match.split('"')[0] + '"' + (new URL(match.split('"')[1], url)) + '"';
               })
+              .replaceAll('https://google.com/images','https://www.google.com/images')
               .replace('data-color-mode="auto"','data-color-mode="dark"');
 
             document.getElementById('ifr').contentDocument.write(y)
