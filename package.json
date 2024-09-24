@@ -14,7 +14,6 @@
     "@huggingface/inference": "^2.6.4",
     "@vitalets/google-translate-api": "^9.2.0",
     "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
     "express": "^4.19.2",
     "math-expression-evaluator": "^2.0.4",
     "nanoid": "^4.0.2",

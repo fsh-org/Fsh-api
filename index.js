@@ -4,7 +4,6 @@ let process = require('process');
 
 const express = require('express')
 const app = express()
-const cors = require('cors')
 var bodyParser = require('body-parser')
 const requestIp = require('request-ip');
 
@@ -18,7 +17,6 @@ process.on('uncaughtException', function(err) {
 
 const apis = new Map();
 
-app.use(cors())
 app.use(bodyParser.urlencoded({
   extended: false,
   limit: '1gb'
@@ -29,6 +27,10 @@ app.use(bodyParser.raw({
 }));
 app.use(requestIp.mw());
 
+app.use(function(req,res,next){
+  res.set('Access-Control-Allow-Origin', '*');
+  next()
+})
 app.use(function(req,res,next){
   res.json = function(json) {
     res.set('content-type', 'application/json');
