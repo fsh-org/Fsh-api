@@ -28,8 +28,15 @@ app.use(bodyParser.raw({
 app.use(requestIp.mw());
 
 app.use(function(req,res,next){
+  res.set('Allow', 'OPTIONS, GET, POST');
   res.set('Access-Control-Allow-Origin', '*');
-  next()
+  res.set('Access-Control-Allow-Headers', '*');
+  if (req.method.toLowerCase() === 'options') {
+    res.status(200);
+    res.send('');
+  } else {
+    next()
+  }
 })
 app.use(function(req,res,next){
   res.json = function(json) {

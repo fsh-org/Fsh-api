@@ -15,7 +15,12 @@ module.exports = {
 
     let image = sharp(req.body);
 
-    let { width, height } = await image.metadata();
+    let { width, height } = await image
+      .metadata()
+      .catch(err => {
+        res.error('Could not read')
+        return;
+      });
 
     let w = width;
     let h = height;
@@ -28,6 +33,7 @@ module.exports = {
 
     let { data } = await image
       .resize(w, h, { fit: 'fill' })
+      .removeAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
 
@@ -57,6 +63,6 @@ module.exports = {
       .catch(err => {
         res.error('Could not generate')
         return;
-      })
+      });
   }
 }
