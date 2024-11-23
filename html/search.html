@@ -37,7 +37,7 @@
         })
         document.getElementById('count').innerHTML = 'Results: '+filtered.length;
         document.getElementById('view').innerHTML = filtered.map(e => `<details class="t-${e.type}">
-  <summary>${e.path}${e.params.length ? ' | '+e.params.map(t => (typeof t) == 'boolean'?'':`<div class="r-${e.params[e.params.indexOf(t)+1] ? 'm' : 'o'}">${t}</div>`).join(' ') : ''}</summary>
+  <summary>${e.path}${e.params.length ? ' | '+e.params.map(t => `<div class="r-${t.required ? 'm' : 'o'}">${t.name}</div>`).join('') : ''}</summary>
   ${e.info}
 </details>`).join('')
       }
