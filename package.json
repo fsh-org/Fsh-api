@@ -4,23 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "fast": "node index-fastify.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@distube/ytdl-core": "^4.14.4",
+    "@fastify/formbody": "^8.0.1",
+    "@fastify/static": "^8.0.3",
     "@huggingface/inference": "^2.6.4",
     "@vitalets/google-translate-api": "^9.2.0",
     "body-parser": "^1.20.2",
     "express": "^4.21.1",
+    "fastify": "^5.1.0",
     "math-expression-evaluator": "^2.0.4",
     "nanoid": "^4.0.2",
     "request-ip": "^3.3.0",
     "sam-js": "^0.2.1",
-    "sharp": "^0.33.2",
+    "sharp": "^0.33.5",
     "simple-tts-mp3": "^1.1.0",
+    "websocket": "^1.0.35",
     "whois": "^2.14.2",
     "yt-search": "^2.10.4"
   }
