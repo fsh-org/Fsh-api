@@ -6,7 +6,7 @@ const WebSocketClient = require('websocket').client;
 let process = require('process');
 process.env = require('./env.js');
 
-const fastify = require('fastify')({ logger: true });
+const fastify = require('fastify')();
 const fbody = require('@fastify/formbody');
 const fstatic = require('@fastify/static');
 const requestIp = require('request-ip');
@@ -56,7 +56,7 @@ fastify.register(fbody, {
 fastify.addContentTypeParser('*/*', { parseAs: 'buffer', bodyLimit: BodyLimit }, (req, body, done) => {
   done(null, body);
 });
-/*
+
 // Static
 fastify.register(fstatic, {
   root: path.join(__dirname, 'images'),
@@ -64,7 +64,8 @@ fastify.register(fstatic, {
 });
 fastify.register(fstatic, {
   root: path.join(__dirname, 'images'),
-  prefix: '/download/'
+  prefix: '/download/',
+  decorateReply: false
 });
 
 /* -- Mark the files with fs to var apis -- */
@@ -77,8 +78,7 @@ const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
     if (fs.statSync(dirPath + "/" + file).isDirectory()) {
       arrayOfFiles = getAllFiles(endsin, dirPath + "/" + file, arrayOfFiles);
     } else {
-      if (file.endsWith(endsin))
-        arrayOfFiles.push(path.join(dirPath, "/", file));
+      if (file.endsWith(endsin)) arrayOfFiles.push(path.join(dirPath, "/", file));
     }
   });
 
@@ -151,17 +151,21 @@ fastify.get('/', (req, res) => {
 <div style="width:300px">
   <h2>Audio</h2>
   ${html['audio']}
+</div>
+<div style="display:none;flex:1;">
+  <h2>Hidden</h2>
+  ${html['hidden']}
 </div>`;
 
   res.type('text/html').send(fs.readFileSync('html/index.html', 'utf8').replace("{{endpoints}}", html).replace("{{count}}", count))
 })
 
 fastify.get("/search", (req, res) => {
-  res.type('text/html').send(path.join(__dirname, 'html/search.html'))
+  res.type('text/html').send(fs.readFileSync('html/search.html', 'utf8'))
 })
 
 fastify.get("/requests", (req, res) => {
-  res.type('text/html').send(path.join(__dirname, 'html/requests.html'))
+  res.type('text/html').send(fs.readFileSync('html/requests.html', 'utf8'))
 })
 
 // TODO: Remove builder or keep it idk
@@ -304,11 +308,11 @@ fastify.get('/pt-console', async(req, res) => {
 
 /* -- Make last path, this takes all remaining paths -- */
 fastify.all('*', (req,res)=>{
-  if(apis.has(req.path)){
-    apis.get(req.path).execute(req, res);
+  if(apis.has(req.url)){
+    apis.get(req.url).execute(req, res);
   } else {
     res.status(404)
-    res.type('text/html').send(path.join(__dirname, 'html/error.html'))
+    res.type('text/html').send(fs.readFileSync('html/error.html', 'utf8'))
   }
 })
 
