@@ -18,8 +18,6 @@
         text-align: center;
       }
     </style>
-    <link rel="stylesheet" href="./highlight/styles/atom-one-dark.min.css">
-    <script src="./highlight/highlight.min.js"></script>
   </head>
   <body>
     <p>The builder is depracated and abandoned, it may not work, please use <a href="/requests">Requests</a>.</p>
@@ -70,7 +68,7 @@
         let re = "";
         let o = [];
         r = [];
-        fetch(`./params?file=.${inputText}.js`).then(async response => {
+        /*fetch(`./params?file=.${inputText}.js`).then(async response => {
           re = await response.text();
           re = re.split(",")
           if (re.length > 1) {
@@ -86,7 +84,7 @@
           } else {
             y.innerHTML = ""
           }
-        })
+        })*/
       }
       document.getElementById("test").onclick = (event) => {
         if (document.getElementById("end").value == "/") {
@@ -119,7 +117,6 @@ response = requests.request("GET", "${url}")
 print(response.json())`
           document.getElementById("co").innerHTML = cu[0];
           document.getElementById("copy").innerHTML = cu[1];
-          hljs.highlightAll();
         })
       }
       document.getElementById("cop").onclick = (event) => {
