@@ -24,16 +24,15 @@ module.exports = {
       cache = dat
     }
     let hex = req.query['hex'];
-    if ([3,4].includes(hex.length)) {
-      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + (hex[3]||'') + (hex[3]||'')
-    }
     if (!hex) {
       var keys = Object.keys(cache);
       hex = keys[ keys.length * Math.random() << 0];
+    } else if ([3,4].includes(hex.length)) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + (hex[3]??'') + (hex[3]??'')
     }
     res.json({
       hex: '#'+hex,
-      name: cache[hex.slice(0,6)] || 'Unknown',
+      name: cache[hex.slice(0,6)] ?? 'Unknown',
       preview: 'https://api.fsh.plus/colour?hex='+hex
     })
   }

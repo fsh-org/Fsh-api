@@ -18,7 +18,7 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query["url"]) {
-      res.send('url query necesary<br>Add discord=true for discord formating')
+      res.type('text/html').send('url query necesary<br>Add discord=true for discord formating')
       return;
     }
 
@@ -133,7 +133,6 @@ module.exports = {
       return;
     }
 
-    res.set('Content-Type', 'text/plain');
-    res.send(data)
+    res.type('text/plain').send(data)
   }
 }

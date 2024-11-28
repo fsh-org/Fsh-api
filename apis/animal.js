@@ -21,7 +21,7 @@ module.exports = {
     // No option :(
     if (!req.query["animal"]) {
       let opt = ["Cat", "Dog", "Fox", "Duck", "Frog", "Bunny", "Fish", "Alpaca", "Bird"].sort();
-      res.send(`Avaible animals:<br>- ${opt.join("<br>- ")}`);
+      res.type('text/html').send(`Avaible animals:<br>- ${opt.join("<br>- ")}`);
       return;
     }
     // Yes option :)

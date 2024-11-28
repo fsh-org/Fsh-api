@@ -7,9 +7,9 @@ module.exports = {
 
   async execute(req, res) {
     res.json({
-      ip: req.ip.replace('::ffff:',''),
-      public: req.clientIp,
-      cf: req.headers['cf-connecting-ip'] || 'None'
+      ip: req.pip.replace('::ffff:',''),
+      public: req.ip,
+      cf: req.headers['cf-connecting-ip'] ?? 'None'
     })
   }
 }

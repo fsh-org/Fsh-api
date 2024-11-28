@@ -45,7 +45,7 @@ fastify.addHook('onRequest', async(req, res) => {
     reply.header('Content-Disposition', `attachment; filename=${filename}`);
   }
   // IP
-  req.ip = requestIp.getClientIp(req.raw);
+  req.pip = requestIp.getClientIp(req.raw);
 });
 
 // Body
@@ -72,7 +72,7 @@ fastify.register(fstatic, {
 const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
   files = fs.readdirSync(dirPath);
 
-  arrayOfFiles = arrayOfFiles || [];
+  arrayOfFiles = arrayOfFiles ?? [];
 
   files.forEach(function (file) {
     if (fs.statSync(dirPath + "/" + file).isDirectory()) {
@@ -122,18 +122,18 @@ fastify.get('/', (req, res) => {
   for (const file of apisFiles) {
     // Get file
     const endpoint = require(file);
-    if ((endpoint.category || 'hidden') !== 'hidden') count += 1;
+    if ((endpoint.category ?? 'hidden') !== 'hidden') count += 1;
 
     // Params
     let params = [];
-    if ((endpoint.params || []).length > 0) {
+    if ((endpoint.params ?? []).length > 0) {
       endpoint.params.forEach(param => {
         params.push(`<div class="r-${param.required ? 'm' : 'o'}">${param.name}</div>`)
       })
     }
 
     // Detail element
-    html[endpoint.category || 'hidden'] += `<details class="t-${endpoint.type}">
+    html[endpoint.category ?? 'hidden'] += `<details class="t-${endpoint.type}">
   <summary>${endpoint.path}${params.length > 0 ? ' | '+params.join(' ') : ''}</summary>
   ${endpoint.info}
 </details>`
@@ -308,8 +308,9 @@ fastify.get('/pt-console', async(req, res) => {
 
 /* -- Make last path, this takes all remaining paths -- */
 fastify.all('*', (req,res)=>{
-  if(apis.has(req.url)){
-    apis.get(req.url).execute(req, res);
+  let path = '/'+req.url.split('?')[0].split('/').filter(e=>e.length).join('/');
+  if(apis.has(path)){
+    apis.get(path).execute(req, res);
   } else {
     res.status(404)
     res.type('text/html').send(fs.readFileSync('html/error.html', 'utf8'))
