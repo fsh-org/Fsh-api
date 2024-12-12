@@ -42,7 +42,7 @@ fastify.addHook('onRequest', async(req, res) => {
   // Download
   if (req.url.includes('/download/')) {
     const filename = req.url.split('/download/')[1].split('/').slice(-1)[0];
-    reply.header('Content-Disposition', `attachment; filename=${filename}`);
+    res.header('Content-Disposition', `attachment; filename=${filename}`);
   }
   // IP
   req.pip = requestIp.getClientIp(req.raw);
