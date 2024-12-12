@@ -17,8 +17,8 @@ function abbreviateNumber(number, negative) {
   }
 
   if (re.endsWith(".00")) re = re.replace('.00','');
-  if (re.endsWith("0")) re = re.split("").slice(0,re.split("").length-1).join("");
-  
+  if (re.match(/\.[0-9]0$/m)) re = re.split("").slice(0,re.split("").length-1).join("");
+
   return {
     number: `${negative ? "-" : ""}${re}`,
     short: short || "",
@@ -40,15 +40,15 @@ module.exports = {
   category: "text",
 
   async execute(req, res) {
-    if ((req.query["number"] || 0).length < 4) {
+    if ((req.query["number"] ?? 0).length < 4) {
       res.json({
-        number: req.query["number"] || 0,
+        number: req.query["number"] ?? 0,
         short: "",
         long: ""
       })
       return;
     }
-    let num = Number(String(req.query["number"]||0).replace(" ","+"))
+    let num = Number(String(req.query["number"]??0).replace(" ","+"))
     if (isNaN(num)) {
       res.error('Not a number')
     }

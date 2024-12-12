@@ -12,6 +12,10 @@ module.exports = {
   category: "text",
 
   async execute(req, res) {
+    if (!req.query['page']) {
+      res.error('Include a page');
+      return;
+    }
     let ser = await fetch(`https://api.wikimedia.org/core/v1/wikipedia/en/search/page?limit=3&q=${req.query['page']}`);
     ser = await ser.json();
     ser = ser.pages.filter(p=>p.description!=="Topics referred to by the same term")[0];

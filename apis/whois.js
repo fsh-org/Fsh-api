@@ -12,7 +12,7 @@ module.exports = {
     }
   ],
   category: "text",
-  
+
   async execute(req, res) {
     if (!req.query['url']) {
       res.error('Include url')
