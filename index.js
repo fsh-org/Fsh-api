@@ -53,6 +53,9 @@ const BodyLimit = 1 * 1024 * 1024 * 1024; // 1GB
 fastify.register(fbody, {
   bodyLimit: BodyLimit
 });
+fastify.addContentTypeParser(/^image\/.*/, { parseAs: 'buffer', bodyLimit: BodyLimit }, (req, body, done) => {
+  done(null, body);
+});
 fastify.addContentTypeParser('*/*', { parseAs: 'buffer', bodyLimit: BodyLimit }, (req, body, done) => {
   done(null, body);
 });
@@ -193,9 +196,14 @@ fastify.post('/request', async(req, res) => {
     let url = req.query['url'];
     url = (url.includes('://') ? '' : 'https://') + url;
 
+    let body = JSON.parse(req.body);
+    if (body.headers['content-type'].startsWith('image/')) {
+      body.body = Buffer.from(body.body.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    }
+
     let now = (new Date()/1);
 
-    let da = await fetch(url, JSON.parse(req.body));
+    let da = await fetch(url, body);
     let cont = await da.text();
 
     now = (new Date()/1) - now;
