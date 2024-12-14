@@ -17,18 +17,20 @@ module.exports = {
     }
   ],
   category: "image",
-  
+
   async execute(req, res) {
     if (!req.query['width'] || !req.query['height']) {
-      res.error('You must specify a width and height to resize to')
+      res.error('You must specify a width and height to resize to');
       return;
     }
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
     sharp(req.body)
-      .resize(Number(req.query['width']), Number(req.query['height']))
+      .resize(Number(req.query['width']), Number(req.query['height']), {
+        fit: 'fill'
+      })
       .toBuffer()
       .then(outputBuffer => {
         res.json({
@@ -36,7 +38,7 @@ module.exports = {
         })
       })
       .catch(err => {
-        res.error('Could not generate')
+        res.error('Could not generate', 500);
         return;
       })
   }

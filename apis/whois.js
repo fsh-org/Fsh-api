@@ -15,7 +15,7 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query['url']) {
-      res.error('Include url')
+      res.error('Include url');
       return;
     }
     let url = req.query['url'];
@@ -29,7 +29,7 @@ module.exports = {
     try {
       whois.lookup(url, { timeout: 1000, verbose: true }, function(err, data) {
         if (!data[0]) {
-          res.error('Could not get data from whois server')
+          res.error('Could not get data from whois server');
           return;
         }
         data = data[0].data;
@@ -112,7 +112,7 @@ module.exports = {
         })
       })
     } catch (err) {
-      res.error('Could not get data')
+      res.error('Could not get data');
     }
   }
 }

@@ -197,7 +197,7 @@ fastify.post('/request', async(req, res) => {
     url = (url.includes('://') ? '' : 'https://') + url;
 
     let body = JSON.parse(req.body);
-    if (body.headers['content-type'].startsWith('image/')) {
+    if (body.headers['content-type']?.startsWith('image/')) {
       body.body = Buffer.from(body.body.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     }
 
