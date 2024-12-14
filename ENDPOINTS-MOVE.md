@@ -30,7 +30,7 @@ x gun
 x hue
 x image-format
 x imagine
-x invert
+- invert
 - ip
 x jail
 x join

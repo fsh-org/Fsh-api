@@ -12,12 +12,13 @@
     <meta property="og:image" content="https://fsh.plus/fsh.png"/>
     <meta name="theme-color" content="#a89c9b">
     <!-- ------------------ -->
-    <link rel="manifest" href="/requests.json">
+    <link rel="manifest" href="./requests.json">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/themes/dark.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/shoelace.js" ></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/badge/badge.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/details/details.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/split.js"></script>
     <style>
       :root {
         --bg-0: #0c0c0c;
@@ -31,14 +32,25 @@
         --text-3: #888888;
       }
       body {
+        display: flex;
+        flex-direction: row;
         width: 100vw;
-        wdith: 100dvw;
+        width: 100dvw;
         height: 100vh;
-        hwight: 100dvh;
+        height: 100dvh;
         margin: 0px;
         padding: 0px;
         color: var(--text-1);
         font-family: Arial;
+      }
+      .gutter {
+        background-color: var(--bg-2);
+        background-repeat: no-repeat;
+        background-position: 50%;
+      }
+      .gutter.gutter-horizontal {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+        cursor: col-resize;
       }
       .rab {
         display: flex;
@@ -58,9 +70,6 @@
         overflow: auto;
       }
       pre {
-        white-space: -moz-pre-wrap;
-        white-space: -pre-wrap;
-        white-space: -o-pre-wrap;
         white-space: pre-wrap;
         word-wrap: break-word;
       }
@@ -121,120 +130,129 @@
     </style>
   </head>
   <body>
-    <sl-split-panel position="25" style="height:100vh;--min:25%;--max:75%;" snap="50%">
-      <div slot="start" style="overflow-y:auto">
-        <sl-tab-group>
-          <sl-tab slot="nav" panel="param">Params</sl-tab>
-          <sl-tab slot="nav" panel="body">Body</sl-tab>
-          <sl-tab slot="nav" panel="head">Headers</sl-tab>
-          <sl-tab slot="nav" panel="auth">Auth</sl-tab>
-
-          <sl-tab-panel name="param"><div id="para">
-            <sl-button-group>
-              <sl-input placeholder="Key"></sl-input>
-              <sl-input placeholder="Value"></sl-input>
-            </sl-button-group>
-          </div></sl-tab-panel>
-          <sl-tab-panel name="body"><sl-textarea id="body" resize="auto" style="width:100%;height:100%;box-sizing:border-box;"></sl-textarea></sl-tab-panel>
-          <sl-tab-panel name="head"><div id="hed">
-            <sl-button-group>
-              <sl-input placeholder="Key"></sl-input>
-              <sl-input placeholder="Value"></sl-input>
-            </sl-button-group>
-          </div></sl-tab-panel>
-          <sl-tab-panel name="auth">
-            <div id="AuthIn"><p>No auth</p></div>
-            <sl-select value="None" id="auth" style="position:absolute;bottom:0;width:25%;">
-              <sl-option value="None">None</sl-option>
-              <sl-option value="Basic">Basic</sl-option>
-              <sl-option value="Bearer">Bearer</sl-option>
-              <sl-option value="Url">Url @</sl-option>
-            </sl-select>
-            <script>
-              document.getElementsByTagName('sl-select')[0].addEventListener('sl-change', function(e) {
-                switch (document.getElementsByTagName('sl-select')[0].value) {
-                  case 'None':
-                    document.getElementById('AuthIn').innerHTML = '<p>No auth</p>'
-                    break;
-                  case 'Basic':
-                    document.getElementById('AuthIn').innerHTML = '<p>Basic auth</p><sl-input id="BU" placeholder="User"></sl-input><sl-input id="BP" placeholder="Password" type="password" password-toggle></sl-input>'
-                    break;
-                  case 'Bearer':
-                    document.getElementById('AuthIn').innerHTML = '<p>Bearer token</p><label>Prefix:</label><select id="BP" value="Bearer"><option value="Bearer">Bearer</option><option value="Bot">Bot</option><option value="">None</option></select><sl-input id="BT" placeholder="Token" type="password" password-toggle></sl-input>'
-                    break;
-                  case 'Url':
-                    document.getElementById('AuthIn').innerHTML = '<p>Url @ auth</p><sl-input id="UU" placeholder="User"></sl-input><sl-input id="UP" placeholder="Password" type="password" password-toggle></sl-input>'
-                    break;
+    <div slot="start" style="overflow-y:auto">
+      <sl-tab-group>
+        <sl-tab slot="nav" panel="param">Params</sl-tab>
+        <sl-tab slot="nav" panel="body">Body</sl-tab>
+        <sl-tab slot="nav" panel="head">Headers</sl-tab>
+        <sl-tab slot="nav" panel="auth">Auth</sl-tab>
+        <sl-tab-panel name="param"><div id="para">
+          <sl-button-group>
+            <sl-input placeholder="Key"></sl-input>
+            <sl-input placeholder="Value"></sl-input>
+          </sl-button-group>
+        </div></sl-tab-panel>
+        <sl-tab-panel name="body"><sl-tab-group id="body">
+          <sl-tab slot="nav" panel="text">Text</sl-tab>
+          <sl-tab slot="nav" panel="file">File</sl-tab>
+          <sl-tab-panel name="text"><sl-textarea id="text-body" resize="auto" style="width:100%;height:100%;box-sizing:border-box;"></sl-textarea></sl-tab-panel>
+          <sl-tab-panel name="file"><input type="file" id="file-body"></sl-tab-panel>
+        </sl-tab-panel>
+        <sl-tab-panel name="head"><div id="hed">
+          <sl-button-group>
+            <sl-input placeholder="Key"></sl-input>
+            <sl-input placeholder="Value"></sl-input>
+          </sl-button-group>
+        </div></sl-tab-panel>
+        <sl-tab-panel name="auth">
+          <div id="AuthIn"><p>No auth</p></div>
+          <sl-select value="None" id="auth" style="position:absolute;bottom:0;width:25%;">
+            <sl-option value="None">None</sl-option>
+            <sl-option value="Basic">Basic</sl-option>
+            <sl-option value="Bearer">Bearer</sl-option>
+            <sl-option value="Url">Url @</sl-option>
+          </sl-select>
+          <script>
+            document.getElementsByTagName('sl-select')[0].addEventListener('sl-change', function(e) {
+              switch (document.getElementsByTagName('sl-select')[0].value) {
+                case 'None':
+                  document.getElementById('AuthIn').innerHTML = '<p>No auth</p>'
+                  break;
+                case 'Basic':
+                  document.getElementById('AuthIn').innerHTML = '<p>Basic auth</p><sl-input id="BU" placeholder="User"></sl-input><sl-input id="BP" placeholder="Password" type="password" password-toggle></sl-input>'
+                  break;
+                case 'Bearer':
+                  document.getElementById('AuthIn').innerHTML = '<p>Bearer token</p><label>Prefix:</label><select id="BP" value="Bearer"><option value="Bearer">Bearer</option><option value="Bot">Bot</option><option value="">None</option></select><sl-input id="BT" placeholder="Token" type="password" password-toggle></sl-input>'
+                  break;
+                case 'Url':
+                  document.getElementById('AuthIn').innerHTML = '<p>Url @ auth</p><sl-input id="UU" placeholder="User"></sl-input><sl-input id="UP" placeholder="Password" type="password" password-toggle></sl-input>'
+                  break;
+              }
+            })
+          </script>
+        </sl-tab-panel>
+      </sl-tab-group>
+    </div>
+    <div slot="end" style="overflow-y:auto">
+      <div class="rab">
+        <select id="type" value="GET" style="border:none;background:none;" aria-label="Request method">
+          <option value="GET">GET</option>
+          <option value="HEAD">HEAD</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+          <option value="CONNECT">CONNECT</option>
+          <option value="OPTIONS">OPTIONS</option>
+          <option value="TRACE">TRACE</option>
+          <option value="PATCH">PATCH</option>
+        </select>
+        <sl-divider vertical style="--color:#666"></sl-divider>
+        <input id="url" placeholder="https://fsh.plus" style="border:none;background:none;flex:1;" onkeyup="if(event.key=='Enter'){send()}" aria-label="Url to request">
+        <button onclick="document.getElementById('apis').showModal()" style="margin-right:5px;border-radius:0.75rem;border:none;background-color:var(--bg-3);" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15" fill="#fff"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
+        <dialog id="apis">
+          <button class="modal-close" onclick="this.parentElement.close()">x</button>
+          <h1 style="margin:0;text-align:center;">Fsh endpoints</h1>
+          <div class="search">
+            <input placeholder="Search..." id="search" onkeyup="search()">
+            <svg onclick="search()" height="14" style="margin-right:10px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#fff" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+          </div>
+          <div id="lis"></div>
+          <script>
+            let data;
+            function mod() {
+              let search = document.getElementById('search').value;
+              let filtered = [];
+              Object.keys(data.endpoints).forEach(end => {
+                if (data.endpoints[end].path.includes(search) || data.endpoints[end].info.includes(search) || data.endpoints[end].params.join(',').includes(search)) {
+                  filtered.push(data.endpoints[end])
                 }
               })
-            </script>
-          </sl-tab-panel>
-        </sl-tab-group>
-      </div>
-      <div slot="end" style="overflow-y:auto">
-        <div class="rab">
-          <select id="type" value="GET" style="border:none;background:none;" aria-label="Request method">
-            <option value="GET">GET</option>
-            <option value="HEAD">HEAD</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-            <option value="CONNECT">CONNECT</option>
-            <option value="OPTIONS">OPTIONS</option>
-            <option value="TRACE">TRACE</option>
-            <option value="PATCH">PATCH</option>
-          </select>
-          <sl-divider vertical style="--color:#666"></sl-divider>
-          <input id="url" placeholder="https://fsh.plus" style="border:none;background:none;flex:1;" onkeyup="if(event.key=='Enter'){send()}" aria-label="Url to request">
-          <button onclick="document.getElementById('apis').showModal()" style="margin-right:5px;border-radius:0.75rem;border:none;background-color:var(--bg-3);" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15" fill="#fff"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
-          <dialog id="apis">
-            <button class="modal-close" onclick="this.parentElement.close()">x</button>
-            <h1 style="margin:0;text-align:center;">Fsh endpoints</h1>
-            <div class="search">
-              <input placeholder="Search..." id="search" onkeyup="search()">
-              <svg onclick="search()" height="14" style="margin-right:10px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#fff" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
-            </div>
-            <div id="lis"></div>
-            <script>
-              let data;
-              function mod() {
-                let search = document.getElementById('search').value;
-                let filtered = [];
-                Object.keys(data.endpoints).forEach(end => {
-                  if (data.endpoints[end].path.includes(search) || data.endpoints[end].info.includes(search) || data.endpoints[end].params.join(',').includes(search)) {
-                    filtered.push(data.endpoints[end])
-                  }
-                })
-                let h = '';
-                filtered.forEach(ee => {
-                  h += `<div onclick="document.getElementById('url').value='api.fsh.plus${ee.path}';document.getElementById('type').value='${ee.type.toUpperCase()}';" class="card-api">
+              let h = '';
+              filtered.forEach(ee => {
+                h += `<div onclick="document.getElementById('url').value='api.fsh.plus${ee.path}';document.getElementById('type').value='${ee.type.toUpperCase()}';" class="card-api">
   <p style="margin:0;">${ee.path} | ${ee.category}${ee.params.length > 0 ? ' | ' : ''}${ee.params.map(p=>`${p.name}${p.required ? '*' : ''}`).join(' ')}</p>
   <label style="cursor:pointer">${ee.info}</label>
 </div>`;
-                })
-                document.getElementById('lis').innerHTML = h;
-              }
-              fetch('/apis').then(async da => {
-                da = await da.json();
-                data = da;
-                mod()
               })
-              function search() {
-                mod()
-              }
-            </script>
-          </dialog>
-          <button onclick="send()" style="border-radius:0.75rem;border:none;height:100%;background-color:var(--bg-3);" aria-label="Send request">Send <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom:-3px;fill:var(--text-1);" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
-        </div>
-        <p id="res"></p>
+              document.getElementById('lis').innerHTML = h;
+            }
+            fetch('/apis').then(async da => {
+              da = await da.json();
+              data = da;
+              mod()
+            })
+            function search() {
+              mod()
+            }
+          </script>
+        </dialog>
+        <button onclick="send()" style="border-radius:0.75rem;border:none;height:100%;background-color:var(--bg-3);" aria-label="Send request">Send <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom:-3px;fill:var(--text-1);" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
       </div>
-    </sl-split-panel>
+      <p id="res"></p>
+    </div>
     <script>
+      Split(['div[slot="start"]', 'div[slot="end"]'], {
+        sizes: [25, 75]
+      });
+      let body_type = 'text';
+      document.getElementById('body').addEventListener('sl-tab-show', (event) => {
+        body_type = event.detail.name;
+      })
       let gcb = '';
       function copy() {
         navigator.clipboard.writeText(gcb);
       }
-      function send() {
+      async function send() {
         // Fetch settings
         let url = document.getElementById('url').value;
         url = (url.includes('://') ? '' : 'https://') + url;
@@ -245,8 +263,8 @@
         let con = {
           method: document.getElementById('type').value,
           headers: {
-            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "Accept-Language": "en;q=1.0",
+            accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "en;q=1.0",
             "sec-ch-ua": '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -260,7 +278,15 @@
         }
         // Fetch body
         if (!['GET','HEAD', 'DELETE'].includes(con.method)) {
-          con.body = document.getElementById('body').value
+          if (body_type==='file') {
+            let fil = document.getElementById('file-body').files[0];
+            con.headers['content-type'] = fil.type;
+            let arr = await fil.arrayBuffer();
+            con.body = `data:${fil.type};base64,${btoa(new Uint8Array(arr).reduce((data, byte) => data + String.fromCharCode(byte), ''))}`
+          } else {
+            con.headers['content-type'] = 'text/plain';
+            con.body = document.getElementById('text-body').value;
+          }
         }
         // Params
         let par = Array.from(document.getElementById('para').children).map(e => `${e.children[0].value}=${e.children[1].value}`).filter(e => e != '=').join('&');
@@ -290,9 +316,9 @@
           }
         }
         // The fetch
-        fetch('/request?url='+encodeURIComponent(url), {method:'post',body:JSON.stringify(con)}).then(async e => {
+        fetch('./request?url='+encodeURIComponent(url), {method:'post',body:JSON.stringify(con)}).then(async e => {
           e = await e.json();
-         
+
           let s = String(e.status);
           let q = e.headers['content-type'].split(';')[0];
           let x = "";
