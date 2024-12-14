@@ -15,15 +15,15 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
     if (Number(req.query['force']) > 1000) {
-      res.error('Force too big')
+      res.error('Force too big');
       return;
     }
     if (Number(req.query['force']) < 1) {
-      res.error('Force too small')
+      res.error('Force too small');
       return;
     }
     sharp(req.body)
@@ -35,7 +35,7 @@ module.exports = {
         })
       })
       .catch(err => {
-        res.error('Could not generate')
+        res.error('Could not generate', 500);
         return;
       })
   }
