@@ -6,10 +6,10 @@ module.exports = {
   type: 'get',
   params: [],
   category: "image",
-  
+
   async execute(req, res) {
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
 
@@ -18,7 +18,7 @@ module.exports = {
     let { width, height } = await image
       .metadata()
       .catch(err => {
-        res.error('Could not read')
+        res.error('Could not read');
         return;
       });
 
@@ -61,7 +61,7 @@ module.exports = {
         })
       })
       .catch(err => {
-        res.error('Could not generate')
+        res.error('Could not generate', 500);
         return;
       });
   }

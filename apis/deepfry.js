@@ -9,7 +9,7 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
 
@@ -45,12 +45,12 @@ module.exports = {
                 })
               })
               .catch(err => {
-                res.error('Could not generate')
+                res.error('Could not generate', 500);
                 return;
               })
           })
           .catch(err => {
-            res.error('Could not generate')
+            res.error('Could not generate', 500);
             return;
           })
       })
