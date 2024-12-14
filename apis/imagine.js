@@ -17,7 +17,7 @@ module.exports = {
     {
       name: 'text',
       required: true,
-      default: 'A spining gray fish'
+      default: 'A spining grey fish'
     },
     {
       name: 'negative',
@@ -34,7 +34,7 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query["text"]) {
-      res.send('mini docs<br>text=[TEXT] - Text to generate image<br>Optional:<br>model=[Model] - Very high level but allows for better images (https://huggingface.co/models?pipeline_tag=text-to-image)<br>negative=[NON] - Things you dont want to appear (blur)');
+      res.type('text/html').send('mini docs<br>text=[TEXT] - Text to generate image<br>Optional:<br>model=[Model] - Very high level but allows for better images (https://huggingface.co/models?pipeline_tag=text-to-image)<br>negative=[NON] - Things you dont want to appear (blur)');
       return;
     }
 
@@ -43,8 +43,8 @@ module.exports = {
       if (req.query["model"] == "dall-e") {
         let img = await fetch(`https://hercai.onrender.com/v3/text2image?prompt=${req.query["text"].replaceAll(" ","%20")}`);
         img = await img.json();
-        if ((String(img.status)||'2').startsWith('4')) {
-          res.error('Error, wait a bit or check prompt', 500)
+        if ((String(img.status)??'2').startsWith('4')) {
+          res.error('Error, wait a bit or check prompt', 500);
           return;
         }
         res.json({link: img.url});
@@ -53,17 +53,17 @@ module.exports = {
 
       let img = await hf.textToImage({
         inputs: req.query["text"],
-        model: req.query["model"] || 'SG161222/Realistic_Vision_V1.4',
+        model: req.query["model"] ?? 'SG161222/Realistic_Vision_V1.4',
         parameters: {
-          negative_prompt: req.query["negative"] || 'blurry',
+          negative_prompt: req.query["negative"] ?? 'blurry',
         }
       });
       let itemname = `${nanoid()}.${img.type.replace('image/', '')}`,
       imgbuffer = Buffer.from(await img.arrayBuffer());
-      fs.createWriteStream(`images/imagine/${itemname}`).write(imgbuffer)
-      res.json({link: `https://${req.hostname}/images/imagine/${itemname}`})
+      fs.createWriteStream(`images/imagine/${itemname}`).write(imgbuffer);
+      res.json({link: `https://${req.hostname}/images/imagine/${itemname}`});
     } catch (err) {
-      res.error(err, 500)
+      res.error('Could not generate', 500);
     }
   }
 }

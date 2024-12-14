@@ -6,7 +6,9 @@ const WebSocketClient = require('websocket').client;
 let process = require('process');
 process.env = require('./env.js');
 
-const fastify = require('fastify')();
+const fastify = require('fastify')({
+  bodyLimit: 100 * 1024 * 1024 // 100MB
+});
 const fbody = require('@fastify/formbody');
 const fstatic = require('@fastify/static');
 const requestIp = require('request-ip');
@@ -49,11 +51,14 @@ fastify.addHook('onRequest', async(req, res) => {
 });
 
 // Body
-const BodyLimit = 1 * 1024 * 1024 * 1024; // 1GB
+const BodyLimit = 100 * 1024 * 1024; // 100MB
 fastify.register(fbody, {
   bodyLimit: BodyLimit
 });
 fastify.addContentTypeParser(/^image\/.*/, { parseAs: 'buffer', bodyLimit: BodyLimit }, (req, body, done) => {
+  done(null, body);
+});
+fastify.addContentTypeParser(/^application\/.*/, { parseAs: 'buffer', bodyLimit: BodyLimit }, (req, body, done) => {
   done(null, body);
 });
 fastify.addContentTypeParser('*/*', { parseAs: 'buffer', bodyLimit: BodyLimit }, (req, body, done) => {
@@ -325,6 +330,6 @@ fastify.all('*', (req,res)=>{
   }
 })
 
-fastify.listen({ port: process.env.port }, ()=>{
-  console.log('Server online at port '+process.env.port)
+fastify.listen({ host: process.env.host, port: process.env.port }, ()=>{
+  console.log(`Server online at ${process.env.host}:${process.env.port}`)
 })
