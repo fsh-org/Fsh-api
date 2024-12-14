@@ -319,6 +319,10 @@
         fetch('./request?url='+encodeURIComponent(url), {method:'post',body:JSON.stringify(con)}).then(async e => {
           e = await e.json();
 
+          if (e.err) {
+            document.getElementById('res').innerHTML = 'Could not fetch';
+          }
+
           let s = String(e.status);
           let q = e.headers['content-type'].split(';')[0];
           let x = "";

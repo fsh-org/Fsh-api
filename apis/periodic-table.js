@@ -12,22 +12,22 @@ module.exports = {
     }
   ],
   category: "text",
-  
+
   async execute(req, res) {
     if (!req.query['element']) {
-      res.json(data[Math.ceil(Math.random()*data.length-1)])
+      res.json(data[Math.ceil(Math.random()*data.length-1)]);
     } else {
       if (Number(req.query['element'])) {
         let hg = data[Number(req.query['element'])];
         if (!hg) {
-          res.error('Elemenet not found')
+          res.error('Elemenet not found');
           return;
         }
         res.json(hg)
       } else {
         let hg = data.filter(t => {return String(t.symbol).toLowerCase() == req.query['element'].toLowerCase()})[0];
         if (!hg) {
-          res.error('Elemenet not found')
+          res.error('Elemenet not found');
           return;
         }
         res.json(hg)

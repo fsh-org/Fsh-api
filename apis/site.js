@@ -21,26 +21,28 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query.url) {
-      res.error('Provide a url')
+      res.error('Provide a url');
       return;
     }
+    let url = req.query.url;
+    if (!url.includes('://')) url = 'https://'+url;
     let data;
     try {
-      data = await fetch(req.query.url, {
+      data = await fetch(url, {
         headers:{
           'user-agent': 'Mozilla 5.0 (Windows) Fsh (Api - user: '+req.clientIp+')',
           'accept-language': 'en;q=1.0'
         }
       });
     } catch (err) {
-      res.error('Could not get')
+      res.error('Could not get', 500);
       return;
     }
     data = await data.text();
     res.json({
-      title: getr(data, /<title>.*?<\/title>/).replace(/<title>|<\/title>/g,'') || '',
-      description: getr(getr(data, /<meta[^<>]+?name="description".+?content=".*?".*?>/), /content=".*?"/).replace(/content="|"/g, '') || '',
-      favicon: getr(getr(data, /<link[^<>]+?rel="(?:icon|shortcut icon)".+?href=".*?".*?>/), /href=".*?"/).replace(/href="|"/g, '') || ''
+      title: getr(data, /<title>.*?<\/title>/).replace(/<title>|<\/title>/g,'') ?? '',
+      description: getr(getr(data, /<meta[^<>]+?name="description".+?content=".*?".*?>/), /content=".*?"/).replace(/content="|"/g, '') ?? '',
+      favicon: new URL(getr(getr(data, /<link[^<>]+?rel="(?:icon|shortcut icon)".+?href=".*?".*?>/), /href=".*?"/).replace(/href="|"/g, '') ?? '', url)
     })
   }
 }
