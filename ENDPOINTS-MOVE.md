@@ -30,11 +30,11 @@ x generate
 - http
 - hue
 - image-format
-x imagine
+- imagine
 - invert
 - ip
 - jail
-x join
+- join
 - math
 - md5
 - meme

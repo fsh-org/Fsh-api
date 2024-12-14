@@ -24,15 +24,16 @@ module.exports = {
 
     let w = width;
     let h = height;
-    let f = 6;
+    let f = 1;
+    let s = 10;
     if ((w*h) > 1000000) {
-      f = Math.ceil(1 / (1000000 / (w*h)))*6;
+      f = Math.sqrt(1000000 / (w*h));
     }
-    w = Math.floor(width/f);
-    h = Math.floor(height/f);
+    w = Math.floor(w*f);
+    h = Math.floor(h*f);
 
     let { data } = await image
-      .resize(w, h, { fit: 'fill' })
+      .resize(w*s, h*s, { fit: 'fill' })
       .removeAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
@@ -40,14 +41,14 @@ module.exports = {
     const chars = '@%#*+=-:. ';
     const charMult = chars.length - 1;
 
-    let asciiArt = `<svg xmlns="http://www.w3.org/2000/svg" width="${w*f}" height="${(h-1)*f}"><rect width="100%" height="100%" fill="#fff"/>`;
+    let asciiArt = `<svg xmlns="http://www.w3.org/2000/svg" width="${w*s}" height="${(h-1)*s}"><rect width="100%" height="100%" fill="#fff"/>`;
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         let idx = (y * w + x) * 3;
 
         let brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
 
-        asciiArt += `<text x="${x*f}" y="${y*f}" font-family="monospace" font-size="${f*1.5}" fill="black">${chars[Math.floor(brightness / 255 * charMult)]}</text>`;
+        asciiArt += `<text x="${x*s}" y="${y*s}" font-family="monospace" font-size="${s*1.5}" fill="black">${chars[Math.floor(brightness / 255 * charMult)]}</text>`;
       }
     }
     asciiArt += '</svg>';
