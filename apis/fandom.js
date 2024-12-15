@@ -56,7 +56,7 @@ module.exports = {
       data = data.replaceAll(' target="_blank" rel="nofollow noreferrer noopener"', '')
       data = data.replaceAll(/ class="external.+?"/g, '')
       // Remove non necesary new lines
-      data = data.split("\n").filter(e=>{return e.replaceAll(/ |	|\n/g, '').length}).join("\n")
+      data = data.split("\n").filter(e=>{return e.replaceAll(/ |\t|\n/g, '').length}).join("\n")
       // Make prettier
       data = data.replaceAll("<p><br>", "<p>")
       data = data.replaceAll("<p><br />", "<p>")
@@ -121,7 +121,7 @@ module.exports = {
       }
 
       // Remove non necesary new lines
-      data = data.split("\n").filter(e=>{return e.replaceAll(/ |	|\n/g, '').length}).join("\n")
+      data = data.split("\n").filter(e=>{return e.replaceAll(/ |\t|\n/g, '').length}).join("\n")
     } catch (err) {
       res.error('Error formatting data', 500)
       return;
