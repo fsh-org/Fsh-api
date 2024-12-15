@@ -39,11 +39,11 @@ module.exports = {
 
   async execute(req, res) {
     let text = req.query['text'];
-    if ((text || '').length < 1) {
-      res.error('You must include text')
+    if ((text ?? '').length < 1) {
+      res.error('You must include text');
       return;
     }
-    
+
     const audiobuffer = sam.buf8(text);
 
     let realbuffer = new Uint8Array(44 + audiobuffer.length);
@@ -56,7 +56,7 @@ module.exports = {
         pos += buffer.length;
       };
     } catch (err) {
-      res.error('Could not convert', 500)
+      res.error('Could not convert', 500);
       return;
     }
 

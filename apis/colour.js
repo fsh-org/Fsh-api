@@ -26,8 +26,7 @@ module.exports = {
         .jpeg()
         .toBuffer()
         .then(data => {
-          res.set('Content-Type', 'image/jpeg');
-          res.send(data);
+          res.type('image/jpeg').send(data);
         })
     } catch(err) {
       res.error('Could not generate')

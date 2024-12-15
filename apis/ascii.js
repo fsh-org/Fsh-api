@@ -6,10 +6,10 @@ module.exports = {
   type: 'get',
   params: [],
   category: "image",
-  
+
   async execute(req, res) {
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
 
@@ -17,19 +17,20 @@ module.exports = {
 
     let { width, height } = await image
       .metadata()
-      .catch(err => {
-        res.error('Could not read')
+      .catch(() => {
+        res.error('Could not read');
         return;
       });
 
     let w = width;
     let h = height;
-    let f = 6;
-    if ((w*h) > 1000000) {
-      f = Math.ceil(1 / (1000000 / (w*h)))*6;
+    let f = 1;
+    let s = 8;
+    if ((w*h) > 20000) {
+      f = Math.sqrt(20000 / (w*h));
     }
-    w = Math.floor(width/f);
-    h = Math.floor(height/f);
+    w = Math.floor(w*f);
+    h = Math.floor(h*f);
 
     let { data } = await image
       .resize(w, h, { fit: 'fill' })
@@ -40,14 +41,14 @@ module.exports = {
     const chars = '@%#*+=-:. ';
     const charMult = chars.length - 1;
 
-    let asciiArt = `<svg xmlns="http://www.w3.org/2000/svg" width="${w*f}" height="${(h-1)*f}"><rect width="100%" height="100%" fill="#fff"/>`;
+    let asciiArt = `<svg xmlns="http://www.w3.org/2000/svg" width="${w*s}" height="${(h-1)*s}"><rect width="100%" height="100%" fill="#fff"/>`;
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         let idx = (y * w + x) * 3;
 
         let brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
 
-        asciiArt += `<text x="${x*f}" y="${y*f}" font-family="monospace" font-size="${f*1.5}" fill="black">${chars[Math.floor(brightness / 255 * charMult)]}</text>`;
+        asciiArt += `<text x="${x*s}" y="${y*s}" font-family="Arial" font-size="${s*1.2}" fill="black">${chars[Math.floor(brightness / 255 * charMult)]}</text>`;
       }
     }
     asciiArt += '</svg>';
@@ -60,8 +61,8 @@ module.exports = {
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
-        res.error('Could not generate')
+      .catch(() => {
+        res.error('Could not generate', 500);
         return;
       });
   }

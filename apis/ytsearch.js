@@ -12,13 +12,13 @@ module.exports = {
     }
   ],
   category: "text",
-  
+
   async execute(req, res) {
     if (!req.query['query']) {
-      res.error('Include query')
+      res.error('Include query');
       return;
     }
-    const r = await yts(req.query['query'])
+    const r = await yts(req.query['query']);
 
     res.json(r)
   }

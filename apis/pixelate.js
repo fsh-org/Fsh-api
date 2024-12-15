@@ -15,17 +15,17 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
-    let pixelSize = req.query['force'] || 10;
+    let pixelSize = req.query['force'] ?? 10;
     sharp(req.body)
       .metadata()
       .then(metadata => {
         // Calculate the resized dimensions for pixelation
         const resizedWidth = Math.ceil(metadata.width / pixelSize);
         const resizedHeight = Math.ceil(metadata.height / pixelSize);
-        
+
         // Pixelate the image
         sharp(req.body)
           .resize(resizedWidth, resizedHeight, {
@@ -43,13 +43,13 @@ module.exports = {
                   image: 'data:image/png;base64,' + outputBuffer.toString('base64')
                 })
               })
-              .catch(err => {
-                res.error('Could not generate')
+              .catch(() => {
+                res.error('Could not generate', 500);
                 return;
               })
           })
-          .catch(err => {
-            res.error('Could not generate')
+          .catch(() => {
+            res.error('Could not generate', 500);
             return;
           })
       })

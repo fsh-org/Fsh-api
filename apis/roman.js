@@ -37,6 +37,7 @@ function romanToNumber(roman) {
   };
 
   let result = 0;
+  roman = roman.toUpperCase();
   for (let i = 0; i < roman.length; i++) {
     if (romanNumerals[roman[i]] < romanNumerals[roman[i + 1]]) {
       result -= romanNumerals[roman[i]];
@@ -64,14 +65,14 @@ module.exports = {
     }
   ],
   category: "text",
-  
+
   async execute(req, res) {
     if (!req.query["type"]) {
-      res.error('No conversion type recived')
+      res.error('No conversion type recived');
       return;
     }
     if (!req.query["number"]) {
-      res.error('No input recived')
+      res.error('No input recived');
       return;
     }
     if (req.query["type"] === "encode") {
@@ -86,6 +87,6 @@ module.exports = {
       })
       return;
     }
-    res.error('Type not valid')
+    res.error('Type not valid');
   }
 }
