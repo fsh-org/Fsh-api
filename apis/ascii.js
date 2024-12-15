@@ -17,7 +17,7 @@ module.exports = {
 
     let { width, height } = await image
       .metadata()
-      .catch(err => {
+      .catch(() => {
         res.error('Could not read');
         return;
       });
@@ -61,7 +61,7 @@ module.exports = {
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
+      .catch(() => {
         res.error('Could not generate', 500);
         return;
       });

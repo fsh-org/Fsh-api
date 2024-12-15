@@ -43,7 +43,7 @@ module.exports = {
       if (req.query["model"] == "dall-e") {
         let img = await fetch(`https://hercai.onrender.com/v3/text2image?prompt=${req.query["text"].replaceAll(" ","%20")}`);
         img = await img.json();
-        if ((String(img.status)??'2').startsWith('4')) {
+        if (!String(img.status).startsWith('2')) {
           res.error('Error, wait a bit or check prompt', 500);
           return;
         }

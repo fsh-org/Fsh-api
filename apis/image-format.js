@@ -36,7 +36,7 @@ module.exports = {
           image: 'data:image/'+format+';base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
+      .catch(() => {
         res.error('Could not generate', 500);
         return;
       })

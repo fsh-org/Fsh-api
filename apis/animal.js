@@ -52,14 +52,8 @@ module.exports = {
         })
         break;
       case 'frog':
-        let uu = Math.floor(Math.random() * 54 + 1);
-        if (uu.length == 1) {
-          uu = "000" + uu
-        } else {
-          uu = "00" + uu
-        }
         res.json({
-          image: 'http://allaboutfrogs.org/funstuff/random/'+uu+'.jpg'
+          image: `http://allaboutfrogs.org/funstuff/random/${String(Math.floor(Math.random() * 54 + 1)).padStart(4, '0')}.jpg`
         })
         break;
       case 'bunny':

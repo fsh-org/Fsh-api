@@ -46,17 +46,17 @@ module.exports = {
                   image: 'data:image/png;base64,' + outputBuffer.toString('base64')
                 })
               })
-              .catch(err => {
+              .catch(() => {
                 res.error('Could not generate', 500);
                 return;
               })
           })
-          .catch(err => {
+          .catch(() => {
             res.error('Could not create color layer', 500);
             return;
           })
       })
-      .catch(err => {
+      .catch(() => {
         res.error('Could not read image', 500);
         return;
       })

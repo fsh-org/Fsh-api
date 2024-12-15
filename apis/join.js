@@ -6,7 +6,7 @@ let cache = {};
 
 async function getUrl(url) {
   if (!url.includes('://')) url = 'https://'+url;
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async(resolve) => {
     if (!url) {
       resolve();
       return;
@@ -30,7 +30,7 @@ async function getUrl(url) {
       } else {
         resolve();
       }
-    } catch (err) { resolve(); }
+    } catch (err) { resolve() }
   });
 }
 
@@ -235,7 +235,7 @@ module.exports = {
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
+      .catch(() => {
         res.error('Could not generate', 500);
         return;
       })
