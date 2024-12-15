@@ -25,15 +25,15 @@ module.exports = {
     let w = width;
     let h = height;
     let f = 1;
-    let s = 10;
-    if ((w*h) > 1000000) {
-      f = Math.sqrt(1000000 / (w*h));
+    let s = 8;
+    if ((w*h) > 20000) {
+      f = Math.sqrt(20000 / (w*h));
     }
     w = Math.floor(w*f);
     h = Math.floor(h*f);
 
     let { data } = await image
-      .resize(w*s, h*s, { fit: 'fill' })
+      .resize(w, h, { fit: 'fill' })
       .removeAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
@@ -48,7 +48,7 @@ module.exports = {
 
         let brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
 
-        asciiArt += `<text x="${x*s}" y="${y*s}" font-family="monospace" font-size="${s*1.5}" fill="black">${chars[Math.floor(brightness / 255 * charMult)]}</text>`;
+        asciiArt += `<text x="${x*s}" y="${y*s}" font-family="Arial" font-size="${s*1.2}" fill="black">${chars[Math.floor(brightness / 255 * charMult)]}</text>`;
       }
     }
     asciiArt += '</svg>';

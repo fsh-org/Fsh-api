@@ -1,8 +1,8 @@
 const fs = require("fs")
 
-let slurtxt = fs.readFileSync("text/slur.txt", 'utf8').split(',');
-let sweartxt = fs.readFileSync("text/swear.txt", 'utf8').split(',');
-let adulttxt = fs.readFileSync("text/adult.txt", 'utf8').split(',');
+let slurtxt = fs.readFileSync("text/slur.txt", 'utf8').split(',').sort((f,s)=>s.length-f.length);
+let sweartxt = fs.readFileSync("text/swear.txt", 'utf8').split(',').sort((f,s)=>s.length-f.length);
+let adulttxt = fs.readFileSync("text/adult.txt", 'utf8').split(',').sort((f,s)=>s.length-f.length);
 
 function bad(text, words, sie) {
   let copy = text
@@ -40,9 +40,9 @@ module.exports = {
   async execute(req, res) {
     let response;
     if (req.method == "POST") {
-      response = req.body.text
+      response = req.body.text;
     } else {
-      response = req.query["text"]
+      response = req.query["text"];
     }
     if (!response) {
       res.json({
@@ -54,35 +54,35 @@ module.exports = {
       })
       return;
     }
-    const sie = req.query["char"] || "#";
-    const cat = req.query["category"] || "adult,swear,slur";
+    const sie = req.query["char"] ?? "#";
+    const cat = req.query["category"] ?? "adult,swear,slur";
 
     let hh;
-    let tt = []
+    let tt = [];
 
-    hh = bad(response, sweartxt, sie)
+    hh = bad(response, sweartxt, sie);
     if (cat.includes("swear")) {
-      response = hh[1]
+      response = hh[1];
     }
-    tt.push(hh[0])
+    tt.push(hh[0]);
 
-    hh = bad(response, slurtxt, sie)
+    hh = bad(response, slurtxt, sie);
     if (cat.includes("slur")) {
-      response = hh[1]
+      response = hh[1];
     }
-    tt.push(hh[0])
+    tt.push(hh[0]);
 
-    hh = bad(response, adulttxt, sie)
+    hh = bad(response, adulttxt, sie);
     if (cat.includes("adult")) {
-      response = hh[1]
+      response = hh[1];
     }
-    tt.push(hh[0])
+    tt.push(hh[0]);
 
     res.json({
-      bad: tt[0] || tt[1] || tt[2] ? "true" : "false",
-      swear: tt[0] ? "true" : "false",
-      slur: tt[1] ? "true" : "false",
-      adult: tt[2] ? "true" : "false",
+      bad: String(tt[0] || tt[1] || tt[2]),
+      swear: String(tt[0]),
+      slur: String(tt[1]),
+      adult: String(tt[2]),
       censor: response
     })
   }

@@ -18,7 +18,7 @@ xx colorify
 - fandom-image
 - fandom
 - file
-x filter
+- filter
 - flip
 - flop
 - gay
