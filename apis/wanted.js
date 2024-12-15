@@ -27,7 +27,7 @@ module.exports = {
             })
           })
       })
-      .catch(err => {
+      .catch(() => {
         res.error('Could not generate', 500);
         return;
       })

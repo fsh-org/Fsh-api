@@ -82,7 +82,7 @@ module.exports = {
             })
           }
         })
-        .on('error', (error) => {
+        .on('error', () => {
           res.error('Could not download', 500);
         });
     } catch (err) {

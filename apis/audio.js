@@ -45,7 +45,7 @@ module.exports = {
             download: `https://api.fsh.plus/download/audio/${id}.mp3`
           })
         })
-        .on('error', (err) => {
+        .on('error', () => {
           res.error('Could not download', 500);
         });
     } catch (err) {
