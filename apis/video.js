@@ -23,7 +23,7 @@ module.exports = {
     let id = req.query['id'];
 
     if (!id || !ytdl.validateID(id)) {
-      res.error('Invalid id')
+      res.error('Invalid id');
       return;
     }
 
@@ -82,11 +82,11 @@ module.exports = {
             })
           }
         })
-        .on('error', (error) => {
-          res.error('Could not download')
+        .on('error', () => {
+          res.error('Could not download', 500);
         });
     } catch (err) {
-      res.error('Could not download')
+      res.error('Could not download', 500);
     }
   }
 }

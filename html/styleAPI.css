@@ -24,7 +24,7 @@ details {
   padding: 5px;
   margin: 5px;
   text-align: left;
-  width: 90%;
+  width: 92%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -65,11 +65,13 @@ summary::before {
 
 /* Search */
 .search {
-  background-color: var(--bg-2);
+  display: flex;
+  align-items: center;
   width: fit-content;
-  border-radius: 1rem;
   margin-left: auto;
   margin-right: auto;
+  border-radius: 1rem;
+  background-color: var(--bg-2);
 }
 .search input {
   border: none;

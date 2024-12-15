@@ -18,7 +18,7 @@ module.exports = {
   
   async execute(req, res) {
     if (!req.query["url"]) {
-      res.send('url query necesary<br>Add discord=true for discord formating')
+      res.type('text/html').send('url query necesary<br>Add discord=true for discord formating')
       return;
     }
 
@@ -56,7 +56,7 @@ module.exports = {
       data = data.replaceAll(' target="_blank" rel="nofollow noreferrer noopener"', '')
       data = data.replaceAll(/ class="external.+?"/g, '')
       // Remove non necesary new lines
-      data = data.split("\n").filter(e=>{return e.replaceAll(/ |	|\n/g, '').length}).join("\n")
+      data = data.split("\n").filter(e=>{return e.replaceAll(/ |\t|\n/g, '').length}).join("\n")
       // Make prettier
       data = data.replaceAll("<p><br>", "<p>")
       data = data.replaceAll("<p><br />", "<p>")
@@ -121,7 +121,7 @@ module.exports = {
       }
 
       // Remove non necesary new lines
-      data = data.split("\n").filter(e=>{return e.replaceAll(/ |	|\n/g, '').length}).join("\n")
+      data = data.split("\n").filter(e=>{return e.replaceAll(/ |\t|\n/g, '').length}).join("\n")
     } catch (err) {
       res.error('Error formatting data', 500)
       return;
@@ -133,7 +133,6 @@ module.exports = {
       return;
     }
 
-    res.set('Content-Type', 'text/plain');
-    res.send(data)
+    res.type('text/plain').send(data)
   }
 }

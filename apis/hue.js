@@ -15,11 +15,11 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query['hue']) {
-      res.error('You must include a hue param (0-360)')
+      res.error('You must include a hue param (0-360)');
       return;
     }
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
     sharp(req.body)
@@ -30,8 +30,8 @@ module.exports = {
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
-        res.error('Could not generate')
+      .catch(() => {
+        res.error('Could not generate', 500);
         return;
       })
   }

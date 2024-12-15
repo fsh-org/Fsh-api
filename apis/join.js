@@ -5,7 +5,8 @@ const size = 300;
 let cache = {};
 
 async function getUrl(url) {
-  return new Promise(async(resolve, reject) => {
+  if (!url.includes('://')) url = 'https://'+url;
+  return new Promise(async(resolve) => {
     if (!url) {
       resolve();
       return;
@@ -20,7 +21,7 @@ async function getUrl(url) {
         data = await data.arrayBuffer();
         data = Buffer.from(data);
         sharp(data)
-          .resize(size, size)
+          .resize(size, size, { fit: 'fill' })
           .toBuffer()
           .then(dat => {
             cache[url] = dat;
@@ -29,7 +30,7 @@ async function getUrl(url) {
       } else {
         resolve();
       }
-    } catch (err) { resolve(); }
+    } catch (err) { resolve() }
   });
 }
 
@@ -92,31 +93,31 @@ module.exports = {
   category: "image",
 
   async execute(req, res) {
-    let one = req.query['one']
-    let two = req.query['two']
-    let three = req.query['three']
-    let four = req.query['four']
-    let five = req.query['five']
-    let six = req.query['six']
-    let seven = req.query['seven']
-    let eight = req.query['eight']
-    let nine = req.query['nine']
+    let one = req.query['one'];
+    let two = req.query['two'];
+    let three = req.query['three'];
+    let four = req.query['four'];
+    let five = req.query['five'];
+    let six = req.query['six'];
+    let seven = req.query['seven'];
+    let eight = req.query['eight'];
+    let nine = req.query['nine'];
 
     let images = [one, two, three, four, five, six, seven, eight, nine];
-    images = images.filter(e => (e || '').length);
+    images = images.filter(e => (e ?? '').length);
 
     if (images.length < 2) {
-      res.error('You must include at least two images')
+      res.error('You must include at least two images');
       return;
     }
 
     for (let i=0;i<images.length;i++) {
-      images[i] = await getUrl(images[i])
+      images[i] = await getUrl(images[i]);
     }
-    images = images.filter(e => (e || '').length)
+    images = images.filter(e => (e ?? '').length);
 
     if (images.length < 2) {
-      res.error('Too many images failed to load')
+      res.error('Too many images failed to load');
       return;
     }
 
@@ -234,8 +235,8 @@ module.exports = {
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
-        res.error('Could not generate')
+      .catch(() => {
+        res.error('Could not generate', 500);
         return;
       })
   }

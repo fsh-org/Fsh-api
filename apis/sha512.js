@@ -1,8 +1,8 @@
 const crypto = require("crypto");
 
 module.exports = {
-  path: '/sha256',
-  info: 'Encrypts the text using sha256',
+  path: '/sha512',
+  info: 'Encrypts the text using sha512',
   type: 'get',
   params: [
     {
@@ -19,7 +19,7 @@ module.exports = {
       return;
     }
     res.json({
-      text: Buffer.from(crypto.createHash('sha256').update(req.query["text"]).digest()).toString('hex')
+      text: Buffer.from(crypto.createHash('sha512').update(req.query["text"]).digest()).toString('hex')
     })
   }
 }

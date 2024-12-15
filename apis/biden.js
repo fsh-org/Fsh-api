@@ -15,12 +15,12 @@ module.exports = {
 
   async execute(req, res) {
     if (!req.query['text']) {
-      res.error('You must pass a image in the request body')
+      res.error('You must include text');
       return;
     }
     let text = req.query['text'];
     let svg = `<svg style="width: 555px; height: 120px;"><text y="41" font-family="Arial" font-size="12px" fill="#000"><tspan x="60" dy="0px">${text.split('\\n').join('</tspan><tspan x="60" dy="10px">')}</tspan></text></svg>`;
-    
+
     sharp('effects/biden.png')
       .composite([{
         input: Buffer.from(svg),
@@ -32,7 +32,7 @@ module.exports = {
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
+      .catch(() => {
         res.error('Could not generate')
         return;
       })

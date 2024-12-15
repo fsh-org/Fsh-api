@@ -21,7 +21,7 @@ module.exports = {
     // No option :(
     if (!req.query["animal"]) {
       let opt = ["Cat", "Dog", "Fox", "Duck", "Frog", "Bunny", "Fish", "Alpaca", "Bird"].sort();
-      res.send(`Avaible animals:<br>- ${opt.join("<br>- ")}`);
+      res.type('text/html').send(`Avaible animals:<br>- ${opt.join("<br>- ")}`);
       return;
     }
     // Yes option :)
@@ -52,14 +52,8 @@ module.exports = {
         })
         break;
       case 'frog':
-        let uu = Math.floor(Math.random() * 54 + 1);
-        if (uu.length == 1) {
-          uu = "000" + uu
-        } else {
-          uu = "00" + uu
-        }
         res.json({
-          image: 'http://allaboutfrogs.org/funstuff/random/'+uu+'.jpg'
+          image: `http://allaboutfrogs.org/funstuff/random/${String(Math.floor(Math.random() * 54 + 1)).padStart(4, '0')}.jpg`
         })
         break;
       case 'bunny':

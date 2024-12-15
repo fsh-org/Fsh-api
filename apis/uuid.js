@@ -7,7 +7,7 @@ function generateVersion5UUID(namespace, name) {
   // Parse the namespace UUID
   const namespaceBuffer = Buffer.from(namespace.replace(/-/g, ''), 'hex');
 
-  // Concatenate and hash using SHA-1
+  // Concatenate and hash
   const combinedData = Buffer.concat([namespaceBuffer, Buffer.from(name)]);
   const hashValue = crypto.createHash('sha1').update(combinedData).digest();
 
@@ -98,6 +98,10 @@ module.exports = {
       case "3":
         namespace = upd(req.query["space"]);
         name = req.query["name"];
+        if (!namespace || !name) {
+          res.error('Include a name and namespace');
+          return;
+        }
         res.json({
           uuid: req.query['version'] === '5' ? generateVersion5UUID(namespace, name) : generateVersion3UUID(namespace, name)
         })

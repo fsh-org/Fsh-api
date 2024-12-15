@@ -13,14 +13,14 @@ module.exports = {
   type: 'post',
   params: [],
   category: "image",
-  
+
   async execute(req, res) {
     if (!req.body || !req.body.length) {
-      res.error('You must pass a image in the request body')
+      res.error('You must pass a image in the request body');
       return;
     }
     if (!req.query['format']) {
-      res.error('Include a format')
+      res.error('Include a format');
       return;
     }
     let format = req.query['format'];
@@ -36,8 +36,8 @@ module.exports = {
           image: 'data:image/'+format+';base64,' + outputBuffer.toString('base64')
         })
       })
-      .catch(err => {
-        res.error('Could not generate')
+      .catch(() => {
+        res.error('Could not generate', 500);
         return;
       })
   }
