@@ -33,6 +33,7 @@ module.exports = {
             background: req.query['hex'] ? '#'+req.query['hex'] : '#f00'
           }
         })
+          .png()
           .toBuffer()
           .then(buff => {
             sharp(req.body)
@@ -45,10 +46,18 @@ module.exports = {
                   image: 'data:image/png;base64,' + outputBuffer.toString('base64')
                 })
               })
+              .catch(err => {
+                res.error('Could not generate', 500);
+                return;
+              })
+          })
+          .catch(err => {
+            res.error('Could not create color layer', 500);
+            return;
           })
       })
       .catch(err => {
-        res.error('Could not generate', 500);
+        res.error('Could not read image', 500);
         return;
       })
   }
