@@ -28,25 +28,25 @@ module.exports = {
 
   async execute(req, res){
     if (!req.query["type"]) {
-      res.error('No conversion type recived')
+      res.error('No conversion type recived');
       return;
     }
     if (!req.query["text"]) {
-      res.error('No text recived')
+      res.error('No text recived');
       return;
     }
     if (req.query["type"] === "encode") {
       res.json({
         text: toBin(req.query["text"])
-      })
+      });
       return;
     }
     if (req.query["type"] === "decode") {
       res.json({
         text: toStr(req.query["text"])
-      })
+      });
       return;
     }
-    res.error('Type not valid')
+    res.error('Type not valid');
   }
 }

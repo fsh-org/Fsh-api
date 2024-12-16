@@ -1,7 +1,7 @@
 # Contributing
 ## Endpoints
-To contribute an endpoint you create a file in the `apis` folder.\
-There is a base in `base.ts` or if you alredy know how it works you may use `base_min.ts`.
+To contribute an endpoint create a file in the `apis` folder.\
+There is a base in `base.ts` or `base_min.ts` for a clean base.
 
 > [!NOTE]
 > The bases have a .ts extension so the automatic assigner skips it, your api should be a .js file.\
@@ -24,6 +24,12 @@ This function will do the formating and turning it into a json compatible string
 > - Undercase
 > - No spaces or - (use _ )
 > - Short
+
+### Testing
+We now require tests to be written for new endpoints under the `/tests` directory.\
+The files should be named `API_NAME.test.js`.\
+The tests should at minimum include a test for each possible user error (like forgetting query params) and a successful case.\
+For contributions fixing bugs its recomended (and we might require it) to add a test for it to prevent regressions.
 
 ### Errors
 If theres an error like the user forgot to add a parameter you can use the res.error function:

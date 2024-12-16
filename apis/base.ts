@@ -10,7 +10,7 @@ module.exports = {
     }
   ],
   category: "hidden", // category (only some appear in menu)
-  
+
   async execute(req, res) {
     
   }
