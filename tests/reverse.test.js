@@ -2,7 +2,7 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert');
 const api = require('../apis/reverse.js');
 
-describe('Hex api', () => {
+describe('Reverse api', () => {
   it('should error on empty', async () => {
     let req = {query:{}};
     let errored = false;

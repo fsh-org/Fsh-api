@@ -78,13 +78,13 @@ module.exports = {
     if (req.query["type"] === "encode") {
       res.json({
         result: numberToRoman(Number(req.query["number"]))
-      })
+      });
       return;
     }
     if (req.query["type"] === "decode") {
       res.json({
         result: romanToNumber(req.query["number"])
-      })
+      });
       return;
     }
     res.error('Type not valid');
