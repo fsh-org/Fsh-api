@@ -1,8 +1,8 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert');
-const api = require('../apis/sha256.js');
+const api = require('../apis/reverse.js');
 
-describe('Sha256 api', () => {
+describe('Hex api', () => {
   it('should error on empty', async () => {
     let req = {query:{}};
     let errored = false;
@@ -12,8 +12,8 @@ describe('Sha256 api', () => {
     api.execute(req,res);
     assert.strictEqual(errored, true);
   });
-  it('should encode hello to 2cf24dba5fb0a...', async () => {
-    let req = {query:{text:'hello'}};
+  it('should transform hello to olleh', async () => {
+    let req = {query:{type:'encode',text:'hello'}};
     let errored = false;
     let json = null;
     let res = {
@@ -22,6 +22,6 @@ describe('Sha256 api', () => {
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);
-    assert.strictEqual(json.text, '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824');
+    assert.strictEqual(json.text, 'olleh');
   });
 });

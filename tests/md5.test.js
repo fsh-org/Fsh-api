@@ -2,7 +2,7 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert');
 const api = require('../apis/md5.js');
 
-describe('Hex api', () => {
+describe('MD5 api', () => {
   it('should error on empty', async () => {
     let req = {query:{}};
     let errored = false;
