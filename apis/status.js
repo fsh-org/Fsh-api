@@ -14,6 +14,7 @@ module.exports = {
   async execute(req, res) {
     if (!req.query['status']) {
       res.error('Include a status');
+      return;
     }
     try {
       res.status(Number(req.query['status'] ?? 400));
