@@ -10,18 +10,19 @@ module.exports = {
     }
   ],
   category: "text",
-  
+
   async execute(req, res) {
     if (!req.query['status']) {
-      res.error('Include a status')
+      res.error('Include a status');
+      return;
     }
     try {
-      res.status(Number(req.query['status']) || 400)
+      res.status(Number(req.query['status'] ?? 400));
     } catch (err) {
-      res.status(400)
+      res.status(400);
     }
     res.json({
-      status: Number(req.query['status']) || 400
+      status: Number(req.query['status'] ?? 400)
     })
   }
 }
