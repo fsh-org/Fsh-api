@@ -28,22 +28,7 @@ describe('Status api', () => {
     assert.strictEqual(json.status, 200);
   });
   it('should respond with 400 on 400 query', async () => {
-    let req = {query:{status:'200'}};
-    let errored = false;
-    let status = null;
-    let json = null;
-    let res = {
-      error: function(){errored=true},
-      status: function(s){status=s},
-      json: function(j){json=j}
-    };
-    api.execute(req,res);
-    assert.strictEqual(errored, false);
-    assert.strictEqual(status, 400);
-    assert.strictEqual(json.status, 400);
-  });
-  it('should respond with 400 on 600 query', async () => {
-    let req = {query:{status:'200'}};
+    let req = {query:{status:'400'}};
     let errored = false;
     let status = null;
     let json = null;

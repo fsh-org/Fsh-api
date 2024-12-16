@@ -6,10 +6,10 @@ module.exports = {
   type: 'get',
   params: [],
   category: "text",
-  
+
   async execute(req, res) {
     const random = Math.floor(Math.random() * responses.length);
-    
+
     res.json({
       response: responses[random]
     })

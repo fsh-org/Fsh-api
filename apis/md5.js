@@ -14,6 +14,10 @@ module.exports = {
   category: "text",
 
   async execute(req, res) {
+    if (!req.query['text']) {
+      res.error('Include text');
+      return;
+    }
     res.json({
       text: Buffer.from(crypto.createHash('md5').update(req.query["text"]).digest()).toString('hex')
     })
