@@ -232,7 +232,7 @@ fastify.post('/request', async(req, res) => {
   }
 })
 
-/* Fsh pt *//*
+/* Fsh pt */
 fastify.get('/pt', async(req, res) => {
   try {
     let opt = {
@@ -271,10 +271,15 @@ fastify.get('/pt', async(req, res) => {
   }
 })
 fastify.get('/pt-console', async(req, res) => {
-  res.header('Cache-Control', 'no-cache');
-  res.header('Content-Type', 'text/event-stream');
-  res.header('Connection', 'keep-alive');
-  res.flushHeaders();
+  res.raw.writeHead(200, {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive',
+    'Allow': 'OPTIONS, GET, POST',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*'
+  });
+  res.raw.flushHeaders?.();
 
   let newws = await fetch(`https://${req.query['host']}/api/client/servers/${req.query['id']}/websocket`, {
     method: 'GET',
@@ -288,8 +293,8 @@ fastify.get('/pt-console', async(req, res) => {
   const client = new WebSocketClient();
 
   client.on("connectFailed", function(error) {
-    console.log(error)
-    res.end();
+    console.log(error);
+    res.raw.end();
   });
 
   client.on("connect", async function(connection) {
@@ -300,19 +305,23 @@ fastify.get('/pt-console', async(req, res) => {
     }, 1000)
 
     connection.on("error", function(error) {
-      res.end();
+      res.raw.end();
+      connection.close();
+    });
+    req.raw.on('close', () => {
+      res.raw.end();
       connection.close();
     });
 
     connection.on("message", function(message) {
       if (message.type != "utf8") return;
       if (message.utf8Data.startsWith(`{"event":"token expiring"`)) {
-        res.end();
+        res.raw.end();
         connection.close();
         return;
       }
 
-      res.write('data: '+message.utf8Data+'\n\n')
+      res.raw.write('data: '+message.utf8Data+'\n\n')
     });
   });
 
