@@ -1,6 +1,7 @@
+const ends = [" >:3", " ;u;", " :>", " x3", " >///<", " >~<", " ^^", " OwO", " uwu", " >.<", " :3", "~ ", "~~ "];
 function uwuify(text) {
   text = text
-    .replace('per','paw')
+    .replace('per','paw');
   text = text
     .replace(/r/g, "w")
     .replace(/l/g, "w")
@@ -11,7 +12,7 @@ function uwuify(text) {
     .replace(/th/g, "d")
     .replace(/TH/g, "D")
     .replace(/ove/g, "uv")
-    .replace(/(?:\.|!|\?)/g, function(match){return`${[" ;w;", " ;u;", " owo", " uwu", " >.<", " :3", "~ ", "~~ "][Math.floor(Math.random()*8)]}${match}`});
+    .replace(/(?:\.|!|\?)/g, function(match){return`${ends[Math.floor(Math.random()*ends.length)]}${match}`});
 
   return text;
 }
