@@ -75,6 +75,11 @@ fastify.register(fstatic, {
   prefix: '/download/',
   decorateReply: false
 });
+fastify.register(fstatic, {
+  root: path.join(__dirname, 'meme'),
+  prefix: '/meme/',
+  decorateReply: false
+});
 
 /* -- Mark the files with fs to var apis -- */
 const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
@@ -239,7 +244,7 @@ fastify.post('/request', async(req, res) => {
 fastify.get('/pt', async(req, res) => {
   try {
     let opt = {
-      method: req.query['method'] || 'GET',
+      method: req.query['method'] ?? 'GET',
       headers: {
         authorization: 'Bearer '+req.query['key'],
         "Accept": "application/json",
@@ -247,7 +252,7 @@ fastify.get('/pt', async(req, res) => {
       }
     }
     if (['post', 'put'].includes(opt.method.toLowerCase())) {
-      opt.body = req.query['body'] || '';
+      opt.body = req.query['body'] ?? '';
       try {
         JSON.parse(opt.body);
       } catch (e) {
@@ -257,13 +262,12 @@ fastify.get('/pt', async(req, res) => {
     let da = await fetch (req.query['url'], opt);
     if (da.status === 204) {res.send('ok');return;}
     let stat = da.status;
-    if ((da.headers.get('Content-Type')||'').includes('text/')) {
+    res.status(stat);
+    if ((da.headers.get('Content-Type')??'').includes('text/')) {
       da = await da.text();
-      res.status(stat);
       res.send(da);
     } else {
       da = await da.json();
-      res.status(stat);
       res.json(da);
     }
   } catch (err) {
@@ -332,13 +336,12 @@ fastify.get('/pt-console', async(req, res) => {
 });
 
 /* -- Make last path, this takes all remaining paths -- */
-fastify.all('*', (req,res)=>{
-  let path = '/'+req.url.split('?')[0].split('/').filter(e=>e.length).join('/');
+fastify.setNotFoundHandler((req,res)=>{
+  let path = new URL(req.url, 'https://api.fsh.plus').pathname.replace(/\/+$/m, '');
   if(apis.has(path)){
     apis.get(path).execute(req, res);
   } else {
-    res.status(404)
-    res.type('text/html').send(fs.readFileSync('html/error.html', 'utf8'))
+    res.status(404).type('text/html').send(fs.readFileSync('html/error.html', 'utf8'));
   }
 })
 
