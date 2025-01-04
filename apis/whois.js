@@ -28,6 +28,10 @@ module.exports = {
       .join('.');
     try {
       whois.lookup(url, { timeout: 1000, verbose: true }, function(err, data) {
+        if (!data) {
+          res.error('Could not get data from whois server');
+          return;
+        }
         if (!data[0]) {
           res.error('Could not get data from whois server');
           return;
