@@ -199,6 +199,9 @@ fastify.get("/styleapi.css", (req, res) => {
 fastify.get("/requests.json", (req, res) => {
   res.type('application/json').send(fs.readFileSync('html/requests.json', 'utf8'))
 })
+fastify.get("/robots.txt", (req, res) => {
+  res.type('application/json').send(fs.readFileSync('html/robots.txt', 'utf8'))
+})
 
 /* -- Backend stuff -- */
 fastify.post('/request', async(req, res) => {
