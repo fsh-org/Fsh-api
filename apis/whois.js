@@ -36,21 +36,17 @@ module.exports = {
           res.error('Could not get data from whois server');
           return;
         }
-        data = data[0].data;
-        if (data.startsWith('%')) {
-          res.error('Could not get data')
-          return;
-        }
+        data = data[0].data.split('\n').filter(l=>!l.startsWith('%')).join('\n').trim();
         function get(i) {
-          let e = data.match(new RegExp(i+'\\: .*'));
+          let e = data.match(new RegExp(i+'\\: .*', 'i'));
           e = e ? e[0].replace('REDACTED FOR PRIVACY','No Data') : ': No Data';
           return e.split(': ')[1];
         }
         function getMultiple(i) {
-          return data.match(new RegExp(i+'\\: .*', 'g')).map(e=>e.split(': ')[1]) || ['No Data'];
+          return data.match(new RegExp(i+'\\: .*', 'gi'))?.map(e=>e.split(': ')[1]) || ['No Data'];
         }
         res.json({
-          domain: get('Domain (N|n)ame'),
+          domain: get('Domain Name'),
           id: get('Registry Domain ID'),
           registrar: {
             name: get('Registrar'),
@@ -62,9 +58,9 @@ module.exports = {
               phone: get('Registrar Abuse Contact Phone')
             }
           },
-          expires: get('(Registrar Registration Expiration Date|Registry Expiry Date)'),
-          updated: get('Updated Date'),
-          created: get('Creation Date'),
+          expires: get('Registrar Registration Expiration Date|Registry Expiry Date|Expiration Date'),
+          updated: get('Updated Date|Modification Date'),
+          created: get('Creation Date|Registration Date'),
           registrant: {
             name: get('Registrant Name'),
             id: get('Registry Registrant ID'),
@@ -110,9 +106,9 @@ module.exports = {
             fax: get('Tech Fax'),
             fax_ext: get('Tech Fax Ext')
           },
-          dnssec: get('DNSSEC'),
+          dnssec: get('DNSSEC( signed)?'),
           status: getMultiple('Domain Status'),
-          ns: getMultiple('Name Server')
+          ns: getMultiple('Name Server|DNS')
         })
       })
     } catch (err) {
