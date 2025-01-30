@@ -1,7 +1,6 @@
 // Fsh api
-const path = require("path");
+const path = require("node:path");
 const fs = require("node:fs");
-const WebSocketClient = require('websocket').client;
 
 let process = require('process');
 process.env = require('./env.js');
@@ -300,42 +299,34 @@ fastify.get('/pt-console', async(req, res) => {
     }
   });
   newws = await newws.json();
-  const client = new WebSocketClient();
+  let ws = new WebSocket(newws.data.socket);
 
-  client.on("connectFailed", function(error) {
-    console.log(error);
-    res.raw.end();
-  });
-
-  client.on("connect", async function(connection) {
-    await connection.sendUTF(`{"event":"auth","args":["${newws.data.token}"]}`)
+  ws.onopen = function() {
+    ws.send(`{"event":"auth","args":["${newws.data.token}"]}`)
 
     setTimeout(() => {
-      connection.sendUTF(`{"event":"send logs","args":[null]}`)
+      ws.send(`{"event":"send logs","args":[null]}`)
     }, 1000)
-
-    connection.on("error", function(error) {
+  }
+  ws.onmessage = function(event) {
+    if (event.data.startsWith(`{"event":"token expiring"`)) {
       res.raw.end();
-      connection.close();
-    });
-    req.raw.on('close', () => {
-      res.raw.end();
-      connection.close();
-    });
-
-    connection.on("message", function(message) {
-      if (message.type != "utf8") return;
-      if (message.utf8Data.startsWith(`{"event":"token expiring"`)) {
-        res.raw.end();
-        connection.close();
-        return;
-      }
-
-      res.raw.write('data: '+message.utf8Data+'\n\n')
-    });
+      ws.close();
+      return;
+    }
+    res.raw.write(`data: ${event.data}\n\n`)
+  }
+  ws.onerror = function() {
+    res.raw.end();
+    ws.close();
+  }
+  ws.onclose = function() {
+    res.raw.end();
+  }
+  req.raw.on('close', () => {
+    res.raw.end();
+    ws.close();
   });
-
-  client.connect(newws.data.socket);
 });
 
 /* -- Make last path, this takes all remaining paths -- */
