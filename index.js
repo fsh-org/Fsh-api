@@ -243,42 +243,6 @@ fastify.post('/request', async(req, res) => {
 })
 
 /* Fsh pt */
-fastify.get('/pt', async(req, res) => {
-  try {
-    let opt = {
-      method: req.query['method'] ?? 'GET',
-      headers: {
-        authorization: 'Bearer '+req.query['key'],
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      }
-    }
-    if (['post', 'put'].includes(opt.method.toLowerCase())) {
-      opt.body = req.query['body'] ?? '';
-      try {
-        JSON.parse(opt.body);
-      } catch (e) {
-        opt.headers['Content-Type'] = 'text/plain'
-      }
-    }
-    let da = await fetch (req.query['url'], opt);
-    if (da.status === 204) {res.send('ok');return;}
-    let stat = da.status;
-    res.status(stat);
-    if ((da.headers.get('Content-Type')??'').includes('text/')) {
-      da = await da.text();
-      res.send(da);
-    } else {
-      da = await da.json();
-      res.json(da);
-    }
-  } catch (err) {
-    res.json({
-      err: true,
-      msg: err
-    })
-  }
-})
 fastify.get('/pt-console', async(req, res) => {
   res.raw.writeHead(200, {
     'Cache-Control': 'no-cache',
