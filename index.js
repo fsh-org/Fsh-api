@@ -1,7 +1,6 @@
 // Fsh api
-const path = require("path");
+const path = require("node:path");
 const fs = require("node:fs");
-const WebSocketClient = require('websocket').client;
 
 let process = require('process');
 process.env = require('./env.js');
@@ -73,6 +72,11 @@ fastify.register(fstatic, {
 fastify.register(fstatic, {
   root: path.join(__dirname, 'images'),
   prefix: '/download/',
+  decorateReply: false
+});
+fastify.register(fstatic, {
+  root: path.join(__dirname, 'meme'),
+  prefix: '/meme/',
   decorateReply: false
 });
 
@@ -194,6 +198,9 @@ fastify.get("/styleapi.css", (req, res) => {
 fastify.get("/requests.json", (req, res) => {
   res.type('application/json').send(fs.readFileSync('html/requests.json', 'utf8'))
 })
+fastify.get("/robots.txt", (req, res) => {
+  res.type('application/json').send(fs.readFileSync('html/robots.txt', 'utf8'))
+})
 
 /* -- Backend stuff -- */
 fastify.post('/request', async(req, res) => {
@@ -201,7 +208,10 @@ fastify.post('/request', async(req, res) => {
     let url = req.query['url'];
     url = (url.includes('://') ? '' : 'https://') + url;
 
-    let body = JSON.parse(req.body);
+    let body = req.body;
+    if (typeof body == 'string') {
+      body = JSON.parse(req.body);
+    }
     if (body.headers['content-type']?.startsWith('image/')) {
       body.body = Buffer.from(body.body.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     }
@@ -232,49 +242,17 @@ fastify.post('/request', async(req, res) => {
   }
 })
 
-/* Fsh pt *//*
-fastify.get('/pt', async(req, res) => {
-  try {
-    let opt = {
-      method: req.query['method'] || 'GET',
-      headers: {
-        authorization: 'Bearer '+req.query['key'],
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      }
-    }
-    if (['post', 'put'].includes(opt.method.toLowerCase())) {
-      opt.body = req.query['body'] || '';
-      try {
-        JSON.parse(opt.body);
-      } catch (e) {
-        opt.headers['Content-Type'] = 'text/plain'
-      }
-    }
-    let da = await fetch (req.query['url'], opt);
-    if (da.status === 204) {res.send('ok');return;}
-    let stat = da.status;
-    if ((da.headers.get('Content-Type')||'').includes('text/')) {
-      da = await da.text();
-      res.status(stat);
-      res.send(da);
-    } else {
-      da = await da.json();
-      res.status(stat);
-      res.json(da);
-    }
-  } catch (err) {
-    res.json({
-      err: true,
-      msg: err
-    })
-  }
-})
+/* Fsh pt */
 fastify.get('/pt-console', async(req, res) => {
-  res.header('Cache-Control', 'no-cache');
-  res.header('Content-Type', 'text/event-stream');
-  res.header('Connection', 'keep-alive');
-  res.flushHeaders();
+  res.raw.writeHead(200, {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive',
+    'Allow': 'OPTIONS, GET, POST',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*'
+  });
+  res.raw.flushHeaders?.();
 
   let newws = await fetch(`https://${req.query['host']}/api/client/servers/${req.query['id']}/websocket`, {
     method: 'GET',
@@ -285,48 +263,43 @@ fastify.get('/pt-console', async(req, res) => {
     }
   });
   newws = await newws.json();
-  const client = new WebSocketClient();
+  let ws = new WebSocket(newws.data.socket);
 
-  client.on("connectFailed", function(error) {
-    console.log(error)
-    res.end();
-  });
-
-  client.on("connect", async function(connection) {
-    await connection.sendUTF(`{"event":"auth","args":["${newws.data.token}"]}`)
+  ws.onopen = function() {
+    ws.send(`{"event":"auth","args":["${newws.data.token}"]}`)
 
     setTimeout(() => {
-      connection.sendUTF(`{"event":"send logs","args":[null]}`)
+      ws.send(`{"event":"send logs","args":[null]}`)
     }, 1000)
-
-    connection.on("error", function(error) {
-      res.end();
-      connection.close();
-    });
-
-    connection.on("message", function(message) {
-      if (message.type != "utf8") return;
-      if (message.utf8Data.startsWith(`{"event":"token expiring"`)) {
-        res.end();
-        connection.close();
-        return;
-      }
-
-      res.write('data: '+message.utf8Data+'\n\n')
-    });
+  }
+  ws.onmessage = function(event) {
+    if (event.data.startsWith(`{"event":"token expiring"`)) {
+      res.raw.end();
+      ws.close();
+      return;
+    }
+    res.raw.write(`data: ${event.data}\n\n`)
+  }
+  ws.onerror = function() {
+    res.raw.end();
+    ws.close();
+  }
+  ws.onclose = function() {
+    res.raw.end();
+  }
+  req.raw.on('close', () => {
+    res.raw.end();
+    ws.close();
   });
-
-  client.connect(newws.data.socket);
 });
 
 /* -- Make last path, this takes all remaining paths -- */
-fastify.all('*', (req,res)=>{
-  let path = '/'+req.url.split('?')[0].split('/').filter(e=>e.length).join('/');
+fastify.setNotFoundHandler((req,res)=>{
+  let path = new URL(req.url, 'https://api.fsh.plus').pathname.replace(/\/+$/m, '');
   if(apis.has(path)){
     apis.get(path).execute(req, res);
   } else {
-    res.status(404)
-    res.type('text/html').send(fs.readFileSync('html/error.html', 'utf8'))
+    res.status(404).type('text/html').send(fs.readFileSync('html/error.html', 'utf8'));
   }
 })
 
