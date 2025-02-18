@@ -1,0 +1,4 @@
+user-agent: *
+disallow: /*
+allow: /
+allow: /requests
