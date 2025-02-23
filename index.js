@@ -101,7 +101,7 @@ const apisFiles = getAllFiles('.js', path.join(__dirname, 'apis'))
 
 /* -- Assigning paths to files + Checks -- */
 for (const file of apisFiles) {
-	const apiFile = require(file);
+  const apiFile = require(file);
   if (!apiFile['path']) {
     throw new Error(`[ERROR] The command at ${file} is missing a required "path" property.`);
   }
@@ -208,6 +208,7 @@ fastify.post('/request', async(req, res) => {
     let url = req.query['url'];
     url = (url.includes('://') ? '' : 'https://') + url;
 
+    let typ;
     let body = req.body;
     if (typeof body == 'string') {
       body = JSON.parse(req.body);
@@ -215,13 +216,25 @@ fastify.post('/request', async(req, res) => {
     if (body.headers['content-type']?.startsWith('image/')) {
       body.body = Buffer.from(body.body.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     }
+    if (body.mime) {
+      typ = body.mime;
+    }
 
     let now = (new Date()/1);
 
     let da = await fetch(url, body);
-    let cont = await da.text();
+    now = Date.now() - now;
 
-    now = (new Date()/1) - now;
+    let cont;
+    let alt = '';
+    typ ??= da.headers.get('content-type').split('/')[0];
+    if (['image', 'audio', 'video'].includes(typ)) {
+      cont = await da.arrayBuffer();
+      alt = `data:${da.headers.get('content-type')};base64,${Buffer.from(cont).toString("base64")}`;
+      cont = new TextDecoder().decode(cont);
+    } else {
+      cont = await da.text();
+    }
 
     let hed = {}
     da.headers.forEach((value, key) => {
@@ -232,7 +245,8 @@ fastify.post('/request', async(req, res) => {
       headers: hed,
       status: da.status,
       time: now,
-      content: cont
+      content: cont,
+      alt
     })
   } catch (err) {
     res.json({
