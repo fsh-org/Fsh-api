@@ -12,18 +12,18 @@ module.exports = {
     }
   ],
   category: "text",
-  
+
   async execute(req, res) {
     if (req.query['code']) {
       let code = codes[String(req.query['code'])];
       if (code.title?.length) {
-        res.json(code)
+        res.json(code);
       } else {
-        res.error('Code not found')
+        res.error('Code not found');
       }
     } else {
       let keys = Object.keys(codes);
-      res.json(codes[keys[keys.length * Math.random() << 0]])
+      res.json(codes[keys[keys.length * Math.random() << 0]]);
     }
   }
 }
