@@ -342,7 +342,7 @@
 </sl-details>
 <sl-details summary="IFrame"><p>Links adapted to point to site</p><iframe id="ifr"></iframe></sl-details>`;
           if (['image', 'audio', 'video'].includes(q.split('/')[0])) {
-            document.getElementById('ifr').src = url
+            document.getElementById('ifr').src = e.alt;
           } else if (q != 'text/html' && ['text', 'application'].includes(q.split('/')[0])) {
             document.getElementById('ifr').contentDocument.write('<pre>'+y+'</pre>')
           } else {
