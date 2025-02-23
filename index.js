@@ -227,7 +227,8 @@ fastify.post('/request', async(req, res) => {
 
     let cont;
     let alt = '';
-    typ ??= da.headers.get('content-type').split('/')[0];
+    typ ??= da.headers.get('content-type');
+    typ = typ.split('/')[0];
     if (['image', 'audio', 'video'].includes(typ)) {
       cont = await da.arrayBuffer();
       alt = `data:${da.headers.get('content-type')};base64,${Buffer.from(cont).toString("base64")}`;
