@@ -227,7 +227,7 @@ fastify.post('/request', async(req, res) => {
 
     let cont;
     let alt = '';
-    typ ??= da.headers.get('content-type');
+    typ ??= da.headers.get('content-type')??'text/plain';
     typ = typ.split('/')[0];
     if (['image', 'audio', 'video'].includes(typ)) {
       cont = await da.arrayBuffer();
@@ -252,7 +252,7 @@ fastify.post('/request', async(req, res) => {
   } catch (err) {
     res.json({
       err: true,
-      msg: err
+      msg: err.toString()
     })
   }
 })
