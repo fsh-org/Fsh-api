@@ -36,18 +36,23 @@ module.exports = {
           res.error('Could not get data from whois server');
           return;
         }
-        data = data[0].data.split('\n').filter(l=>!l.startsWith('%')).join('\n').trim();
+        data = data.map(d=>d.data.replaceAll('\r\n','\n').replace(/\>\>\>([^¬]|¬)+/, '').split('\n').map(l=>l.trim()).filter(l=>!l.startsWith('%')));
+        data.sort((a,b)=>b.length-a.length);
+        data = data[0].join('\n').trim();
         function get(i) {
-          let e = data.match(new RegExp(i+'\\: .*', 'i'));
-          e = e ? e[0].replace('REDACTED FOR PRIVACY','No Data') : ': No Data';
-          return e.split(': ')[1];
+          let e = data.match(new RegExp(`^(${i}): .*$`, 'mi'));
+          e = e?e[0].replace('REDACTED FOR PRIVACY','No Data').replace('DATA REDACTED','No Data'):'No Data';
+          return e.split(':').slice(1).join(':').trim();
         }
         function getMultiple(i) {
-          return data.match(new RegExp(i+'\\: .*', 'gi'))?.map(e=>e.split(': ')[1]) || ['No Data'];
+          return data.match(new RegExp(`^(${i}): .*$`, 'gmi'))?.map(e=>e.split(':').slice(1).join(':').trim()).filter(e=>e.length) ?? ['No Data'];
         }
         res.json({
           domain: get('Domain Name'),
           id: get('Registry Domain ID'),
+          expires: get('Registrar Registration Expiration Date|Registry Expiry Date|Expiration Date'),
+          updated: get('Updated Date|Modification Date'),
+          created: get('Creation Date|Registration Date'),
           registrar: {
             name: get('Registrar'),
             id: get('Registrar IANA ID'),
@@ -58,9 +63,6 @@ module.exports = {
               phone: get('Registrar Abuse Contact Phone')
             }
           },
-          expires: get('Registrar Registration Expiration Date|Registry Expiry Date|Expiration Date'),
-          updated: get('Updated Date|Modification Date'),
-          created: get('Creation Date|Registration Date'),
           registrant: {
             name: get('Registrant Name'),
             id: get('Registry Registrant ID'),
