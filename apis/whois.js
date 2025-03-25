@@ -27,7 +27,7 @@ module.exports = {
       .slice(-2)
       .join('.');
     try {
-      whois.lookup(url, { timeout: 1000, verbose: true }, function(err, data) {
+      whois.lookup(url, { timeout: 2000, verbose: true }, function(err, data) {
         if (!data) {
           res.error('Could not get data from whois server');
           return;
@@ -36,19 +36,26 @@ module.exports = {
           res.error('Could not get data from whois server');
           return;
         }
-        data = data.map(d=>d.data.replaceAll('\r\n','\n').replace(/\>\>\>([^¬]|¬)+/, '').split('\n').map(l=>l.trim()).filter(l=>!l.startsWith('%')));
+        data = data.map(d=>d.data
+          .replaceAll('\r\n','\n')
+          .replaceAll(/\t+/g,' ')
+          .replace(/\>\>\>([^¬]|¬)+/,'')
+          .split('\n')
+          .map(l=>l.replace('REDACTED FOR PRIVACY','').replace('DATA REDACTED','').trim().replace(/^[a-zA-Z ]+?:$/m,''))
+          .filter(l=>!l.startsWith('%')&&l.length>0));
         data.sort((a,b)=>b.length-a.length);
-        data = data[0].join('\n').trim();
+        data = data.flat().join('\n').trim();
         function get(i) {
           let e = data.match(new RegExp(`^(${i}): .*$`, 'mi'));
-          e = e?e[0].replace('REDACTED FOR PRIVACY','No Data').replace('DATA REDACTED','No Data'):'No Data';
+          if (!e) e = [':'];
+          e = e[0];
           return e.split(':').slice(1).join(':').trim();
         }
         function getMultiple(i) {
-          return data.match(new RegExp(`^(${i}): .*$`, 'gmi'))?.map(e=>e.split(':').slice(1).join(':').trim()).filter(e=>e.length) ?? ['No Data'];
+          return Array.from(new Set(data.match(new RegExp(`^(${i}): .*$`, 'gmi'))?.map(e=>e.split(':').slice(1).join(':').trim()).filter(e=>e.length) ?? []));
         }
         res.json({
-          domain: get('Domain Name'),
+          domain: get('Domain Name|domain|ascii'),
           id: get('Registry Domain ID'),
           expires: get('Registrar Registration Expiration Date|Registry Expiry Date|Expiration Date'),
           updated: get('Updated Date|Modification Date'),
@@ -110,7 +117,7 @@ module.exports = {
           },
           dnssec: get('DNSSEC( signed)?'),
           status: getMultiple('Domain Status'),
-          ns: getMultiple('Name Server|DNS')
+          ns: getMultiple('Name Server|DNS|nserver')
         })
       })
     } catch (err) {
