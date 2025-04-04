@@ -276,7 +276,7 @@
           }
         }
         // Fetch body
-        if (!['GET','HEAD', 'DELETE'].includes(con.method)) {
+        if (!['GET', 'HEAD', 'DELETE'].includes(con.method)) {
           if (body_type==='file') {
             let fil = document.getElementById('file-body').files[0];
             con.headers['content-type'] = fil.type;
@@ -335,27 +335,29 @@
 <sl-badge variant="${e.time > 500 ? 'danger' : 'primary'}">${e.time}ms</sl-badge>
 <sl-badge variant="neutral">${q}</sl-badge>
 <sl-details summary="Headers"><pre>${x}</pre></sl-details>
-<sl-details summary="Response text" class="dso">
+${con.method!=='HEAD'?`<sl-details summary="Response text" class="dso">
   <button onclick="copy()">Copy <svg fill="#fff" width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button>
   <pre>${y.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre>
 </sl-details>
-<sl-details summary="IFrame"><p>Links adapted to point to site</p><iframe id="ifr"></iframe></sl-details>`;
-          if (['image', 'audio', 'video'].includes(q.split('/')[0])) {
-            document.getElementById('ifr').src = e.alt;
-          } else if (q != 'text/html' && ['text', 'application'].includes(q.split('/')[0])) {
-            document.getElementById('ifr').contentDocument.write('<pre>'+y+'</pre>')
-          } else {
-            y = y
-              .replaceAll(/srcset=".+?"/g, function(match) {
-                return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
-              })
-              .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
-                return match.split('"')[0] + '"' + (new URL(match.split('"')[1], url)) + '"';
-              })
-              .replaceAll('https://google.com/images','https://www.google.com/images')
-              .replace('data-color-mode="auto"','data-color-mode="dark"');
+<sl-details summary="IFrame"><p>Links adapted to point to site</p><iframe id="ifr"></iframe></sl-details>`:''}`;
+          if (con.method!=='HEAD') {
+            if (['image', 'audio', 'video'].includes(q.split('/')[0])) {
+              document.getElementById('ifr').src = e.alt;
+            } else if (q != 'text/html' && ['text', 'application'].includes(q.split('/')[0])) {
+              document.getElementById('ifr').contentDocument.write('<pre>'+y+'</pre>')
+            } else {
+              y = y
+                .replaceAll(/srcset=".+?"/g, function(match) {
+                  return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
+                })
+                .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
+                  return match.split('"')[0] + '"' + (new URL(match.split('"')[1], url)) + '"';
+                })
+                .replaceAll('https://google.com/images','https://www.google.com/images')
+                .replace('data-color-mode="auto"','data-color-mode="dark"');
 
-            document.getElementById('ifr').contentDocument.write(y)
+              document.getElementById('ifr').contentDocument.write(y);
+            }
           }
         })
       }
