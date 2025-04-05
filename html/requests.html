@@ -6,6 +6,7 @@
     <link rel="icon" href="https://fsh.plus/fsh.png" type="image/png">
     <meta name="description" content="Fsh api requests, easy to use online api checker">
     <!-- ------- -->
+    <link rel="stylesheet" href="https://fsh.plus/media/style.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,17 +22,6 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/details/details.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/split.js"></script>
     <style>
-      :root {
-        --bg-0: #0c0c0c;
-        --bg-1: #181818;
-        --bg-2: #252525;
-        --bg-3: #333333;
-
-        --text-0: #ffffff;
-        --text-1: #dddddd;
-        --text-2: #bbbbbb;
-        --text-3: #888888;
-      }
       body {
         display: flex;
         flex-direction: row;
@@ -39,11 +29,15 @@
         width: 100dvw;
         height: 100vh;
         height: 100dvh;
-        margin: 0px;
-        padding: 0px;
-        color: var(--text-1);
-        font-family: Arial;
       }
+      .modal-close {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: transparent;
+        border: none;
+      }
+
       .gutter {
         background-color: var(--bg-2);
         background-repeat: no-repeat;
@@ -53,30 +47,11 @@
         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
         cursor: col-resize;
       }
-      .rab {
-        display: flex;
-        height: 20%;
-        max-height: 35px;
-        margin: 4px;
-        padding: 4px;
-        border-radius: 1rem;
-        background-color: var(--bg-2);
-      }
-      option {
-        color: var(--text-1);
-        background-color: var(--bg-1);
-      }
-      sl-details {
-        max-height: 70vh;
-        overflow: auto;
-      }
-      pre {
-        white-space: pre-wrap;
-        word-wrap: break-word;
-      }
+
       iframe {
         width: 100%;
         height: 55vh;
+        background: white;
       }
       input {
         min-width:0;
@@ -92,6 +67,46 @@
       .card-api:hover {
         background-color: var(--bg-3);
       }
+
+      .url-bar {
+        display: flex;
+        height: 20%;
+        max-height: 35px;
+        margin: 4px;
+        padding: 4px;
+        border-radius: 1rem;
+        background-color: var(--bg-2);
+      }
+      #type {
+        padding: 0px;
+        border: none;
+        border-radius: 0.25rem;
+        background: none;
+      }
+      #url {
+        flex: 1;
+        margin: 0px;
+        padding: 0px 2px;
+        border: none;
+        border-radius: 0.5rem;
+        background: none;
+      }
+      .api-drop {
+        color: var(--text-1);
+        margin-inline: 5px;
+        border: none;
+        background-color: var(--bg-3);
+      }
+      .sendbtn {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        height: 100%;
+        color: var(--text-1);
+        border: none;
+        background-color: var(--bg-3);
+      }
+
       .search {
         width: fit-content;
         margin-left: auto;
@@ -110,7 +125,6 @@
       #apis {
         border-radius: 0.5rem;
         width: 70vw;
-        height: 85vh;
       }
       #lis {
         max-height: 75vh;
@@ -118,15 +132,19 @@
         padding: 10px;
         margin-top: 8px;
       }
-      .modal-close {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background-color: transparent;
-        border: none;
+
+      #res details {
+        margin: 4px;
+        padding: 10px;
+        border-radius: 0.5rem;
+        background: var(--bg-2);
       }
-      button, select {
-        cursor: pointer;
+      #res details pre {
+        max-height: 70vh;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin: 0px;
+        overflow: auto;
       }
     </style>
   </head>
@@ -185,8 +203,8 @@
       </sl-tab-group>
     </div>
     <div slot="end" style="overflow-y:auto">
-      <div class="rab">
-        <select id="type" value="GET" style="border:none;background:none;" aria-label="Request method">
+      <div class="url-bar">
+        <select id="type" value="GET" aria-label="Request method">
           <option value="GET">GET</option>
           <option value="HEAD">HEAD</option>
           <option value="POST">POST</option>
@@ -196,8 +214,8 @@
           <option value="PATCH">PATCH</option>
         </select>
         <sl-divider vertical style="--color:#666"></sl-divider>
-        <input id="url" placeholder="https://fsh.plus" style="border:none;background:none;flex:1;" onkeyup="if(event.key=='Enter'){send()}" aria-label="Url to request">
-        <button onclick="document.getElementById('apis').showModal()" style="margin-right:5px;border-radius:0.75rem;border:none;background-color:var(--bg-3);" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15" fill="#fff"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
+        <input id="url" placeholder="https://fsh.plus" onkeyup="if(event.key=='Enter'){send()}" aria-label="Url to request">
+        <button onclick="document.getElementById('apis').showModal()" class="api-drop" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15" fill="#fff"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
         <dialog id="apis">
           <button class="modal-close" onclick="this.parentElement.close()">x</button>
           <h1 style="margin:0;text-align:center;">Fsh endpoints</h1>
@@ -207,19 +225,24 @@
           </div>
           <div id="lis"></div>
           <script>
+            const catIcon = {
+              text: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M89.8313 16.254C78.9863 16.254 70.0618 16.8183 63.0578 17.9471C56.2796 19.0758 50.6312 21.4462 46.1125 25.0582C41.8197 28.6702 38.3176 33.7496 35.6064 40.2963C33.1211 46.6173 30.7487 55.0829 28.4894 65.6931H19L21.3723 0H239.628L242 65.6931H232.511C230.251 55.0829 227.766 46.6173 225.055 40.2963C222.569 33.7496 219.18 28.6702 214.888 25.0582C210.595 21.4462 204.946 19.0758 197.942 17.9471C190.938 16.8183 181.901 16.254 170.83 16.254H150.157V214.349C150.157 221.347 150.608 226.991 151.512 231.28C152.416 235.57 154.11 238.956 156.596 241.439C159.307 243.922 163.035 245.728 167.78 246.857C172.75 247.76 179.189 248.437 187.097 248.889V256H74.5805V248.889C82.4884 248.437 88.8146 247.76 93.5593 246.857C98.304 245.728 101.919 243.81 104.404 241.101C107.116 238.166 108.81 234.215 109.488 229.249C110.392 224.282 110.843 217.735 110.843 209.608V16.254H89.8313Z"/></svg>',
+              image: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 40C0 28.9543 8.95431 20 20 20H236C247.046 20 256 28.9543 256 40V215C256 226.046 247.046 235 236 235H20C8.95431 235 0 226.046 0 215V40ZM78 68C78 81.8071 66.8071 93 53 93C39.1929 93 28 81.8071 28 68C28 54.1929 39.1929 43 53 43C66.8071 43 78 54.1929 78 68ZM150.135 91.8679C153.266 86.7107 160.734 86.7107 163.865 91.8679L234.817 208.76C238.075 214.127 234.22 221 227.952 221H142.029H86.048H26.9705C20.3787 221 16.6463 213.367 20.6525 208.08L78.1821 132.152C81.3664 127.949 87.6335 127.949 90.8179 132.152L110.176 157.7L150.135 91.8679Z"/></svg>',
+              audio: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M144 23.875C144 15.6598 150.692 8.89306 158.826 10.0472C168.438 11.4111 177.863 14.0985 186.861 18.0583C200.449 24.0386 212.796 32.8041 223.196 43.8543C233.596 54.9045 241.846 68.0229 247.475 82.4607C253.103 96.8984 256 112.373 256 128C256 143.627 253.103 159.102 247.475 173.539C241.846 187.977 233.596 201.096 223.196 212.146C212.796 223.196 200.449 231.961 186.861 237.942C177.863 241.902 168.438 244.589 158.826 245.953C150.692 247.107 144 240.34 144 232.125C144 223.91 150.717 217.39 158.788 215.856C164.725 214.728 170.546 212.921 176.145 210.456C186.337 205.971 195.597 199.397 203.397 191.109C211.197 182.822 217.384 172.983 221.606 162.155C225.827 151.326 228 139.72 228 128C228 116.28 225.827 104.674 221.606 93.8455C217.384 83.0172 211.197 73.1784 203.397 64.8907C195.597 56.6031 186.337 50.029 176.145 45.5438C170.546 43.0794 164.726 41.2721 158.788 40.1439C150.717 38.6103 144 32.0902 144 23.875Z"/><path d="M143.5 64.3875C143.5 56.9938 149.546 50.8729 156.808 52.2643C161.876 53.2354 166.844 54.7609 171.627 56.8232C180.545 60.6677 188.647 66.3027 195.472 73.4063C202.297 80.51 207.711 88.9433 211.405 98.2247C215.099 107.506 217 117.454 217 127.5C217 137.546 215.099 147.494 211.405 156.775C207.711 166.057 202.297 174.49 195.472 181.594C188.647 188.697 180.545 194.332 171.627 198.177C166.844 200.239 161.876 201.765 156.808 202.736C149.546 204.127 143.5 198.006 143.5 190.613C143.5 183.219 149.616 177.409 156.699 175.29C158.422 174.774 160.12 174.157 161.783 173.44C167.579 170.941 172.846 167.278 177.282 162.661C181.718 158.044 185.237 152.562 187.638 146.529C190.039 140.496 191.275 134.03 191.275 127.5C191.275 120.97 190.039 114.504 187.638 108.471C185.237 102.438 181.718 96.9565 177.282 92.3391C172.846 87.7217 167.579 84.059 161.783 81.5601C160.12 80.8431 158.422 80.226 156.699 79.7104C149.616 77.5911 143.5 71.7812 143.5 64.3875Z"/><path d="M0 84C0 72.9543 8.95431 64 20 64H43.0513C46.8724 64 50.5493 62.5418 53.3318 59.923L114.259 2.57959C116.02 0.922635 118.346 0 120.764 0C128.626 0 135 6.37375 135 14.2362V241.764C135 249.626 128.626 256 120.764 256C118.346 256 116.02 255.077 114.259 253.42L53.3318 196.077C50.5493 193.458 46.8724 192 43.0513 192H20C8.9543 192 0 183.046 0 172V84Z"/></svg>'
+            };
             let data;
             function mod() {
               let search = document.getElementById('search').value;
               let filtered = [];
               Object.keys(data.endpoints).forEach(end => {
                 if (data.endpoints[end].path.includes(search) || data.endpoints[end].info.includes(search) || data.endpoints[end].params.join(',').includes(search)) {
-                  filtered.push(data.endpoints[end])
+                  filtered.push(data.endpoints[end]);
                 }
               })
               let h = '';
               filtered.forEach(ee => {
                 h += `<div onclick="document.getElementById('url').value='api.fsh.plus${ee.path}';document.getElementById('type').value='${ee.type.toUpperCase()}';" class="card-api">
-  <p style="margin:0;">${ee.path} | ${ee.category}${ee.params.length > 0 ? ' | ' : ''}${ee.params.map(p=>`${p.name}${p.required ? '*' : ''}`).join(' ')}</p>
+  <p style="display:flex;gap:5px;align-items:center;margin:0;">${catIcon[ee.category]??'?'} ${ee.path}${ee.params.length > 0 ? ' | ' : ''}${ee.params.map(p=>`${p.name}${p.required ? '*' : ''}`).join(' ')}</p>
   <label style="cursor:pointer">${ee.info}</label>
 </div>`;
               })
@@ -228,14 +251,14 @@
             fetch('/apis').then(async da => {
               da = await da.json();
               data = da;
-              mod()
+              mod();
             })
             function search() {
-              mod()
+              mod();
             }
           </script>
         </dialog>
-        <button onclick="send()" style="border-radius:0.75rem;border:none;height:100%;background-color:var(--bg-3);" aria-label="Send request">Send <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom:-3px;fill:var(--text-1);" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
+        <button onclick="send()" class="sendbtn" aria-label="Send request">Send <svg xmlns="http://www.w3.org/2000/svg" style="fill:var(--text-1)" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
       </div>
       <p id="res"></p>
     </div>
@@ -254,17 +277,17 @@
       async function send() {
         // Fetch settings
         let url = document.getElementById('url').value;
-        url = (url.includes('://') ? '' : 'https://') + url;
-        if (url == "fsh") {
-          alert('fsh')
+        if (url === 'fsh') {
+          alert('fsh');
           return;
         }
+        url = (url.includes('://') ? '' : 'https://') + url;
         let con = {
           method: document.getElementById('type').value,
           headers: {
             accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "accept-language": "en;q=1.0",
-            "sec-ch-ua": '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
+            "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
             "sec-fetch-dest": "document",
@@ -272,7 +295,7 @@
             "sec-fetch-site": "none",
             "sec-fetch-user": "?1",
             "sec-gpc": "1",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
           }
         }
         // Fetch body
@@ -315,7 +338,7 @@
           }
         }
         // The fetch
-        fetch('./request?url='+encodeURIComponent(url), {method:'post',body:JSON.stringify(con)}).then(async e => {
+        fetch('/request?url='+encodeURIComponent(url), {method:'post',body:JSON.stringify(con)}).then(async e => {
           e = await e.json();
 
           if (e.err) {
@@ -334,27 +357,39 @@
 <sl-badge variant="${['neutral','primary','success','warning','danger','danger'][s.split('')[0]] || 'neutral'}">${s}</sl-badge>
 <sl-badge variant="${e.time > 500 ? 'danger' : 'primary'}">${e.time}ms</sl-badge>
 <sl-badge variant="neutral">${q}</sl-badge>
-<sl-details summary="Headers"><pre>${x}</pre></sl-details>
-${con.method!=='HEAD'?`<sl-details summary="Response text" class="dso">
+<details>
+  <summary>Headers</summary>
+  <pre>${x}</pre>
+</details>
+${con.method!=='HEAD'?`<details class="dso">
+  <summary>Response</summary>
   <button onclick="copy()">Copy <svg fill="#fff" width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button>
   <pre>${y.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre>
-</sl-details>
-<sl-details summary="IFrame"><p>Links adapted to point to site</p><iframe id="ifr"></iframe></sl-details>`:''}`;
+</details>
+<details>
+  <summary>IFrame</summary>
+  <iframe id="ifr"></iframe>
+</details>`:''}`;
           if (con.method!=='HEAD') {
             if (['image', 'audio', 'video'].includes(q.split('/')[0])) {
               document.getElementById('ifr').src = e.alt;
             } else if (q != 'text/html' && ['text', 'application'].includes(q.split('/')[0])) {
               document.getElementById('ifr').contentDocument.write('<pre>'+y+'</pre>')
             } else {
+              // Add base and other
+              document.getElementById('ifr').contentDocument.write(`<base href="${e.url}">
+<script>
+// Prevent trickery
+window.location.assign = ()=>{};
+window.location.replace = ()=>{};
+history.pushState = ()=>{};
+history.replaceState = ()=>{};
+<\/script>`);
+
+              // Modifications
               y = y
-                .replaceAll(/srcset=".+?"/g, function(match) {
-                  return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
-                })
-                .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
-                  return match.split('"')[0] + '"' + (new URL(match.split('"')[1], url)) + '"';
-                })
-                .replaceAll('https://google.com/images','https://www.google.com/images')
-                .replace('data-color-mode="auto"','data-color-mode="dark"');
+                .replaceAll(/<meta .*?http-equiv="Content-Security-Policy".*?>/gi, '') // Remove csp
+                .replace('data-color-mode="auto"','data-color-mode="dark"'); // Try and set the color mode to dark
 
               document.getElementById('ifr').contentDocument.write(y);
             }
