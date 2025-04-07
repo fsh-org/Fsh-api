@@ -243,9 +243,10 @@ fastify.post('/request', async(req, res) => {
     });
 
     res.json({
-      headers: hed,
+      url: da.url,
       status: da.status,
       time: now,
+      headers: hed,
       content: cont,
       alt
     })
