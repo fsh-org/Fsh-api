@@ -16,10 +16,8 @@
     <script src="https://account.fsh.plus/script.js"></script>
     <link rel="manifest" href="./requests.json">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/themes/dark.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/shoelace.js" ></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/badge/badge.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/components/details/details.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/themes/dark.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/shoelace.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/split.js"></script>
     <style>
       body {
@@ -48,9 +46,33 @@
         cursor: col-resize;
       }
 
+      #tabs {
+        display: flex;
+      }
+      #tabs button, #trr button {
+        flex: 1;
+        padding: 10px 10px;
+        border: none;
+        border-radius: 0px;
+        transition: background 500ms, color 500ms;
+      }
+      #tabs button[selected], #trr button[selected] {
+        border-bottom: 2px var(--aqua-2) solid;
+      }
+
+      div[page] > div:has(input) {
+        display: flex;
+      }
+      div[page] > div > input {
+        flex: 1;
+        margin: 0px;
+        border: 2px var(--bg-3) solid;
+        border-radius: 0.25rem;
+      }
+
       iframe {
         width: 100%;
-        height: 55vh;
+        aspect-ratio: 16 / 9;
         background: white;
       }
       input {
@@ -82,6 +104,10 @@
         border: none;
         border-radius: 0.25rem;
         background: none;
+      }
+      .divider {
+        margin-inline: 5px;
+        border: 1px var(--text-2) solid;
       }
       #url {
         flex: 1;
@@ -146,34 +172,57 @@
         margin: 0px;
         overflow: auto;
       }
+      .badge {
+        font-size: 75%;
+        padding: 2px 5px;
+        border-radius: 0.25rem;
+        color: var(--text-0);
+        background: var(--color, var(--black-1));
+      }
+      .copier {
+        display: inline-flex;
+        gap: 5px;
+        align-items: center;
+        padding: 2px;
+      }
     </style>
   </head>
   <body>
+    <script>
+      window.data = {
+        params: [],
+        body_type: 'text'
+      };
+    </script>
     <div slot="start" style="overflow-y:auto">
-      <sl-tab-group>
-        <sl-tab slot="nav" panel="param">Params</sl-tab>
-        <sl-tab slot="nav" panel="body">Body</sl-tab>
-        <sl-tab slot="nav" panel="head">Headers</sl-tab>
-        <sl-tab slot="nav" panel="auth">Auth</sl-tab>
-        <sl-tab-panel name="param"><div id="para">
-          <sl-button-group>
-            <sl-input placeholder="Key"></sl-input>
-            <sl-input placeholder="Value"></sl-input>
-          </sl-button-group>
-        </div></sl-tab-panel>
-        <sl-tab-panel name="body"><sl-tab-group id="body">
-          <sl-tab slot="nav" panel="text">Text</sl-tab>
-          <sl-tab slot="nav" panel="file">File</sl-tab>
-          <sl-tab-panel name="text"><sl-textarea id="text-body" resize="auto" style="width:100%;height:100%;box-sizing:border-box;"></sl-textarea></sl-tab-panel>
-          <sl-tab-panel name="file"><input type="file" id="file-body"></sl-tab-panel>
-        </sl-tab-panel>
-        <sl-tab-panel name="head"><div id="hed">
-          <sl-button-group>
-            <sl-input placeholder="Key"></sl-input>
-            <sl-input placeholder="Value"></sl-input>
-          </sl-button-group>
-        </div></sl-tab-panel>
-        <sl-tab-panel name="auth">
+      <div id="tabs">
+        <button page="params" selected>Params</button>
+        <button page="body">Body</button>
+        <button page="headers">Headers</button>
+        <button page="auth">Auth</button>
+      </div>
+      <div id="pages">
+        <div page="params" id="para">
+          <div>
+            <input placeholder="Key">
+            <input placeholder="Value">
+          </div>
+        </div>
+        <div page="body">
+          <sl-tab-group id="body">
+            <sl-tab slot="nav" panel="text">Text</sl-tab>
+            <sl-tab slot="nav" panel="file">File</sl-tab>
+            <sl-tab-panel name="text"><sl-textarea id="text-body" resize="auto" style="width:100%;height:100%;box-sizing:border-box;"></sl-textarea></sl-tab-panel>
+            <sl-tab-panel name="file"><input type="file" id="file-body"></sl-tab-panel>
+          </sl-tab-group>
+        </div>
+        <div page="headers" id="hed">
+          <div>
+            <input placeholder="Key">
+            <input placeholder="Value">
+          </div>
+        </div>
+        <div page="auth" name="auth">
           <div id="AuthIn"><p>No auth</p></div>
           <sl-select value="None" id="auth" style="position:absolute;bottom:0;width:25%;">
             <sl-option value="None">None</sl-option>
@@ -199,8 +248,56 @@
               }
             })
           </script>
-        </sl-tab-panel>
-      </sl-tab-group>
+        </div>
+      </div>
+      <script>
+        // Tabs
+        function hideAllTabs() {
+          document.querySelector(`#tabs button[selected]`).removeAttribute('selected');
+          Array.from(document.querySelectorAll('#pages div[page]')).forEach(page=>page.style.display='none');
+        }
+        function showTab(tab) {
+          document.querySelector(`#tabs button[page="${tab}"]`).setAttribute('selected', true);
+          document.querySelector(`#pages div[page="${tab}"]`).style.display = '';
+        }
+        Array.from(document.querySelectorAll('#tabs button'))
+          .forEach(tab => {
+            tab.onclick = ()=>{
+              hideAllTabs();
+              showTab(tab.getAttribute('page'));
+            }
+          })
+        hideAllTabs();
+        showTab('params');
+        // Params
+        document.getElementById('para').addEventListener('input', function(event) {
+          const parent = event.target.parentElement;
+          if (parent.parentElement.children[parent.parentElement.children.length - 1] === parent) {
+          document.getElementById('para').insertAdjacentHTML('beforeend', `<div>
+  <input placeholder="Key">
+  <input placeholder="Value">
+</div>`)
+          } else {
+            if (!parent.children[0].value && !parent.children[1].value) {
+              parent.remove();
+            }
+          }
+        });
+        // Headers
+        document.getElementById('hed').addEventListener('input', function(event) {
+          const parent = event.target.parentElement;
+          if (parent.parentElement.children[parent.parentElement.children.length - 1] === parent) {
+          document.getElementById('hed').insertAdjacentHTML('beforeend', `<div>
+  <input placeholder="Key">
+  <input placeholder="Value">
+</div>`)
+          } else {
+            if (!parent.children[0].value && !parent.children[1].value) {
+              parent.remove();
+            }
+          }
+        });
+      </script>
     </div>
     <div slot="end" style="overflow-y:auto">
       <div class="url-bar">
@@ -213,7 +310,7 @@
           <option value="OPTIONS">OPTIONS</option>
           <option value="PATCH">PATCH</option>
         </select>
-        <sl-divider vertical style="--color:var(--text-2)"></sl-divider>
+        <label class="divider"></label>
         <input id="url" placeholder="https://fsh.plus" onkeyup="if(event.key=='Enter'){send()}" aria-label="Url to request">
         <button onclick="document.getElementById('apis').showModal()" class="api-drop" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
         <dialog id="apis">
@@ -231,7 +328,7 @@
               audio: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M144 23.875C144 15.6598 150.692 8.89306 158.826 10.0472C168.438 11.4111 177.863 14.0985 186.861 18.0583C200.449 24.0386 212.796 32.8041 223.196 43.8543C233.596 54.9045 241.846 68.0229 247.475 82.4607C253.103 96.8984 256 112.373 256 128C256 143.627 253.103 159.102 247.475 173.539C241.846 187.977 233.596 201.096 223.196 212.146C212.796 223.196 200.449 231.961 186.861 237.942C177.863 241.902 168.438 244.589 158.826 245.953C150.692 247.107 144 240.34 144 232.125C144 223.91 150.717 217.39 158.788 215.856C164.725 214.728 170.546 212.921 176.145 210.456C186.337 205.971 195.597 199.397 203.397 191.109C211.197 182.822 217.384 172.983 221.606 162.155C225.827 151.326 228 139.72 228 128C228 116.28 225.827 104.674 221.606 93.8455C217.384 83.0172 211.197 73.1784 203.397 64.8907C195.597 56.6031 186.337 50.029 176.145 45.5438C170.546 43.0794 164.726 41.2721 158.788 40.1439C150.717 38.6103 144 32.0902 144 23.875Z"/><path d="M143.5 64.3875C143.5 56.9938 149.546 50.8729 156.808 52.2643C161.876 53.2354 166.844 54.7609 171.627 56.8232C180.545 60.6677 188.647 66.3027 195.472 73.4063C202.297 80.51 207.711 88.9433 211.405 98.2247C215.099 107.506 217 117.454 217 127.5C217 137.546 215.099 147.494 211.405 156.775C207.711 166.057 202.297 174.49 195.472 181.594C188.647 188.697 180.545 194.332 171.627 198.177C166.844 200.239 161.876 201.765 156.808 202.736C149.546 204.127 143.5 198.006 143.5 190.613C143.5 183.219 149.616 177.409 156.699 175.29C158.422 174.774 160.12 174.157 161.783 173.44C167.579 170.941 172.846 167.278 177.282 162.661C181.718 158.044 185.237 152.562 187.638 146.529C190.039 140.496 191.275 134.03 191.275 127.5C191.275 120.97 190.039 114.504 187.638 108.471C185.237 102.438 181.718 96.9565 177.282 92.3391C172.846 87.7217 167.579 84.059 161.783 81.5601C160.12 80.8431 158.422 80.226 156.699 79.7104C149.616 77.5911 143.5 71.7812 143.5 64.3875Z"/><path d="M0 84C0 72.9543 8.95431 64 20 64H43.0513C46.8724 64 50.5493 62.5418 53.3318 59.923L114.259 2.57959C116.02 0.922635 118.346 0 120.764 0C128.626 0 135 6.37375 135 14.2362V241.764C135 249.626 128.626 256 120.764 256C118.346 256 116.02 255.077 114.259 253.42L53.3318 196.077C50.5493 193.458 46.8724 192 43.0513 192H20C8.9543 192 0 183.046 0 172V84Z"/></svg>'
             };
             let data;
-            function mod() {
+            function search() {
               let search = document.getElementById('search').value;
               let filtered = [];
               Object.keys(data.endpoints).forEach(end => {
@@ -251,11 +348,8 @@
             fetch('/apis').then(async da => {
               da = await da.json();
               data = da;
-              mod();
+              search();
             })
-            function search() {
-              mod();
-            }
           </script>
         </dialog>
         <button onclick="send()" class="sendbtn" aria-label="Send request">Send <svg xmlns="http://www.w3.org/2000/svg" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
@@ -311,11 +405,11 @@
           }
         }
         // Params
-        let par = Array.from(document.getElementById('para').children).map(e => `${e.children[0].value}=${e.children[1].value}`).filter(e => e != '=').join('&');
-        url = url+(par ? (url.includes('?') ? '&' : '?')+par : '')
+        let par = Array.from(document.getElementById('para').children).map(e => `${e.children[0].value}=${e.children[1].value}`).filter(e=>e!=='=').join('&');
+        url = url+(par ? (url.includes('?') ? '&' : '?')+par : '');
         // Headers
         Array.from(document.getElementById('hed').children).forEach(e => {
-          if(e.children[0].value.length) con.headers[e.children[0].value] = e.children[1].value
+          if(e.children[0].value.length) con.headers[e.children[0].value] = e.children[1].value;
         })
         // Auth
         function b64EncodeUnicode(str) {
@@ -353,23 +447,31 @@
           }
           let y = e.content;
           gcb = y;
-          document.getElementById('res').innerHTML = `<label>Response</label>
-<sl-badge variant="${['neutral','primary','success','warning','danger','danger'][s.split('')[0]] || 'neutral'}">${s}</sl-badge>
-<sl-badge variant="${e.time > 500 ? 'danger' : 'primary'}">${e.time}ms</sl-badge>
-<sl-badge variant="neutral">${q}</sl-badge>
-<details>
-  <summary>Headers</summary>
-  <pre>${x}</pre>
-</details>
-${con.method!=='HEAD'?`<details class="dso">
-  <summary>Response</summary>
-  <button onclick="copy()">Copy <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button>
-  <pre>${y.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre>
-</details>
-<details>
-  <summary>IFrame</summary>
-  <iframe id="ifr"></iframe>
-</details>`:''}`;
+          document.getElementById('res').innerHTML = `<div id="trr">
+  <button page="res" selected>Response</button>
+  <button page="req">Request</button>
+</div>
+<div id="prr">
+  <div page="res">
+    <label class="badge" style="--color:var(--${['black-1','blue-1','green-2','yellow-1','red-1','red-1'][s.split('')[0]] ?? 'black-1'})">${s}</label>
+    <label class="badge" style="--color:var(--${e.time>500?(e.time>1000?'red':'yellow'):'blue'}-1)">${e.time}ms</label>
+    <label class="badge" style="--color:var(--black-1)">${q}</label>
+    <details>
+      <summary>Headers</summary>
+      <pre>${x}</pre>
+    </details>
+    ${con.method!=='HEAD'?`<details class="dso">
+      <summary>Body <button onclick="copy()" class="copier">Copy <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button></summary>
+      <pre>${y.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre>
+    </details>
+    <details>
+      <summary>IFrame</summary>
+      <iframe id="ifr"></iframe>
+    </details>
+  </div>
+  <div page="req">
+  </div>
+</div>`:''}`;
           if (con.method!=='HEAD') {
             if (['image', 'audio', 'video'].includes(q.split('/')[0])) {
               document.getElementById('ifr').src = e.alt;
@@ -380,6 +482,10 @@ ${con.method!=='HEAD'?`<details class="dso">
               document.getElementById('ifr').contentDocument.write(`<base href="${e.url}">
 <script>
 // Prevent trickery
+window.parent = window;
+window.top = window;
+window.frameElement = null;
+document.referrer = '';
 window.location.assign = ()=>{};
 window.location.replace = ()=>{};
 history.pushState = ()=>{};
@@ -394,42 +500,26 @@ history.replaceState = ()=>{};
               document.getElementById('ifr').contentDocument.write(y);
             }
           }
+          // Tabs
+          function hideAllTrr() {
+            document.querySelector(`#trr button[selected]`).removeAttribute('selected');
+            Array.from(document.querySelectorAll('#prr div[page]')).forEach(page=>page.style.display='none');
+          }
+          function showTrr(tab) {
+            document.querySelector(`#trr button[page="${tab}"]`).setAttribute('selected', true);
+            document.querySelector(`#prr div[page="${tab}"]`).style.display = '';
+          }
+          Array.from(document.querySelectorAll('#trr button'))
+            .forEach(tab => {
+              tab.onclick = ()=>{
+                hideAllTrr();
+                showTrr(tab.getAttribute('page'));
+              }
+            })
+          hideAllTrr();
+          showTrr('res');
         })
       }
-
-      document.getElementById('para').addEventListener('input', function (event) {
-        const target = event.target;
-        if (target.tagName.toLowerCase() === 'sl-input') {
-          const parentInputGroup = target.parentElement;
-          if (parentInputGroup.parentElement.children[parentInputGroup.parentElement.children.length - 1] === parentInputGroup) {
-            document.getElementById('para').insertAdjacentHTML('beforeend', `<sl-button-group>
-  <sl-input placeholder="Key"></sl-input>
-  <sl-input placeholder="Value"></sl-input>
-</sl-button-group>`)
-          } else {
-            if (!parentInputGroup.children[0].value && !parentInputGroup.children[1].value) {
-              parentInputGroup.remove()
-            }
-          }
-        }
-      });
-
-      document.getElementById('hed').addEventListener('input', function (event) {
-        const target = event.target;
-        if (target.tagName.toLowerCase() === 'sl-input') {
-          const parentInputGroup = target.parentElement;
-          if (parentInputGroup.parentElement.children[parentInputGroup.parentElement.children.length - 1] === parentInputGroup) {
-            document.getElementById('hed').insertAdjacentHTML('beforeend', `<sl-button-group>
-  <sl-input placeholder="Key"></sl-input>
-  <sl-input placeholder="Value"></sl-input>
-</sl-button-group>`)
-          } else {
-            if (!parentInputGroup.children[0].value && !parentInputGroup.children[1].value) {
-              parentInputGroup.remove()
-            }
-          }
-        }
-      });
     </script>
   </body>
 </html>
