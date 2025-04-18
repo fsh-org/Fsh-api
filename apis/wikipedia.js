@@ -7,6 +7,11 @@ module.exports = {
       name: 'page',
       required: true,
       default: 'earth'
+    },
+    {
+      name: 'html',
+      required: false,
+      default: 'false'
     }
   ],
   category: "text",
@@ -55,7 +60,9 @@ module.exports = {
       .replaceAll(/<script.*?>[^¬]*?<\/script.*?>/gi, '')
       .replaceAll(/<table.*?>[^¬]*?<\/table>/g, '')
       .replaceAll(/<figure.*?>[^¬]*?<\/figure>/g, '')
-      .replaceAll(/<link.*?>/g, '')
+      .replaceAll(/<link.*?>/g, '');
+    if (!req.query['html']) {
+      data = data
       .replaceAll(/<li.*?>/g, '- ')
       .replaceAll(/<.{0,1}h[0-6].*?>/g, '**')
       .replaceAll(/<.{0,1}b.*?>/g, '**')
@@ -67,7 +74,9 @@ module.exports = {
         return '```'+match.split('code')[1].split('>')[0]+'\n'+match.split('>')[1].split('<')[0]+'\n```'
       })
       .replaceAll(/<.{0,1}code>/g, '`')
-      .replaceAll(/<.+?>/g, '')
+      .replaceAll(/<.+?>/g, '');
+    }
+    data = data
       .replaceAll('&lt;', '<')
       .replaceAll('&gt;', '>')
       .replaceAll(/\n{2,}/g, '\n')
