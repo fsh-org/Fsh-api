@@ -34,6 +34,9 @@ module.exports = {
     let data = '';
     if (req.query['html']?.toLowerCase()==='true') {
       data = doc.html({ infoboxes: false });
+      data = data
+        .replaceAll(/>[ |\t|\n]{2,}</g, '><') // Clean up whitespace
+        .replaceAll(/<a class="link" href="(.*?)">/g, function(_match, g1){return `<a class="link" href="${new URL(g1, doc.url())}">`}); // Link urls
     } else {
       data = doc.markdown({ infoboxes: false });
       // Link urls
