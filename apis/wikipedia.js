@@ -28,7 +28,7 @@ module.exports = {
 
     let doc = await wtf.fetch(req.query['page'], {
       lang: 'en',
-      'Api-User-Agent': `Fsh Api (user: ${req.clientIp})`
+      'Api-User-Agent': `FshApi/1.0 (User, ${req.clientIp})`
     })
 
     let data = '';

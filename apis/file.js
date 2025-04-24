@@ -25,10 +25,10 @@ module.exports = {
         follow: 20,
         redirect: "follow",
         headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Fsh (Api - user: " + req.clientIp + ")",
+          "user-agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 FshApi/1.0 (User, ${req.clientIp})`,
           accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
           "accept-language": "en;q=1.0",
-          "sec-ch-ua": '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
+          "sec-ch-ua": '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
           "sec-ch-ua-mobile": "?0",
           "sec-ch-ua-platform": '"Windows"',
           "sec-fetch-dest": "document",
@@ -38,9 +38,10 @@ module.exports = {
           "sec-gpc": "1",
         }
       });
-      request = await request.arrayBuffer();
 
-      res.header("Content-Type", 'application/octet-stream');
+      res.header("Content-Type", request.headers.get("Content-Type")??'application/octet-stream');
+
+      request = await request.arrayBuffer();
       res.send(Buffer.from(request));
     } catch (err) {
       res.error('Could not get', 500);
