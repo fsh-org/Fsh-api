@@ -39,15 +39,9 @@ module.exports = {
     }
 
     try {
-      // TODO: Remove dall-e due to their recent changes
+      // TODO: Remove dall-e fully
       if (req.query["model"] == "dall-e") {
-        let img = await fetch(`https://hercai.onrender.com/v3/text2image?prompt=${req.query["text"].replaceAll(" ","%20")}`);
-        img = await img.json();
-        if (!String(img.status).startsWith('2')) {
-          res.error('Error, wait a bit or check prompt', 500);
-          return;
-        }
-        res.json({link: img.url});
+        res.error('Error, dall-e is no longer supported');
         return;
       }
 
