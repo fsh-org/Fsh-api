@@ -593,7 +593,7 @@ module.exports = {
     "type": "Unofficial",
     "standard": ".gov"
   },
-  
+
   "110": {
     "code": 110,
     "title": "Response is Stale",

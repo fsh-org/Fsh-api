@@ -48,16 +48,21 @@
 
       #tabs {
         display: flex;
+        overflow-x: auto;
       }
       #tabs button, #trr button {
         flex: 1;
         padding: 10px;
         border: none;
         border-radius: 0px;
+        border-bottom: 2px var(--bg-2) solid;
         transition: background 500ms, color 500ms;
       }
+      #tabs button:hover, #trr button:hover {
+        background-color: var(--text-3);
+      }
       #tabs button[selected], #trr button[selected] {
-        border-bottom: 2px var(--aqua-2) solid;
+        border-color: var(--aqua-2);
       }
 
       div[page] > div:has(input) {
@@ -76,7 +81,7 @@
         background: white;
       }
       input {
-        min-width:0;
+        min-width: 0px;
       }
       .card-api {
         cursor: pointer;
@@ -172,33 +177,23 @@
         margin: 0px;
         overflow: auto;
       }
-      .badge {
-        font-size: 75%;
-        padding: 2px 5px;
-        border-radius: 0.25rem;
-        color: var(--text-0);
-        background: var(--color, var(--black-1));
-      }
       .copier {
-        display: inline-flex;
+        float: right;
+        display: flex;
         gap: 5px;
         align-items: center;
-        padding: 2px;
+        padding: 4px;
+        margin: -2px 0 0 0;
+        border: none;
       }
     </style>
   </head>
   <body>
-    <script>
-      window.data = {
-        params: [],
-        body_type: 'text'
-      };
-    </script>
     <div slot="start" style="overflow-y:auto">
       <div id="tabs">
         <button page="params" selected>Params</button>
-        <button page="body">Body</button>
         <button page="headers">Headers</button>
+        <button page="body">Body</button>
         <button page="auth">Auth</button>
       </div>
       <div id="pages">
@@ -208,22 +203,37 @@
             <input placeholder="Value">
           </div>
         </div>
-        <div page="body">
-          <sl-tab-group id="body">
-            <sl-tab slot="nav" panel="text">Text</sl-tab>
-            <sl-tab slot="nav" panel="file">File</sl-tab>
-            <sl-tab-panel name="text"><sl-textarea id="text-body" resize="auto" style="width:100%;height:100%;box-sizing:border-box;"></sl-textarea></sl-tab-panel>
-            <sl-tab-panel name="file"><input type="file" id="file-body"></sl-tab-panel>
-          </sl-tab-group>
-        </div>
         <div page="headers" id="hed">
           <div>
             <input placeholder="Key">
             <input placeholder="Value">
           </div>
         </div>
+        <div page="body">
+          <label>Type: <select id="body-type">
+            <option value="text">Text</option>
+            <option value="file">File</option>
+          </select></label>
+          <br>
+          <textarea id="body-text" style="width:100%;height:100%;margin:0px;box-sizing:border-box;resize:vertical;"></textarea>
+          <input type="file" id="body-file" style="display:none;width:100%;padding:4px;margin:0px;border:none;box-sizing:border-box;">
+          <script>
+            document.getElementById('body-type').onchange = function(evt){
+              switch (evt.target.value) {
+                case 'text':
+                  document.getElementById('body-text').style.display = '';
+                  document.getElementById('body-file').style.display = 'none';
+                  break;
+                case 'file':
+                  document.getElementById('body-text').style.display = 'none';
+                  document.getElementById('body-file').style.display = '';
+                  break;
+              }
+            }
+          </script>
+        </div>
         <div page="auth" name="auth">
-          <div id="AuthIn"><p>No auth</p></div>
+          <span id="AuthIn"><p>No auth</p></span>
           <sl-select value="None" id="auth" style="position:absolute;bottom:0;width:25%;">
             <sl-option value="None">None</sl-option>
             <sl-option value="Basic">Basic</sl-option>
@@ -237,13 +247,13 @@
                   document.getElementById('AuthIn').innerHTML = '<p>No auth</p>'
                   break;
                 case 'Basic':
-                  document.getElementById('AuthIn').innerHTML = '<p>Basic auth</p><sl-input id="BU" placeholder="User"></sl-input><sl-input id="BP" placeholder="Password" type="password" password-toggle></sl-input>'
+                  document.getElementById('AuthIn').innerHTML = '<p>Basic auth</p><input id="BU" placeholder="User"><input id="BP" placeholder="Password" type="password">';
                   break;
                 case 'Bearer':
-                  document.getElementById('AuthIn').innerHTML = '<p>Bearer token</p><label>Prefix:</label><select id="BP" value="Bearer"><option value="Bearer">Bearer</option><option value="Bot">Bot</option><option value="">None</option></select><sl-input id="BT" placeholder="Token" type="password" password-toggle></sl-input>'
+                  document.getElementById('AuthIn').innerHTML = '<p>Bearer token</p><label>Prefix:</label><select id="BP" value="Bearer"><option value="Bearer">Bearer</option><option value="Bot">Bot</option><option value="">None</option></select><br><input id="BT" placeholder="Token" type="password">';
                   break;
                 case 'Url':
-                  document.getElementById('AuthIn').innerHTML = '<p>Url @ auth</p><sl-input id="UU" placeholder="User"></sl-input><sl-input id="UP" placeholder="Password" type="password" password-toggle></sl-input>'
+                  document.getElementById('AuthIn').innerHTML = '<p>Url @ auth</p><input id="UU" placeholder="User"><input id="UP" placeholder="Password" type="password">';
                   break;
               }
             })
@@ -360,13 +370,17 @@
       Split(['div[slot="start"]', 'div[slot="end"]'], {
         sizes: [25, 75]
       });
-      let body_type = 'text';
-      document.getElementById('body').addEventListener('sl-tab-show', (event) => {
-        body_type = event.detail.name;
-      })
-      let gcb = '';
+      function formatBytes(bytes) {
+        bytes = Number(bytes);
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB','RiB','QiB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+      let clipboard_body = '';
       function copy() {
-        navigator.clipboard.writeText(gcb);
+        navigator.clipboard.writeText(clipboard_body);
       }
       async function send() {
         // Fetch settings
@@ -378,30 +392,21 @@
         url = (url.includes('://') ? '' : 'https://') + url;
         let con = {
           method: document.getElementById('type').value,
-          headers: {
-            accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "en;q=1.0",
-            "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "none",
-            "sec-fetch-user": "?1",
-            "sec-gpc": "1",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
-          }
+          headers: { 'user-agent': 'Fsh API Requests' }
         }
         // Fetch body
         if (!['GET', 'HEAD', 'DELETE'].includes(con.method)) {
-          if (body_type==='file') {
-            let fil = document.getElementById('file-body').files[0];
-            con.headers['content-type'] = fil.type;
-            let arr = await fil.arrayBuffer();
-            con.body = `data:${fil.type};base64,${btoa(new Uint8Array(arr).reduce((data, byte) => data + String.fromCharCode(byte), ''))}`
-          } else {
-            con.headers['content-type'] = 'text/plain';
-            con.body = document.getElementById('text-body').value;
+          switch (document.getElementById('body-type').value) {
+            case 'text':
+              con.headers['content-type'] = 'text/plain';
+              con.body = document.getElementById('body-text').value;
+              break;
+            case 'file':
+              let file = document.getElementById('body-file').files[0];
+              con.headers['content-type'] = file.type;
+              let arr = await file.arrayBuffer();
+              con.body = `data:${file.type};base64,${btoa(new Uint8Array(arr).reduce((data, byte) => data + String.fromCharCode(byte), ''))}`;
+              break;
           }
         }
         // Params
@@ -436,36 +441,32 @@
           e = await e.json();
 
           if (e.err) {
-            document.getElementById('res').innerHTML = 'Could not fetch';
+            document.getElementById('res').innerHTML = `There was an error while trying to fetch:<br>${e.msg}`;
+            return;
           }
 
-          let s = String(e.status);
           let q = e.headers['content-type'].split(';')[0];
           let x = "";
           for (var pair of Object.entries(e.headers)) {
             x += `<b>${pair[0]}</b>: <label style="color:var(--text-2)">${pair[1]}</label>\n`;
           }
-          let y = e.content;
-          gcb = y;
+          clipboard_body = e.content;
           document.getElementById('res').innerHTML = `<div id="trr">
-  <button page="res" selected>Response</button>
-  <button page="req">Request</button>
+  <button page="res" selected>Response <label style="color:var(--${['blue','blue','green','yellow','red','red'][e.status.toString().split('')[0]] ?? 'yellow'}-1)">${e.status}</label></button>
+  <button page="req">Request <label style="color:var(--${e.time>500?(e.time>1000?'red':'yellow'):'green'}-1)">${e.time}ms</label></button>
 </div>
 <div id="prr">
   <div page="res">
-    <label class="badge" style="--color:var(--${['black-1','blue-1','green-2','yellow-1','red-1','red-1'][s.split('')[0]] ?? 'black-1'})">${s}</label>
-    <label class="badge" style="--color:var(--${e.time>500?(e.time>1000?'red':'yellow'):'blue'}-1)">${e.time}ms</label>
-    <label class="badge" style="--color:var(--black-1)">${q}</label>
     <details>
       <summary>Headers</summary>
       <pre>${x}</pre>
     </details>
     ${con.method!=='HEAD'?`<details class="dso">
-      <summary>Body <button onclick="copy()" class="copier">Copy <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button></summary>
-      <pre>${y.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre>
+      <summary>Body <span style="margin:0px 5px;font-size:80%;">${q} · ${formatBytes(e.content.length)}</span> <button onclick="copy()" class="copier">Copy <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button></summary>
+      <pre>${e.content.replaceAll('<','&lt;').replaceAll('>','&gt;')}</pre>
     </details>
     <details>
-      <summary>IFrame</summary>
+      <summary>Preview</summary>
       <iframe id="ifr"></iframe>
     </details>
   </div>
@@ -473,10 +474,11 @@
   </div>
 </div>`:''}`;
           if (con.method!=='HEAD') {
+            let con = e.content;
             if (['image', 'audio', 'video'].includes(q.split('/')[0])) {
               document.getElementById('ifr').src = e.alt;
             } else if (q != 'text/html' && ['text', 'application'].includes(q.split('/')[0])) {
-              document.getElementById('ifr').contentDocument.write('<pre>'+y+'</pre>')
+              document.getElementById('ifr').contentDocument.write(`<pre>${con}</pre>`);
             } else {
               // Add base and other
               document.getElementById('ifr').contentDocument.write(`<base href="${e.url}">
@@ -493,11 +495,11 @@ history.replaceState = ()=>{};
 <\/script>`);
 
               // Modifications
-              y = y
+              con = con
                 .replaceAll(/<meta .*?http-equiv="Content-Security-Policy".*?>/gi, '') // Remove csp
                 .replace('data-color-mode="auto"','data-color-mode="dark"'); // Try and set the color mode to dark
 
-              document.getElementById('ifr').contentDocument.write(y);
+              document.getElementById('ifr').contentDocument.write(con);
             }
           }
           // Tabs
