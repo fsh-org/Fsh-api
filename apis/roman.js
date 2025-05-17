@@ -1,4 +1,4 @@
-function numberToRoman(num) {
+function lownumberToRoman(num) {
   const romanNumerals = [
     { value: 1000, numeral: "M" },
     { value: 900, numeral: "CM" },
@@ -12,7 +12,7 @@ function numberToRoman(num) {
     { value: 9, numeral: "IX" },
     { value: 5, numeral: "V" },
     { value: 4, numeral: "IV" },
-    { value: 1, numeral: "I" },
+    { value: 1, numeral: "I" }
   ];
 
   let roman = "";
@@ -25,7 +25,25 @@ function numberToRoman(num) {
   return roman;
 }
 
-function romanToNumber(roman) {
+function numberToRoman(num) {
+  let  boxvinculum = '';
+  if (num >= 100000) {
+    boxvinculum = Math.floor(num/100000);
+    num -= boxvinculum*100000;
+    boxvinculum = '▕'+lownumberToRoman(boxvinculum).split('').join('\u0305')+'\u0305▏ ';
+  }
+  let vinculum = '';
+  if (num >= 4000) {
+    vinculum = Math.floor(num/1000);
+    num -= vinculum*1000;
+    vinculum = lownumberToRoman(vinculum).split('').join('\u0305')+'\u0305 ';
+  }
+  let roman = lownumberToRoman(num);
+
+  return (boxvinculum + vinculum + roman).trim();
+}
+
+function lowromanToNumber(roman) {
   const romanNumerals = {
     I: 1,
     V: 5,
@@ -33,7 +51,7 @@ function romanToNumber(roman) {
     L: 50,
     C: 100,
     D: 500,
-    M: 1000,
+    M: 1000
   };
 
   let result = 0;
@@ -46,6 +64,14 @@ function romanToNumber(roman) {
     }
   }
   return result;
+}
+function romanToNumber(roman) {
+  let boxvinculum = lowromanToNumber((roman.match(/▕(?:[IVXLCDM]\u0305)+▏/)??[''])[0].replaceAll(/▕|▏|\u0305/g,''))*100000;
+  roman = roman.replace(/▕(?:[IVXLCDM]\u0305)+▏/, '').trim();
+  let vinculum = lowromanToNumber((roman.match(/(?:[IVXLCDM]\u0305)+/)??[])[0].replaceAll('\u0305',''))*1000;
+  roman = roman.replace(/(?:[IVXLCDM]\u0305)+/, '').trim();
+  let res = lowromanToNumber(roman);
+  return (boxvinculum??0) + (vinculum??0) + (res??0);
 }
 
 module.exports = {
@@ -76,6 +102,10 @@ module.exports = {
       return;
     }
     if (req.query["type"] === "encode") {
+      if (Number(req.query["number"])>999999999) {
+        res.error('Number too large');
+        return;
+      }
       res.json({
         result: numberToRoman(Number(req.query["number"]))
       });
