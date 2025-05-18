@@ -68,7 +68,7 @@ function lowromanToNumber(roman) {
 function romanToNumber(roman) {
   let boxvinculum = lowromanToNumber((roman.match(/▕(?:[IVXLCDM]\u0305)+▏/)??[''])[0].replaceAll(/▕|▏|\u0305/g,''))*100000;
   roman = roman.replace(/▕(?:[IVXLCDM]\u0305)+▏/, '').trim();
-  let vinculum = lowromanToNumber((roman.match(/(?:[IVXLCDM]\u0305)+/)??[])[0].replaceAll('\u0305',''))*1000;
+  let vinculum = lowromanToNumber((roman.match(/(?:[IVXLCDM]\u0305)+/)??[''])[0].replaceAll('\u0305',''))*1000;
   roman = roman.replace(/(?:[IVXLCDM]\u0305)+/, '').trim();
   let res = lowromanToNumber(roman);
   return (boxvinculum??0) + (vinculum??0) + (res??0);
