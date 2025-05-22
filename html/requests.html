@@ -199,14 +199,14 @@
       <div id="pages">
         <div page="params" id="para">
           <div>
-            <input placeholder="Key">
-            <input placeholder="Value">
+            <input placeholder="Key" autocapitalize="off">
+            <input placeholder="Value" autocapitalize="off">
           </div>
         </div>
         <div page="headers" id="hed">
           <div>
-            <input placeholder="Key">
-            <input placeholder="Value">
+            <input placeholder="Key" autocapitalize="off">
+            <input placeholder="Value" autocapitalize="off">
           </div>
         </div>
         <div page="body">
@@ -284,8 +284,8 @@
           const parent = event.target.parentElement;
           if (parent.parentElement.children[parent.parentElement.children.length - 1] === parent) {
           document.getElementById('para').insertAdjacentHTML('beforeend', `<div>
-  <input placeholder="Key">
-  <input placeholder="Value">
+  <input placeholder="Key" autocapitalize="off">
+  <input placeholder="Value" autocapitalize="off">
 </div>`)
           } else {
             if (!parent.children[0].value && !parent.children[1].value) {
@@ -298,8 +298,8 @@
           const parent = event.target.parentElement;
           if (parent.parentElement.children[parent.parentElement.children.length - 1] === parent) {
           document.getElementById('hed').insertAdjacentHTML('beforeend', `<div>
-  <input placeholder="Key">
-  <input placeholder="Value">
+  <input placeholder="Key" autocapitalize="off">
+  <input placeholder="Value" autocapitalize="off">
 </div>`)
           } else {
             if (!parent.children[0].value && !parent.children[1].value) {
