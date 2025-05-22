@@ -186,6 +186,14 @@
         margin-top: -2px;
         border: none;
       }
+
+      code {
+        display: block;
+        white-space: break-spaces;
+        padding: 10px;
+        margin: 10px;
+        background-color: var(--bg-0);
+      }
     </style>
   </head>
   <body>
@@ -199,14 +207,14 @@
       <div id="pages">
         <div page="params" id="para">
           <div>
-            <input placeholder="Key" autocapitalize="off">
-            <input placeholder="Value" autocapitalize="off">
+            <input placeholder="Key" name="param" autocapitalize="off">
+            <input placeholder="Value" name="value" autocapitalize="off">
           </div>
         </div>
         <div page="headers" id="hed">
           <div>
-            <input placeholder="Key" autocapitalize="off">
-            <input placeholder="Value" autocapitalize="off">
+            <input placeholder="Key" name="header" autocapitalize="off">
+            <input placeholder="Value" name="value" autocapitalize="off">
           </div>
         </div>
         <div page="body">
@@ -215,7 +223,7 @@
             <option value="file">File</option>
           </select></label>
           <br>
-          <textarea id="body-text" style="width:100%;height:100%;margin:0px;box-sizing:border-box;resize:vertical;"></textarea>
+          <textarea id="body-text" style="width:100%;margin:0px;box-sizing:border-box;resize:vertical;" rows="10"></textarea>
           <input type="file" id="body-file" style="display:none;width:100%;padding:4px;margin:0px;border:none;box-sizing:border-box;">
           <script>
             document.getElementById('body-type').onchange = function(evt){
@@ -284,8 +292,8 @@
           const parent = event.target.parentElement;
           if (parent.parentElement.children[parent.parentElement.children.length - 1] === parent) {
           document.getElementById('para').insertAdjacentHTML('beforeend', `<div>
-  <input placeholder="Key" autocapitalize="off">
-  <input placeholder="Value" autocapitalize="off">
+  <input placeholder="Key" name="param" autocapitalize="off">
+  <input placeholder="Value" name="value" autocapitalize="off">
 </div>`)
           } else {
             if (!parent.children[0].value && !parent.children[1].value) {
@@ -298,8 +306,8 @@
           const parent = event.target.parentElement;
           if (parent.parentElement.children[parent.parentElement.children.length - 1] === parent) {
           document.getElementById('hed').insertAdjacentHTML('beforeend', `<div>
-  <input placeholder="Key" autocapitalize="off">
-  <input placeholder="Value" autocapitalize="off">
+  <input placeholder="Key" name="header" autocapitalize="off">
+  <input placeholder="Value" name="value" autocapitalize="off">
 </div>`)
           } else {
             if (!parent.children[0].value && !parent.children[1].value) {
@@ -320,7 +328,7 @@
           <option value="OPTIONS">OPTIONS</option>
           <option value="PATCH">PATCH</option>
         </select>
-        <label class="divider"></label>
+        <span class="divider"></span>
         <input id="url" placeholder="https://fsh.plus" onkeyup="if(event.key=='Enter'){send()}" aria-label="Url to request">
         <button onclick="document.getElementById('apis').showModal()" class="api-drop" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
         <dialog id="apis">
@@ -350,7 +358,7 @@
               filtered.forEach(ee => {
                 h += `<div onclick="document.getElementById('url').value='api.fsh.plus${ee.path}';document.getElementById('type').value='${ee.type.toUpperCase()}';" class="card-api">
   <p style="display:flex;gap:5px;align-items:center;margin:0;">${catIcon[ee.category]??'?'} ${ee.path}${ee.params.length > 0 ? ' | ' : ''}${ee.params.map(p=>`${p.name}${p.required ? '*' : ''}`).join(' ')}</p>
-  <label style="cursor:pointer">${ee.info}</label>
+  <span style="cursor:pointer">${ee.info}</span>
 </div>`;
               })
               document.getElementById('lis').innerHTML = h;
@@ -374,7 +382,7 @@
         bytes = Number(bytes);
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
-        const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB','RiB','QiB'];
+        const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', 'RiB', 'QiB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
       }
@@ -411,10 +419,10 @@
         }
         // Params
         let par = Array.from(document.getElementById('para').children).map(e => `${e.children[0].value}=${e.children[1].value}`).filter(e=>e!=='=').join('&');
-        url = url+(par ? (url.includes('?') ? '&' : '?')+par : '');
+        url = url+(par ? encodeURI((url.includes('?')?'&':'?')+par) : '');
         // Headers
         Array.from(document.getElementById('hed').children).forEach(e => {
-          if(e.children[0].value.length) con.headers[e.children[0].value] = e.children[1].value;
+          if(e.children[0].value.length) con.headers[e.children[0].value.replaceAll(' ','-').toLowerCase()] = e.children[1].value;
         })
         // Auth
         function b64EncodeUnicode(str) {
@@ -437,7 +445,7 @@
           }
         }
         // The fetch
-        fetch('/request?url='+encodeURIComponent(url), {method:'post',body:JSON.stringify(con)}).then(async e => {
+        fetch('/request?url='+encodeURIComponent(url), { method: 'post', body: JSON.stringify(con) }).then(async e => {
           e = await e.json();
 
           if (e.err) {
@@ -448,16 +456,16 @@
           let q = e.headers['content-type'].split(';')[0];
           let x = "";
           for (var pair of Object.entries(e.headers)) {
-            x += `<b>${pair[0]}</b>: <label style="color:var(--text-2)">${pair[1]}</label>\n`;
+            x += `<b>${pair[0]}</b>: <span style="color:var(--text-2)">${pair[1]}</span>\n`;
           }
           clipboard_body = e.content;
           document.getElementById('res').innerHTML = `<div id="trr">
-  <button page="res" selected>Response <label style="color:var(--${['blue','blue','green','yellow','red','red'][e.status.toString().split('')[0]] ?? 'yellow'}-1)">${e.status}</label></button>
-  <button page="req">Request <label style="color:var(--${e.time>500?(e.time>1000?'red':'yellow'):'green'}-1)">${e.time}ms</label></button>
+  <button page="res" selected>Response <span style="color:var(--${['blue','blue','green','yellow','red','red'][e.status.toString().split('')[0]] ?? 'yellow'}-1)">${e.status}</span></button>
+  <button page="req">Request <span style="color:var(--${e.time>500?(e.time>1000?'red':'yellow'):'green'}-1)">${e.time}ms</span></button>
 </div>
 <div id="prr">
   <div page="res">
-    <details>
+    <details ${con.method==='HEAD'?'open':''}>
       <summary>Headers</summary>
       <pre>${x}</pre>
     </details>
@@ -468,11 +476,19 @@
     <details>
       <summary>Preview</summary>
       <iframe id="ifr"></iframe>
-    </details>
+    </details>`:''}
   </div>
   <div page="req">
+    <label>Type: <select id="req-type">
+      <option value="curl">cURL</option>
+      <option value="js">JS (Fetch)</option>
+    </select></label>
+    <div class="extra"></div>
+    <div>
+      <code></code>
+    </div>
   </div>
-</div>`:''}`;
+</div>`;
           if (con.method!=='HEAD') {
             let con = e.content;
             if (['image', 'audio', 'video'].includes(q.split('/')[0])) {
@@ -502,6 +518,38 @@ history.replaceState = ()=>{};
               document.getElementById('ifr').contentDocument.write(con);
             }
           }
+          // Req
+          function reqUpdate() {
+            let tar = document.querySelector('div[page="req"] code');
+            let ext = document.querySelector('div[page="req"] .extra');
+            let dat = {};
+            switch (document.getElementById('req-type').value) {
+              case 'curl':
+                dat.lsv = document.getElementById('req-ext-ls')?.value;
+                ext.innerHTML = `<label>Line separator: <select id="req-ext-ls">
+  <option value="cmd">CMD</option>
+  <option value="ps">PowerShell</option>
+  <option value="bash">Bash</option>
+  <option value="none">None</option>
+</select></label>`;
+                dat.ls = document.getElementById('req-ext-ls');
+                dat.ls.onchange = reqUpdate;
+                dat.ls.value = dat.lsv??'cmd';
+                dat.lsv = { cmd: '^\n  ', ps: '`\n  ', bash: '\\\n  ', none: '' }[dat.ls.value];
+                tar.innerText = `curl${con.method==='GET'?'':(con.method==='HEAD'?'--head':` --request ${con.method}`)}${Object.keys(con.headers).map(h=>` ${dat.lsv}--header "${h}: ${con.headers[h]}"`).join('')} ${dat.lsv}-d "<BODY_DATA>" ${dat.lsv}${url}`;
+                break;
+              case 'js':
+                ext.innerText = '';
+                tar.innerText = `fetch("${url.replaceAll('"','\\"')}", {
+  method: "${con.method}",
+  headers: {${Object.keys(con.headers).map(h=>`\n    "${h}": "${con.headers[h]}",`).join('')}
+  }
+})`;
+                break;
+            }
+          }
+          document.getElementById('req-type').onchange = reqUpdate;
+          reqUpdate();
           // Tabs
           function hideAllTrr() {
             document.querySelector(`#trr button[selected]`).removeAttribute('selected');
