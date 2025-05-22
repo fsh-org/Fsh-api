@@ -187,6 +187,21 @@
         border: none;
       }
 
+      table, th, td {
+        font-size: 90%;
+        border: 2px solid var(--bg-3);
+        border-collapse: collapse;
+        padding: 2px 4px;
+        word-break: break-word;
+      }
+      th {
+        white-space: nowrap;
+        text-align: left;
+      }
+      td {
+        color: var(--text-2);
+      }
+
       code {
         display: block;
         white-space: break-spaces;
@@ -246,7 +261,6 @@
             <sl-option value="None">None</sl-option>
             <sl-option value="Basic">Basic</sl-option>
             <sl-option value="Bearer">Bearer</sl-option>
-            <sl-option value="Url">Url @</sl-option>
           </sl-select>
           <script>
             document.getElementsByTagName('sl-select')[0].addEventListener('sl-change', function(e) {
@@ -259,9 +273,6 @@
                   break;
                 case 'Bearer':
                   document.getElementById('AuthIn').innerHTML = '<p>Bearer token</p><label>Prefix:</label><select id="BP" value="Bearer"><option value="Bearer">Bearer</option><option value="Bot">Bot</option><option value="">None</option></select><br><input id="BT" placeholder="Token" type="password">';
-                  break;
-                case 'Url':
-                  document.getElementById('AuthIn').innerHTML = '<p>Url @ auth</p><input id="UU" placeholder="User"><input id="UP" placeholder="Password" type="password">';
                   break;
               }
             })
@@ -439,9 +450,6 @@
             case 'Bearer':
               con.headers.Authorization = document.getElementById('BP').value+(document.getElementById('BP').value.length ? ' ' : '')+document.getElementById('BT').value;
               break;
-            case 'Url':
-              url = url.replace('://','://'+document.getElementById('UU').value+'.'+document.getElementById('UP').value+'@')
-              break;
           }
         }
         // The fetch
@@ -454,10 +462,6 @@
           }
 
           let q = e.headers['content-type'].split(';')[0];
-          let x = "";
-          for (var pair of Object.entries(e.headers)) {
-            x += `<b>${pair[0]}</b>: <span style="color:var(--text-2)">${pair[1]}</span>\n`;
-          }
           clipboard_body = e.content;
           document.getElementById('res').innerHTML = `<div id="trr">
   <button page="res" selected>Response <span style="color:var(--${['blue','blue','green','yellow','red','red'][e.status.toString().split('')[0]] ?? 'yellow'}-1)">${e.status}</span></button>
@@ -466,8 +470,13 @@
 <div id="prr">
   <div page="res">
     <details ${con.method==='HEAD'?'open':''}>
-      <summary>Headers</summary>
-      <pre>${x}</pre>
+      <summary>Headers (${Object.keys(e.headers).length})</summary>
+      <table>
+        ${Object.entries(e.headers).map(pair => `<tr>
+  <th>${pair[0]}</th>
+  <td>${pair[1]}</td>
+</tr>`).join('')}
+      </table>
     </details>
     ${con.method!=='HEAD'?`<details class="dso">
       <summary>Body <span style="margin:0px 5px;font-size:80%;">${q} · ${formatBytes(e.content.length)}</span> <button onclick="copy()" class="copier">Copy <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button></summary>
