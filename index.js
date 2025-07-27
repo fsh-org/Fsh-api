@@ -122,10 +122,6 @@ for (const file of apisFiles) {
 }
 
 /* -- Main pages -- */
-fastify.get("/favicon.ico", (req, res) => {
-  res.type('image/vnd.microsoft.icon').send(fs.readFileSync('html/favicon.ico', 'utf8'))
-})
-
 fastify.get('/', (req, res) => {
   let count = 0;
   let html = {
@@ -173,15 +169,15 @@ fastify.get('/', (req, res) => {
   ${html['hidden']}
 </div>`;
 
-  res.type('text/html').send(fs.readFileSync('html/index.html', 'utf8').replace("{{endpoints}}", html).replace("{{count}}", count))
+  res.type('text/html').send(fs.readFileSync('html/index.html', 'utf8').replace("{{endpoints}}", html).replace("{{count}}", count));
 })
 
 fastify.get("/search", (req, res) => {
-  res.type('text/html').send(fs.readFileSync('html/search.html', 'utf8'))
+  res.type('text/html').send(fs.readFileSync('html/search.html', 'utf8'));
 })
 
 fastify.get("/requests", (req, res) => {
-  res.type('text/html').send(fs.readFileSync('html/requests.html', 'utf8'))
+  res.type('text/html').send(fs.readFileSync('html/requests.html', 'utf8'));
 })
 
 // TODO: Remove builder or keep it idk
@@ -192,18 +188,21 @@ fastify.get("/builder", (req, res) => {
       u = u + `<option value="${require(file).path}">${require(file).path.replace("/","")}</option>`
     }
   }
-  res.type('text/html').send(fs.readFileSync('html/builder.html', 'utf8').replaceAll("{end}", u))
+  res.type('text/html').send(fs.readFileSync('html/builder.html', 'utf8').replaceAll("{end}", u));
 })
 
 /* -- Static media -- */
+fastify.get("/favicon.ico", (req, res) => {
+  res.type('image/vnd.microsoft.icon').send(fs.readFileSync('html/favicon.ico'));
+})
 fastify.get("/styleapi.css", (req, res) => {
-  res.type('text/css').send(fs.readFileSync('html/styleAPI.css', 'utf8'))
+  res.type('text/css').send(fs.readFileSync('html/styleAPI.css', 'utf8'));
 })
 fastify.get("/requests.json", (req, res) => {
-  res.type('application/json').send(fs.readFileSync('html/requests.json', 'utf8'))
+  res.type('application/json').send(fs.readFileSync('html/requests.json', 'utf8'));
 })
 fastify.get("/robots.txt", (req, res) => {
-  res.type('application/json').send(fs.readFileSync('html/robots.txt', 'utf8'))
+  res.type('application/json').send(fs.readFileSync('html/robots.txt', 'utf8'));
 })
 
 /* -- Backend stuff -- */
@@ -253,12 +252,12 @@ fastify.post('/request', async(req, res) => {
       headers: hed,
       content: cont,
       alt
-    })
+    });
   } catch (err) {
     res.json({
       err: true,
       msg: err.toString()
-    })
+    });
   }
 })
 
@@ -324,5 +323,5 @@ fastify.setNotFoundHandler((req,res)=>{
 })
 
 fastify.listen({ host: process.env.host, port: process.env.port }, ()=>{
-  console.log(`Server online at ${process.env.host}:${process.env.port}`)
+  console.log(`Server online at ${process.env.host}:${process.env.port}`);
 })
