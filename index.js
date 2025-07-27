@@ -122,6 +122,10 @@ for (const file of apisFiles) {
 }
 
 /* -- Main pages -- */
+fastify.get("/favicon.ico", (req, res) => {
+  res.type('image/vnd.microsoft.icon').send(fs.readFileSync('html/favicon.ico', 'utf8'))
+})
+
 fastify.get('/', (req, res) => {
   let count = 0;
   let html = {
