@@ -1,14 +1,14 @@
 const crypto = require('node:crypto');
 
 module.exports = {
-  path: '/md5',
-  info: 'Hashes the text using md5',
+  path: '/sha384',
+  info: 'Hashes the text using sha384',
   type: 'get',
   params: [
     {
       name: 'text',
       required: true,
-      default: 'fshy'
+      default: 'Hello'
     }
   ],
   category: "text",
@@ -19,7 +19,7 @@ module.exports = {
       return;
     }
     res.json({
-      text: Buffer.from(crypto.createHash('md5').update(req.query['text']).digest()).toString('hex')
+      text: Buffer.from(crypto.createHash('sha384').update(req.query['text']).digest()).toString('hex')
     })
   }
 }
