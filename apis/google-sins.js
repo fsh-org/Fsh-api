@@ -1,8 +1,8 @@
 const sharp = require('sharp');
 
 module.exports = {
-  path: '/biden',
-  info: 'Make Joe Biden say anything',
+  path: '/google-sins',
+  info: 'Search for something unforgivable',
   type: 'get',
   params: [
     {
@@ -19,12 +19,12 @@ module.exports = {
       return;
     }
     let text = req.query['text'];
-    let svg = `<svg style="width:555px;height:120px;"><text y="41" font-family="Arial" font-size="12px" fill="#000"><tspan x="60" dy="0px">${text.split('\\n').join('</tspan><tspan x="60" dy="10px">')}</tspan></text></svg>`;
+    let svg = `<svg style="width:670px;height:150px;"><text x="0" y="36" font-family="Arial" font-size="45px" fill="#000"><tspan x="0" dy="0px">${text.split('\\n').join('</tspan><tspan x="0" dy="40px">')}</tspan></text></svg>`;
 
-    sharp('effects/biden.png')
+    sharp('effects/google-sins.jpg')
       .composite([{
         input: Buffer.from(svg),
-        gravity: 'northwest'
+        gravity: 'southeast'
       }])
       .toBuffer()
       .then(outputBuffer => {
@@ -32,9 +32,10 @@ module.exports = {
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
         });
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         res.error('Could not generate');
         return;
-      })
+      });
   }
 }

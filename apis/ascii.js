@@ -3,7 +3,7 @@ const sharp = require('sharp');
 module.exports = {
   path: '/ascii',
   info: 'Turn a image into ascii',
-  type: 'get',
+  type: 'post',
   params: [],
   category: "image",
 
