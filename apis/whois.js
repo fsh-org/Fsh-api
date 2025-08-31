@@ -1,5 +1,18 @@
 const whois = require('whois');
 
+function unique(array) {
+  // Faster than [...new Set(array)] or Array.from(new Set(array)) aparently
+  const seen = new Set();
+  const out = [];
+  for (let i = 0; i < array.length; i++) {
+    if (!seen.has(array[i])) {
+      seen.add(array[i]);
+      out.push(array[i]);
+    }
+  }
+  return out;
+}
+
 module.exports = {
   path: '/whois',
   info: 'Get whois info on a domain',
@@ -117,7 +130,7 @@ module.exports = {
           },
           dnssec: get('DNSSEC( signed)?'),
           status: getMultiple('Domain Status'),
-          ns: getMultiple('Name Server|DNS|nserver')
+          ns: unique(getMultiple('Name Server|DNS|nserver').map(ns=>ns.toLowerCase()))
         })
       })
     } catch (err) {

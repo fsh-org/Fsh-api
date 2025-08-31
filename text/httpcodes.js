@@ -427,7 +427,7 @@ module.exports = {
   },
   "430": {
     "code": 430,
-    "title": "Shopify Security Rejection | Request Header Fields Too Large |",
+    "title": "Shopify Security Rejection",
     "type": "Unofficial",
     "standard": "Shopify"
   },

@@ -21,7 +21,7 @@ async function getUrl(url) {
         data = await data.arrayBuffer();
         data = Buffer.from(data);
         sharp(data)
-          .resize(size, size, { fit: 'fill' })
+          .resize(size, size, { fit: 'cover' })
           .toBuffer()
           .then(dat => {
             cache[url] = dat;
@@ -104,8 +104,7 @@ module.exports = {
     let nine = req.query['nine'];
 
     let images = [one, two, three, four, five, six, seven, eight, nine];
-    images = images.filter(e => (e ?? '').length);
-
+    images = images.filter(e=>(e??'').length);
     if (images.length < 2) {
       res.error('You must include at least two images');
       return;
@@ -114,130 +113,44 @@ module.exports = {
     for (let i=0;i<images.length;i++) {
       images[i] = await getUrl(images[i]);
     }
-    images = images.filter(e => (e ?? '').length);
-
+    images = images.filter(e=>(e??'').length);
     if (images.length < 2) {
       res.error('Too many images failed to load');
       return;
     }
 
-    let layers;
-    let w;
-    let h;
-    switch (images.length) {
-      case 2:
-        w = size*2+5
-        h = size
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'northeast'}
-        ];
-        break;
-      case 3:
-        w = size*2+5
-        h = size*2+5
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'northeast'},
-          {input: images[2], gravity: 'southwest'}
-        ];
-        break;
-      case 4:
-        w = size*2+5
-        h = size*2+5
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'northeast'},
-          {input: images[2], gravity: 'southwest'},
-          {input: images[3], gravity: 'southeast'}
-        ];
-        break;
-      case 5:
-        w = size*3+10
-        h = size*2+5
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'north'},
-          {input: images[2], gravity: 'northeast'},
-          {input: images[3], gravity: 'southwest'},
-          {input: images[4], gravity: 'south'}
-        ];
-        break;
-      case 6:
-        w = size*3+10
-        h = size*2+5
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'north'},
-          {input: images[2], gravity: 'northeast'},
-          {input: images[3], gravity: 'southwest'},
-          {input: images[4], gravity: 'south'},
-          {input: images[5], gravity: 'southeast'}
-        ];
-        break;
-      case 7:
-        w = size*3+10
-        h = size*3+10
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'north'},
-          {input: images[2], gravity: 'northeast'},
-          {input: images[3], gravity: 'west'},
-          {input: images[4], gravity: 'center'},
-          {input: images[5], gravity: 'east'},
-          {input: images[6], gravity: 'southwest'}
-        ];
-        break;
-      case 8:
-        w = size*3+10
-        h = size*3+10
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'north'},
-          {input: images[2], gravity: 'northeast'},
-          {input: images[3], gravity: 'west'},
-          {input: images[4], gravity: 'center'},
-          {input: images[5], gravity: 'east'},
-          {input: images[6], gravity: 'southwest'},
-          {input: images[7], gravity: 'south'}
-        ];
-        break;
-      case 9:
-        w = size*3+10
-        h = size*3+10
-        layers = [
-          {input: images[0], gravity: 'northwest'},
-          {input: images[1], gravity: 'north'},
-          {input: images[2], gravity: 'northeast'},
-          {input: images[3], gravity: 'west'},
-          {input: images[4], gravity: 'center'},
-          {input: images[5], gravity: 'east'},
-          {input: images[6], gravity: 'southwest'},
-          {input: images[7], gravity: 'south'},
-          {input: images[8], gravity: 'southeast'}
-        ];
-        break;
-    }
-    
-    sharp({
+    let count = images.length;
+    let cols, rows;
+    if (count <= 2) { cols = count; rows = 1; }
+    else if (count <= 4) { cols = rows = 2; }
+    else if (count <= 6) { cols = 3; rows = 2; }
+    else { cols = rows = 3; }
+
+    images = images.map((buf, i) => {
+      let row = Math.floor(i/cols);
+      let col = i%cols;
+      return { input: buf, top: row * size, left: col * size };
+    });
+
+    await sharp({
       create: {
-        width: w,
-        height: h,
+        width: cols * size,
+        height: rows * size,
         channels: 4,
-        background: (req.query['bg'] ? '#'+req.query['bg'] : '#000')
+        background: (req.query['bg']?'#'+req.query['bg']:'#000')
       }
     })
-      .composite(layers)
+      .composite(images)
       .png()
       .toBuffer()
       .then(outputBuffer => {
         res.json({
           image: 'data:image/png;base64,' + outputBuffer.toString('base64')
-        })
+        });
       })
       .catch(() => {
         res.error('Could not generate', 500);
         return;
-      })
+      });
   }
 }
