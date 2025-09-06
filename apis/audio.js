@@ -1,9 +1,22 @@
-const fs = require('fs');
-const ytdl = require('@distube/ytdl-core');
+const fs = require('node:fs');
+const path = require('node:path');
 
+// Youtube
+const ytdl = require('@distube/ytdl-core');
+function isYT(id) {
+ return ytdl.validateID(id);
+}
+
+// Newgrounds
+let ngcache = new Map();
+function isNG(id) {
+  return (/^[0-9]+$/).test(id);
+}
+
+// Main
 module.exports = {
   path: '/audio',
-  info: 'Download a youtube video into a mp3',
+  info: 'Download an audio from: youtube, newgrounds',
   type: 'get',
   params: [
     {
@@ -16,40 +29,59 @@ module.exports = {
 
   async execute(req, res) {
     let id = req.query['id'];
-
-    if (!id || !ytdl.validateID(id)) {
-      res.error('Invalid id');
+    if (!id) {
+      res.error('Provide an id');
       return;
     }
 
-    if (fs.existsSync(`images/audio/${id}.mp3`)) {
-      res.json({
-        audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
-        download: `https://api.fsh.plus/download/audio/${id}.mp3`
-      })
-      return;
-    }
+    id = id.toString().replaceAll(/[^a-zA-Z0-9_-]/g,'');
 
-    let downloadOptions = {
-      quality: 'highest',
-      filter: 'audio'
-    };
-    let videoUrl = 'https://www.youtube.com/watch?v='+id;
-    try {
-      let info = await ytdl.getInfo(videoUrl)
-      ytdl.downloadFromInfo(info, downloadOptions)
-        .pipe(fs.createWriteStream(`images/audio/${id}.mp3`))
-        .on('finish', () => {
-          res.json({
-            audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
-            download: `https://api.fsh.plus/download/audio/${id}.mp3`
+
+    if (isYT(id)) {
+      if (fs.existsSync(path.resolve('images/audio', `${id}.mp3`))) {
+        res.json({
+          audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
+          download: `https://api.fsh.plus/download/audio/${id}.mp3`
+        });
+        return;
+      }
+      try {
+        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`)
+        ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audio' })
+          .pipe(fs.createWriteStream(path.resolve('images/audio', `${id}.mp3`)))
+          .on('finish', ()=>{
+            res.json({
+              audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
+              download: `https://api.fsh.plus/download/audio/${id}.mp3`
+            })
           })
+          .on('error', () => {
+            res.error('Could not download', 500);
+          });
+      } catch (err) {
+        res.error('Could not download', 500);
+      }
+    } else if (isNG(id)) {
+      if (ngcache.has(id)) {
+        res.json({
+          audio: ngcache.get(id),
+          download: ngcache.get(id)
+        });
+        return;
+      }
+      fetch(`https://www.newgrounds.com/audio/listen/${id}`)
+        .then(ng=>ng.text())
+        .then(ng=>{
+          let url = ng.match(/<meta property="og:audio" content="(https:\/\/audio\.ngfiles\.com\/[0-9]+\/[0-9]+?_.+?\[a-zA-Z0-9]+?.\?[a-zA-Z0-9]+?)">/)[1];
+          ngcache.set(id, url);
+          res.json({
+            audio: url,
+            download: url
+          });
         })
-        .on('error', () => {
+        .catch(err=>{
           res.error('Could not download', 500);
         });
-    } catch (err) {
-      res.error('Could not download', 500);
     }
   }
 }
