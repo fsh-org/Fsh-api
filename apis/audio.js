@@ -50,10 +50,15 @@ module.exports = {
         ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audio' })
           .pipe(fs.createWriteStream(path.resolve('images/audio', `${id}.mp3`)))
           .on('finish', ()=>{
+            if (fs.statSync(path.resolve('images/audio', `${id}.mp3`)).size===0) {
+              res.error('Could not download', 500);
+              fs.unlink(path.resolve('images/audio', `${id}.mp3`));
+              return;
+            }
             res.json({
               audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
               download: `https://api.fsh.plus/download/audio/${id}.mp3`
-            })
+            });
           })
           .on('error', () => {
             res.error('Could not download', 500);

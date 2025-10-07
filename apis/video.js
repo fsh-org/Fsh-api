@@ -49,6 +49,11 @@ module.exports = {
         ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audioandvideo' })
           .pipe(fs.createWriteStream(path.resolve('images/video', `${id}.mp4`)))
           .on('finish', ()=>{
+            if (fs.statSync(path.resolve('images/video', `${id}.mp4`)).size===0) {
+              res.error('Could not download', 500);
+              fs.unlink(path.resolve('images/video', `${id}.mp4`));
+              return;
+            }
             res.json({
               video: `https://api.fsh.plus/images/video/${id}.mp4`,
               download: `https://api.fsh.plus/download/video/${id}.mp4`
