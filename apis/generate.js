@@ -1,3 +1,6 @@
+const { InferenceClient } = require('@huggingface/inference');
+const hf = new InferenceClient(process.env['ai'], { retry_on_error: false });
+
 module.exports = {
   path: '/generate',
   info: 'Generates text with ai',
@@ -11,7 +14,7 @@ module.exports = {
     {
       name: 'model',
       required: false,
-      default: 'google/gemma-2b-it'
+      default: 'HuggingFaceTB/SmolLM3-3B'
     },
     {
       name: 'conversation',
@@ -23,56 +26,30 @@ module.exports = {
 
   async execute(req, res) {
     try {
-      if(!req.query["text"]) {
+      if(!req.query['text']) {
         res.type('text/plain').send('mini docs<br>text=[TEXT] - Text for generation<br>Optional:<br>model=[Model] - Very high level but allows for better text<br>when generating text a object will be automaticly created with all the past conversation (if not set every call will be treated as a new conversation)');
         return;
       };
-      let con;
-      if (req.query["conversation"]) {
+      let con = [];
+      if (req.query['conversation']) {
         try {
-          con = JSON.parse(req.query["conversation"]);
+          con = JSON.parse(req.query['conversation']);
         } catch (err) {
-          con = {
-            past_user_inputs: [],
-            generated_responses: []
-          };
+          // Ignore :3
         }
-      } else {
-        con = {
-          past_user_inputs: [],
-          generated_responses: []
-        };
       }
-      let txt = req.query["text"];
-      const response = await fetch(`https://api-inference.huggingface.co/models/${req.query['model'] ?? 'google/gemma-2b-it'}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.ai}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          inputs: txt,
-          past_user_inputs: con.past_user_inputs ?? [],
-          generated_responses: con.generated_responses ?? []
-        })
+      con.push({ role: 'user', content: req.query['text'] });
+      let out = await hf.chatCompletion({
+        model: req.query['model'] ?? 'HuggingFaceTB/SmolLM3-3B',
+        messages: con,
+        max_tokens: 512
       });
-      let result = await response.json();
-      if (result.error) {
-        throw new Error(result.error)
-      }
-
-      let pu = (con.past_user_inputs ?? []);
-      pu.push(txt);
-      let pb = (con.generated_responses ?? []);
-      pb.push(result[0].generated_text);
+      con.push({ role: 'assistant', content: out.choices?.[0]?.message?.content });
 
       res.json({
-        generated_text: result[0].generated_text,
-        conversation: {
-          past_user_inputs: pu,
-          generated_responses: pb,
-        }
-      })
+        generated_text: out.choices?.[0]?.message?.content,
+        conversation: con
+      });
     } catch (err) {
       res.error(err, 500);
     }

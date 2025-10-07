@@ -1,6 +1,6 @@
-const fs = require("fs");
-const hfimport = require('@huggingface/inference');
-const hf = new hfimport.HfInference(process.env['ai']);
+const fs = require('node:fs');
+const { InferenceClient } = require('@huggingface/inference');
+const hf = new InferenceClient(process.env['ai'], { retry_on_error: false });
 let nanoid;
 
 // get packages that use import bc boooooo
@@ -27,7 +27,7 @@ module.exports = {
     {
       name: 'model',
       required: false,
-      default: 'SG161222/Realistic_Vision_V1.4'
+      default: 'stabilityai/stable-diffusion-xl-base-1.0'
     }
   ],
   category: "image",
@@ -39,15 +39,9 @@ module.exports = {
     }
 
     try {
-      // TODO: Remove dall-e fully
-      if (req.query["model"] == "dall-e") {
-        res.error('Error, dall-e is no longer supported');
-        return;
-      }
-
       let img = await hf.textToImage({
         inputs: req.query["text"],
-        model: req.query["model"] ?? 'SG161222/Realistic_Vision_V1.4',
+        model: req.query["model"] ?? 'stabilityai/stable-diffusion-xl-base-1.0',
         parameters: {
           negative_prompt: req.query["negative"] ?? 'blurry',
         }
@@ -55,7 +49,7 @@ module.exports = {
       let itemname = `${nanoid()}.${img.type.replace('image/', '')}`,
       imgbuffer = Buffer.from(await img.arrayBuffer());
       fs.createWriteStream(`images/imagine/${itemname}`).write(imgbuffer);
-      res.json({link: `https://${req.hostname}/images/imagine/${itemname}`});
+      res.json({link: `https://api.fsh.plus/images/imagine/${itemname}`});
     } catch (err) {
       res.error('Could not generate', 500);
     }
