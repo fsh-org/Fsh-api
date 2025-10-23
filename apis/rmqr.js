@@ -27,7 +27,7 @@ module.exports = {
     }
   ],
   category: "image",
-  
+
   async execute(req, res) {
     if (!req.query['text']) { 
       res.send('Mini docs<br>text - data to encode<br>strategy - balanced, height or width<br>correction - auto, m (medium 15%) or h (high 30%)')
@@ -46,21 +46,27 @@ module.exports = {
       return;
     }
 
-    let data = await fetch('https://asia-northeast1-rmqr-generator.cloudfunctions.net/generate-rmqr-code', {
-      method: 'POST',
-      headers: {
-        'user-agent': 'Fsh (Api - user: '+req.clientIp+')',
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        text: req.query['text'],
-        versionStrategy: strategy,
-        errorCorrectionLevel: correction
-      })
-    });
-    data = await data.json();
+    let data;
+    try {
+      data = await fetch('https://asia-northeast1-rmqr-generator.cloudfunctions.net/generate-rmqr-code', {
+        method: 'POST',
+        headers: {
+          'user-agent': 'Fsh (Api - user: '+req.clientIp+')',
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          text: req.query['text'],
+          versionStrategy: strategy,
+          errorCorrectionLevel: correction
+        })
+      });
+      data = await data.json();
+    } catch(err) {
+      res.error('Failed to generate', 500);
+      return;
+    }
 
-    let qr = new sharp(Buffer.from(data.qr.flat().map(p=>!p*255)), {
+    new sharp(Buffer.from(data.qr.flat().map(p=>!p*255)), {
       raw: {
         width: data.width,
         height: data.height,
