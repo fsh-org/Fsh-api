@@ -216,8 +216,8 @@ fastify.post('/request', async(req, res) => {
     if (typeof body == 'string') {
       body = JSON.parse(req.body);
     }
-    if (body.headers['content-type']?.startsWith('image/')) {
-      body.body = Buffer.from(body.body.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    if (['image','video','audio'].includes((body.headers['content-type']??'text/plain').split('/')[0])) {
+      body.body = Buffer.from(body.body.replace(/^data:(image|video|audio)\/\w+;base64,/i, ''), 'base64');
     }
     if (body.mime) {
       typ = body.mime;
