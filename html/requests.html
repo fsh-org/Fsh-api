@@ -557,14 +557,14 @@ history.replaceState = ()=>{};
                 dat.ls.onchange = reqUpdate;
                 dat.ls.value = dat.lsv??'cmd';
                 dat.lsv = { cmd: '^\n  ', ps: '`\n  ', bash: '\\\n  ', none: '' }[dat.ls.value];
-                tar.innerText = `curl${con.method==='GET'?'':(con.method==='HEAD'?'--head':` --request ${con.method}`)}${Object.keys(con.headers).map(h=>` ${dat.lsv}--header "${h}: ${con.headers[h]}"`).join('')}${con.body?` ${dat.lsv}--data "${con.body.replaceAll('"',(dat.ls.value==='ps'?'`':'\\')+'"')}"`:''} ${dat.lsv}${url}`;
+                tar.innerText = `curl${con.method==='GET'?'':(con.method==='HEAD'?'--head':` --request ${con.method}`)}${Object.keys(con.headers).map(h=>` ${dat.lsv}--header "${h}: ${con.headers[h]}"`).join('')}${con.body?` ${dat.lsv}--data "${con.body.replaceAll('"',(dat.ls.value==='ps'?'`':'\\')+'"').replaceAll('\n','\\n')}"`:''} ${dat.lsv}${url}`;
                 break;
               case 'js':
                 ext.innerText = '';
                 tar.innerText = `fetch("${url.replaceAll('"','\\"')}", {
   method: "${con.method}",
   headers: {${Object.keys(con.headers).map(h=>`\n    "${h}": "${con.headers[h]}",`).join('')}
-  }
+  }${con.body?`,\n  body: "${con.body.replaceAll('"','\\"').replaceAll('\n','\\n')}"`:''}
 })`;
                 break;
             }
