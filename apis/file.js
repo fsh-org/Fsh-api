@@ -17,13 +17,12 @@ module.exports = {
       res.error('You must provide an url')
       return;
     }
-    if (!uri.includes('://')) {
-      uri = 'https://'+uri
-    }
+    if (!uri.includes('://')) uri = 'https://'+uri;
     try {
       let request = await fetch(uri, {
-        follow: 20,
+        follow: 10,
         redirect: "follow",
+        method: req.method.toUpperCase()??'GET',
         headers: {
           "user-agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 FshApi/1.0 (User, ${req.clientIp})`,
           accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
