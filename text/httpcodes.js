@@ -23,6 +23,36 @@ module.exports = {
     "type": "Informational",
     "standard": "RFC 8297"
   },
+  "110": {
+    "code": 110,
+    "title": "Response is Stale",
+    "type": "Caching warning codes (obsoleted)",
+    "standard": "RFC 7234"
+  },
+  "111": {
+    "code": 111,
+    "title": "Revalidation Failed",
+    "type": "Caching warning codes (obsoleted)",
+    "standard": "RFC 7234"
+  },
+  "112": {
+    "code": 112,
+    "title": "Disconnected Operation",
+    "type": "Caching warning codes (obsoleted)",
+    "standard": "RFC 7234"
+  },
+  "113": {
+    "code": 113,
+    "title": "Heuristic Expiration",
+    "type": "Caching warning codes (obsoleted)",
+    "standard": "RFC 7234"
+  },
+  "199": {
+    "code": 199,
+    "title": "Miscellaneous Warning",
+    "type": "Caching warning codes (obsoleted)",
+    "standard": "RFC 7234"
+  },
 
   "200": {
     "code": 200,
@@ -78,11 +108,29 @@ module.exports = {
     "type": "Success",
     "standard": "RFC 5842"
   },
+  "214": {
+    "code": 214,
+    "title": "Transformation Applied",
+    "type": "Caching warning codes (obsoleted)",
+    "standard": "RFC 7234"
+  },
+  "218": {
+    "code": 218,
+    "title": "This is fine",
+    "type": "Unofficial",
+    "standard": "Apache server"
+  },
   "226": {
     "code": 226,
     "title": "IM Used",
     "type": "Success",
     "standard": "RFC 3229"
+  },
+  "299": {
+    "code": 299,
+    "title": "Miscellaneous Persistent Warning",
+    "type": "Caching warning codes (obsoleted)",
+    "standard": "RFC 7234"
   },
 
   "300": {
@@ -254,6 +302,18 @@ module.exports = {
     "type": "Client Error",
     "standard": "RFC 2324, RFC 7168, Hyper Text Coffee Pot Control Protocol"
   },
+  "419": {
+    "code": 419,
+    "title": "Page Expired",
+    "type": "Unofficial",
+    "standard": "Laravel Framework"
+  },
+  "420": {
+    "code": 420,
+    "title": "Method Failure | Enhance Your Calm",
+    "type": "Unofficial",
+    "standard": "Spring Framework | Twitter"
+  },
   "421": {
     "code": 421,
     "title": "Misdirected Request",
@@ -302,17 +362,89 @@ module.exports = {
     "type": "Client Error",
     "standard": "RFC 6585"
   },
+  "430": {
+    "code": 430,
+    "title": "Shopify Security Rejection",
+    "type": "Unofficial",
+    "standard": "Shopify"
+  },
   "431": {
     "code": 431,
     "title": "Request Header Fields Too Large",
     "type": "Client Error",
     "standard": "RFC 6585"
   },
+  "440": {
+    "code": 440,
+    "title": "Login Time-out",
+    "type": "Unofficial",
+    "standard": "Internet Information Services"
+  },
+  "449": {
+    "code": 449,
+    "title": "Retry With",
+    "type": "Unofficial",
+    "standard": "Internet Information Services"
+  },
+  "450": {
+    "code": 450,
+    "title": "Blocked by Windows Parental Controls",
+    "type": "Unofficial",
+    "standard": "Microsoft"
+  },
   "451": {
     "code": 451,
     "title": "Unavailable For Legal Reasons",
     "type": "Client Error",
     "standard": "RFC 7725"
+  },
+  "460": {
+    "code": 460,
+    "title": "Client Closed Connection Before Idle",
+    "type": "Unofficial",
+    "standard": "AWS Elastic Load Balancing"
+  },
+  "463": {
+    "code": 463,
+    "title": "Too Many Forward Ips",
+    "type": "Unofficial",
+    "standard": "AWS Elastic Load Balancing"
+  },
+  "464": {
+    "code": 464,
+    "title": "Incompatible Protocol Version",
+    "type": "Unofficial",
+    "standard": "AWS Elastic Load Balancing"
+  },
+  "495": {
+    "code": 495,
+    "title": "An error has occurred during the client verification",
+    "type": "Unofficial",
+    "standard": "ngx"
+  },
+  "496": {
+    "code": 496,
+    "title": "A client has not presented the required certificate",
+    "type": "Unofficial",
+    "standard": "ngx"
+  },
+  "497": {
+    "code": 497,
+    "title": "A regular request has been sent to the HTTPS port",
+    "type": "Unofficial",
+    "standard": "ngx"
+  },
+  "498": {
+    "code": 498,
+    "title": "Invalid Token",
+    "type": "Unofficial",
+    "standard": "Esri"
+  },
+  "499": {
+    "code": 499,
+    "title": "499 Token Required",
+    "type": "Unofficial",
+    "standard": "Esri"
   },
 
   "500": {
@@ -387,122 +519,6 @@ module.exports = {
     "type": "Server Error",
     "standard": "RFC 6585"
   },
-
-  "604": {
-    "code": 604,
-    "title": "Inaccessible Request",
-    "type": "Multi-sided Errors",
-    "standard": "RFC 818"
-  },
-  "605": {
-    "code": 605,
-    "title": "Not Allowed",
-    "type": "Multi-sided Errors",
-    "standard": "RFC 4271"
-  },
-  "644": {
-    "code": 644,
-    "title": "Request Deleted or Modified",
-    "type": "Multi-sided Errors",
-    "standard": "RFC 6778"
-  },
-
-  "218": {
-    "code": 218,
-    "title": "This is fine",
-    "type": "Unofficial",
-    "standard": "Apache server"
-  },
-  "419": {
-    "code": 419,
-    "title": "Page Expired",
-    "type": "Unofficial",
-    "standard": "Laravel Framework"
-  },
-  "420": {
-    "code": 420,
-    "title": "Method Failure | Enhance Your Calm",
-    "type": "Unofficial",
-    "standard": "Spring Framework | Twitter"
-  },
-  "430": {
-    "code": 430,
-    "title": "Shopify Security Rejection",
-    "type": "Unofficial",
-    "standard": "Shopify"
-  },
-  "450": {
-    "code": 450,
-    "title": "Blocked by Windows Parental Controls",
-    "type": "Unofficial",
-    "standard": "Microsoft"
-  },
-  "498": {
-    "code": 498,
-    "title": "Invalid Token",
-    "type": "Unofficial",
-    "standard": "Esri"
-  },
-  "499": {
-    "code": 499,
-    "title": "499 Token Required",
-    "type": "Unofficial",
-    "standard": "Esri"
-  },
-  "529": {
-    "code": 529,
-    "title": "Site is overloaded",
-    "type": "Unofficial",
-    "standard": "Qualys, SSLLabs"
-  },
-  "540": {
-    "code": 540,
-    "title": "Temporarily Disabled",
-    "type": "Unofficial",
-    "standard": "Shopify"
-  },
-  "589": {
-    "code": 589,
-    "title": "Network read timeout error",
-    "type": "Unofficial",
-    "standard": "HTTP/1.0"
-  },
-  "599": {
-    "code": 599,
-    "title": "Network Connect Timeout Error",
-    "type": "Unofficial",
-    "standard": "HTTP/1.0"
-  },
-  "770": {
-    "code": 770,
-    "title": "Game's root place is not active",
-    "type": "Unofficial",
-    "standard": "Fortnite, Roblox, Zepeto"
-  },
-  "783": {
-    "code": 783,
-    "title": "Unexpected Token",
-    "type": "Unofficial",
-    "standard": "Shopify"
-  },
-  "611": {
-    "code": 611,
-    "title": "Unexpected Unix Setpoint",
-    "type": "Unofficial",
-    "standard": "CloudFront, Shopify"
-  },
-  "440": {
-    "code": 440,
-    "title": "Login Time-out",
-    "type": "Unofficial",
-    "standard": "Internet Information Services"
-  },
-  "449": {
-    "code": 449,
-    "title": "Retry With",
-    "type": "Unofficial",
-    "standard": "Internet Information Services"
-  },
   "520": {
     "code": 520,
     "title": "Web Server Returned an Unknown Error",
@@ -551,35 +567,23 @@ module.exports = {
     "type": "Unofficial",
     "standard": "Cloudflare"
   },
+  "529": {
+    "code": 529,
+    "title": "Site is overloaded",
+    "type": "Unofficial",
+    "standard": "Qualys, SSLLabs"
+  },
   "530": {
     "code": 530,
     "title": "1xxx Error",
     "type": "Unofficial",
     "standard": "Cloudflare"
   },
-  "000": {
-    "code": '000',
-    "title": "Headers Too Big or Too Many Requests",
+  "540": {
+    "code": 540,
+    "title": "Temporarily Disabled",
     "type": "Unofficial",
-    "standard": "AWS Elastic Load Balancing"
-  },
-  "460": {
-    "code": 460,
-    "title": "Client Closed Connection Before Idle",
-    "type": "Unofficial",
-    "standard": "AWS Elastic Load Balancing"
-  },
-  "463": {
-    "code": 463,
-    "title": "Too Many Forward Ips",
-    "type": "Unofficial",
-    "standard": "AWS Elastic Load Balancing"
-  },
-  "464": {
-    "code": 464,
-    "title": "Incompatible Protocol Version",
-    "type": "Unofficial",
-    "standard": "AWS Elastic Load Balancing"
+    "standard": "Shopify"
   },
   "561": {
     "code": 561,
@@ -587,6 +591,57 @@ module.exports = {
     "type": "Unofficial",
     "standard": "AWS Elastic Load Balancing"
   },
+  "589": {
+    "code": 589,
+    "title": "Network read timeout error",
+    "type": "Unofficial",
+    "standard": "HTTP/1.0"
+  },
+  "599": {
+    "code": 599,
+    "title": "Network Connect Timeout Error",
+    "type": "Unofficial",
+    "standard": "HTTP/1.0"
+  },
+
+  "604": {
+    "code": 604,
+    "title": "Inaccessible Request",
+    "type": "Multi-sided Errors",
+    "standard": "RFC 818"
+  },
+  "605": {
+    "code": 605,
+    "title": "Not Allowed",
+    "type": "Multi-sided Errors",
+    "standard": "RFC 4271"
+  },
+  "611": {
+    "code": 611,
+    "title": "Unexpected Unix Setpoint",
+    "type": "Unofficial",
+    "standard": "CloudFront, Shopify"
+  },
+  "644": {
+    "code": 644,
+    "title": "Request Deleted or Modified",
+    "type": "Multi-sided Errors",
+    "standard": "RFC 6778"
+  },
+
+  "770": {
+    "code": 770,
+    "title": "Game's root place is not active",
+    "type": "Unofficial",
+    "standard": "Fortnite, Roblox, Zepeto"
+  },
+  "783": {
+    "code": 783,
+    "title": "Unexpected Token",
+    "type": "Unofficial",
+    "standard": "Shopify"
+  },
+
   "911": {
     "code": 911,
     "title": "A bug has hit the server tower",
@@ -594,46 +649,10 @@ module.exports = {
     "standard": ".gov"
   },
 
-  "110": {
-    "code": 110,
-    "title": "Response is Stale",
-    "type": "Caching warning codes (obsoleted)",
-    "standard": "RFC 7234"
-  },
-  "111": {
-    "code": 111,
-    "title": "Revalidation Failed",
-    "type": "Caching warning codes (obsoleted)",
-    "standard": "RFC 7234"
-  },
-  "112": {
-    "code": 112,
-    "title": "Disconnected Operation",
-    "type": "Caching warning codes (obsoleted)",
-    "standard": "RFC 7234"
-  },
-  "113": {
-    "code": 113,
-    "title": "Heuristic Expiration",
-    "type": "Caching warning codes (obsoleted)",
-    "standard": "RFC 7234"
-  },
-  "199": {
-    "code": 199,
-    "title": "Miscellaneous Warning",
-    "type": "Caching warning codes (obsoleted)",
-    "standard": "RFC 7234"
-  },
-  "214": {
-    "code": 214,
-    "title": "Transformation Applied",
-    "type": "Caching warning codes (obsoleted)",
-    "standard": "RFC 7234"
-  },
-  "299": {
-    "code": 299,
-    "title": "Miscellaneous Persistent Warning",
-    "type": "Caching warning codes (obsoleted)",
-    "standard": "RFC 7234"
+  "000": {
+    "code": "000",
+    "title": "Headers Too Big or Too Many Requests",
+    "type": "Unofficial",
+    "standard": "AWS Elastic Load Balancing"
   }
-}
+};
