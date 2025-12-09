@@ -12,7 +12,7 @@ module.exports = {
   info: 'Change the format of a image',
   type: 'post',
   params: [],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

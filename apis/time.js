@@ -1,7 +1,7 @@
 module.exports = {
   path: '/time',
-  info: "Gives current time in various ways",
-  type: "get",
+  info: 'Gives current time in various ways',
+  type: 'get',
   params: [
     {
       name: 'offset',
@@ -9,10 +9,10 @@ module.exports = {
       default: '0'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
-    let date = req.query["offset"] ? new Date(new Date() + Number(req.query["offset"])) : new Date()
+    let date = req.query['offset'] ? new Date(new Date() + Number(req.query['offset'])) : new Date()
     res.json({
       unix: Math.floor(date.getTime() / 1000),
       unix_ms: date.getTime()/1,

@@ -1,12 +1,11 @@
-const fs = require("fs")
-const path = require("path")
+const fs = require('node:fs');
 
 module.exports = {
   path: '/meme',
   info: 'Sends random fsh meme',
   type: 'get',
   params: [],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     fs.readdir('meme', async (err, files) => {

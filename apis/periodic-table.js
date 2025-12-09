@@ -11,7 +11,7 @@ module.exports = {
       default: '1'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['element']) {

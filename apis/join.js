@@ -90,7 +90,7 @@ module.exports = {
       default: ''
     },
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     let one = req.query['one'];

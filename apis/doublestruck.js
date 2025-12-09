@@ -74,7 +74,7 @@ module.exports = {
       default: 'fshy'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     let txt = req.query['text'];

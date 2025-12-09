@@ -11,16 +11,16 @@ module.exports = {
       default: 'fsh.plus'
     }
   ],
-  category: "text",
-  
+  category: 'text',
+
   async execute(req, res) {
     if (!req.query['domain']) {
-      res.error('You must include a domain')
+      res.error('You must include a domain');
       return;
     }
 
     res.json({
       puny: punycode.toASCII(req.query['domain'])
-    })
+    });
   }
 }

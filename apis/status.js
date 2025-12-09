@@ -9,7 +9,7 @@ module.exports = {
       default: '202'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['status']) {

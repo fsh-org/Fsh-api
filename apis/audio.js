@@ -25,7 +25,7 @@ module.exports = {
       default: 'dQw4w9WgXcQ'
     }
   ],
-  category: "audio",
+  category: 'audio',
 
   async execute(req, res) {
     let id = req.query['id'];

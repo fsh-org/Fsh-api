@@ -22,7 +22,7 @@ module.exports = {
       default: ''
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     try {

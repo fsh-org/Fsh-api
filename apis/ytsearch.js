@@ -11,7 +11,7 @@ module.exports = {
       default: 'low quality fish funky town'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['query']) {

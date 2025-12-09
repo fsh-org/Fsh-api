@@ -1,6 +1,6 @@
 // Fsh api
-const path = require("node:path");
-const fs = require("node:fs");
+const path = require('node:path');
+const fs = require('node:fs');
 
 let process = require('process');
 process.env = require('./env.js');
@@ -87,10 +87,10 @@ const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
   arrayOfFiles = arrayOfFiles ?? [];
 
   files.forEach(function (file) {
-    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      arrayOfFiles = getAllFiles(endsin, dirPath + "/" + file, arrayOfFiles);
+    if (fs.statSync(dirPath + '/' + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(endsin, dirPath + '/' + file, arrayOfFiles);
     } else {
-      if (file.endsWith(endsin)) arrayOfFiles.push(path.join(dirPath, "/", file));
+      if (file.endsWith(endsin)) arrayOfFiles.push(path.join(dirPath, '/', file));
     }
   });
 
@@ -169,39 +169,39 @@ fastify.get('/', (req, res) => {
   ${html['hidden']}
 </div>`;
 
-  res.type('text/html').send(fs.readFileSync('html/index.html', 'utf8').replace("{{endpoints}}", html).replace("{{count}}", count));
+  res.type('text/html').send(fs.readFileSync('html/index.html', 'utf8').replace('{{endpoints}}', html).replace('{{count}}', count));
 })
 
-fastify.get("/search", (req, res) => {
+fastify.get('/search', (req, res) => {
   res.type('text/html').send(fs.readFileSync('html/search.html', 'utf8'));
 })
 
-fastify.get("/requests", (req, res) => {
+fastify.get('/requests', (req, res) => {
   res.type('text/html').send(fs.readFileSync('html/requests.html', 'utf8'));
 })
 
 // TODO: Remove builder or keep it idk
-fastify.get("/builder", (req, res) => {
-  let u = "";
+fastify.get('/builder', (req, res) => {
+  let u = '';
   for (const file of apisFiles) {
-    if (require(file).category != "hidden") {
-      u = u + `<option value="${require(file).path}">${require(file).path.replace("/","")}</option>`
+    if (require(file).category != 'hidden') {
+      u = u + `<option value="${require(file).path}">${require(file).path.replace('/','')}</option>`
     }
   }
-  res.type('text/html').send(fs.readFileSync('html/builder.html', 'utf8').replaceAll("{end}", u));
+  res.type('text/html').send(fs.readFileSync('html/builder.html', 'utf8').replaceAll('{end}', u));
 })
 
 /* -- Static media -- */
-fastify.get("/favicon.ico", (req, res) => {
+fastify.get('/favicon.ico', (req, res) => {
   res.type('image/vnd.microsoft.icon').send(fs.readFileSync('html/favicon.ico'));
 })
-fastify.get("/styleapi.css", (req, res) => {
+fastify.get('/styleapi.css', (req, res) => {
   res.type('text/css').send(fs.readFileSync('html/styleAPI.css', 'utf8'));
 })
-fastify.get("/requests.json", (req, res) => {
+fastify.get('/requests.json', (req, res) => {
   res.type('application/json').send(fs.readFileSync('html/requests.json', 'utf8'));
 })
-fastify.get("/robots.txt", (req, res) => {
+fastify.get('/robots.txt', (req, res) => {
   res.type('application/json').send(fs.readFileSync('html/robots.txt', 'utf8'));
 })
 
@@ -234,7 +234,7 @@ fastify.post('/request', async(req, res) => {
     typ = typ.split('/')[0];
     if (['image', 'audio', 'video'].includes(typ)) {
       cont = await da.arrayBuffer();
-      alt = `data:${da.headers.get('content-type')};base64,${Buffer.from(cont).toString("base64")}`;
+      alt = `data:${da.headers.get('content-type')};base64,${Buffer.from(cont).toString('base64')}`;
       cont = new TextDecoder().decode(cont);
     } else {
       cont = await da.text();
@@ -277,8 +277,8 @@ fastify.get('/pt-console', async(req, res) => {
     method: 'GET',
     headers: {
       authorization: 'Bearer '+req.query['key'],
-      accept: "application/json",
-      "Content-Type": "application/json"
+      accept: 'application/json',
+      'content-type': 'application/json'
     }
   });
   newws = await newws.json();

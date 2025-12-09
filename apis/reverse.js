@@ -9,7 +9,7 @@ module.exports = {
       default: 'Hello'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['text']) {

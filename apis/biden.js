@@ -11,7 +11,7 @@ module.exports = {
       default: 'fsh'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.query['text']) {

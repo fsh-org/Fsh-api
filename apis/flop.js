@@ -5,7 +5,7 @@ module.exports = {
   info: 'Flip a image horizontally (pass image in body)',
   type: 'post',
   params: [],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

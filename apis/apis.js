@@ -7,11 +7,11 @@ const getAllFiles = function (endsin, dirPath, arrayOfFiles) {
   arrayOfFiles = arrayOfFiles || [];
 
   files.forEach(function (file) {
-    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      arrayOfFiles = getAllFiles(endsin, dirPath + "/" + file, arrayOfFiles);
+    if (fs.statSync(dirPath + '/' + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(endsin, dirPath + '/' + file, arrayOfFiles);
     } else {
       if (file.endsWith(endsin))
-        arrayOfFiles.push(path.join(dirPath, "/", file));
+        arrayOfFiles.push(path.join(dirPath, '/', file));
     }
   });
 
@@ -23,16 +23,16 @@ module.exports = {
   info: 'Get a list of the apis',
   type: 'get',
   params: [],
-  category: "text",
-  
+  category: 'text',
+
   async execute(req, res) {
     const apisFiles = getAllFiles('.js', path.join(__dirname, ''))
 
     let data = {
       count: 0,
       endpoints: {}
-    }
-    
+    };
+
     apisFiles.forEach(fil => {
       let file = require(fil);
       if (file.category != 'hidden') {
@@ -45,8 +45,8 @@ module.exports = {
           category: file.category
         }
       }
-    })
+    });
 
-    res.json(data)
+    res.json(data);
   }
 }

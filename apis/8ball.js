@@ -5,7 +5,7 @@ module.exports = {
   info: '8ball responses',
   type: 'get',
   params: [],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     const random = Math.floor(Math.random() * responses.length);

@@ -11,7 +11,7 @@ module.exports = {
       default: 'fshy'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     let txt = req.query['text'];

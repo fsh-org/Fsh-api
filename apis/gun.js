@@ -5,7 +5,7 @@ module.exports = {
   info: 'Gun overlay on a image',
   type: 'post',
   params: [],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

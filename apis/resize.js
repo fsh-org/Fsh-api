@@ -16,7 +16,7 @@ module.exports = {
       default: '128'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.query['width'] || !req.query['height']) {

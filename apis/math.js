@@ -1,4 +1,4 @@
-const Mexp = require("math-expression-evaluator");
+const Mexp = require('math-expression-evaluator');
 
 module.exports = {
   path: '/math',
@@ -11,7 +11,7 @@ module.exports = {
       default: '5+5'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     const mexp = new Mexp()
