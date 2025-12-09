@@ -30,20 +30,20 @@ module.exports = {
       default: 'stabilityai/stable-diffusion-xl-base-1.0'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
-    if (!req.query["text"]) {
+    if (!req.query['text']) {
       res.type('text/html').send('mini docs<br>text=[TEXT] - Text to generate image<br>Optional:<br>model=[Model] - Very high level but allows for better images (https://huggingface.co/models?pipeline_tag=text-to-image)<br>negative=[NON] - Things you dont want to appear (blur)');
       return;
     }
 
     try {
       let img = await hf.textToImage({
-        inputs: req.query["text"],
-        model: req.query["model"] ?? 'stabilityai/stable-diffusion-xl-base-1.0',
+        inputs: req.query['text'],
+        model: req.query['model'] ?? 'stabilityai/stable-diffusion-xl-base-1.0',
         parameters: {
-          negative_prompt: req.query["negative"] ?? 'blurry',
+          negative_prompt: req.query['negative'] ?? 'blurry',
         }
       });
       let itemname = `${nanoid()}.${img.type.replace('image/', '')}`,

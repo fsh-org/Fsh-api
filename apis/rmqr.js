@@ -26,10 +26,10 @@ module.exports = {
       default: '8'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
-    if (!req.query['text']) { 
+    if (!req.query['text']) {
       res.send('Mini docs<br>text - data to encode<br>strategy - balanced, height or width<br>correction - auto, m (medium 15%) or h (high 30%)')
       return;
     }

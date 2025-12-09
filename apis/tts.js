@@ -1,4 +1,3 @@
-const fs = require("fs");
 const { getAudioBuffer } = require('simple-tts-mp3');
 
 module.exports = {
@@ -17,8 +16,8 @@ module.exports = {
       default: 'en'
     }
   ],
-  category: "audio",
-  
+  category: 'audio',
+
   async execute(req, res) {
     if (!req.query['text']) {
       res.error('Include text')

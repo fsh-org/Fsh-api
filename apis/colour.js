@@ -11,7 +11,7 @@ module.exports = {
       default: 'ff00ff'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     try {

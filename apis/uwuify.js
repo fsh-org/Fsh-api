@@ -1,17 +1,17 @@
-const ends = [" >:3", " ;u;", " :>", " x3", " >///<", " >~<", " ^^", " OwO", " uwu", " >.<", " :3", "~ ", "~~ "];
+const ends = [' >:3', ' ;u;', ' :>', ' x3', ' >///<', ' >~<', ' ^^', ' OwO', ' uwu', ' >.<', ' :3', '~ ', '~~ '];
 function uwuify(text) {
   text = text
     .replace('per','paw');
   text = text
-    .replace(/r/g, "w")
-    .replace(/l/g, "w")
-    .replace(/R/g, "W")
-    .replace(/L/g, "W")
-    .replace(/the/g, "da")
-    .replace(/The/g, "Da")
-    .replace(/th/g, "d")
-    .replace(/TH/g, "D")
-    .replace(/ove/g, "uv")
+    .replace(/r/g, 'w')
+    .replace(/l/g, 'w')
+    .replace(/R/g, 'W')
+    .replace(/L/g, 'W')
+    .replace(/the/g, 'da')
+    .replace(/The/g, 'Da')
+    .replace(/th/g, 'd')
+    .replace(/TH/g, 'D')
+    .replace(/ove/g, 'uv')
     .replace(/(?:\.|!|\?)/g, function(match){return`${ends[Math.floor(Math.random()*ends.length)]}${match}`});
 
   return text;
@@ -28,7 +28,7 @@ module.exports = {
       default: 'Hello'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['text']) {

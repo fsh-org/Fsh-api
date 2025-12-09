@@ -5,7 +5,7 @@ module.exports = {
   info: 'Inverts a image (pass image in body)',
   type: 'post',
   params: [],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

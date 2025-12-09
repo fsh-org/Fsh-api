@@ -14,26 +14,26 @@ module.exports = {
       default: 'fshy'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
-    if (!req.query["type"]) {
+    if (!req.query['type']) {
       res.error('No conversion type recived');
       return;
     }
-    if (!req.query["text"]) {
+    if (!req.query['text']) {
       res.error('No text recived');
       return;
     }
-    if (req.query["type"] === "encode") {
+    if (req.query['type'] === 'encode') {
       res.json({
-        text: Buffer.from(req.query["text"], 'UTF8').toString('Hex')
+        text: Buffer.from(req.query['text'], 'UTF8').toString('Hex')
       });
       return;
     }
-    if (req.query["type"] === "decode") {
+    if (req.query['type'] === 'decode') {
       res.json({
-        text: Buffer.from(req.query["text"], 'Hex').toString('UTF8')
+        text: Buffer.from(req.query['text'], 'Hex').toString('UTF8')
       });
       return;
     }

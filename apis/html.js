@@ -1,20 +1,7 @@
-function pretty(text) {
-  let u = String(text) || "";
-  if (!u.includes("\n")) {
-    return String(u)
-      .replaceAll("><", ">\n<")
-      .replaceAll("{", "{\n")
-      .replaceAll("}", "\n}")
-      .replaceAll("\n\n", "");
-  } else {
-    return u;
-  }
-}
-
 module.exports = {
-  path: "/html",
-  info: "Gets the html of a url (use www. for better results) (linkback for relative to full paths)",
-  type: "get",
+  path: '/html',
+  info: 'Gets the html of a url (use www. for better results) (linkback for relative to full paths)',
+  type: 'get',
   params: [
     {
       name: 'url',
@@ -27,10 +14,10 @@ module.exports = {
       default: 'false'
     }
   ],
-  category: "text",
-  
+  category: 'text',
+
   async execute(req, res) {
-    let uri = req.query["url"];
+    let uri = req.query['url'];
     if (!uri) {
       res.error('You must provide an url')
       return;
@@ -41,26 +28,26 @@ module.exports = {
     try {
       let request = await fetch(uri, {
         follow: 20,
-        redirect: "follow",
+        redirect: 'follow',
         headers: {
-          "User-Agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 FshApi/1.0 (User, ${req.clientIp})`,
-          accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-          "accept-language": "en;q=1.0",
-          "sec-ch-ua": '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"Windows"',
-          "sec-fetch-dest": "document",
-          "sec-fetch-mode": "navigate",
-          "sec-fetch-site": "none",
-          "sec-fetch-user": "?1",
-          "sec-gpc": "1",
+          'user-agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 FshApi/1.0 (User, ${req.pip.replace('::ffff:','')??req.headers['cf-connecting-ip']??req.ip})`,
+          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+          'accept-language': 'en;q=1.0',
+          'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"Windows"',
+          'sec-fetch-dest': 'document',
+          'sec-fetch-mode': 'navigate',
+          'sec-fetch-site': 'none',
+          'sec-fetch-user': '?1',
+          'sec-gpc': '1',
         }
       });
 
-      if (request.headers.get("Content-Type").includes("text/html")) {
-        res.header("Content-Type", "text/plain");
+      if (request.headers.get('content-type').includes('text/html')) {
+        res.header('content-type', 'text/plain');
       } else {
-        res.header("Content-Type", request.headers.get("Content-Type"));
+        res.header('content-type', request.headers.get('Content-Type'));
       }
 
       let html = await request.text();

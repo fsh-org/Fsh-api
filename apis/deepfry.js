@@ -5,7 +5,7 @@ module.exports = {
   info: 'Deepfry a image',
   type: 'post',
   params: [],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

@@ -11,7 +11,7 @@ module.exports = {
       default: '180'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.query['hue']) {

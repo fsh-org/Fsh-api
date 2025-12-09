@@ -11,7 +11,7 @@ module.exports = {
       default: 'ff0000'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!cache) {

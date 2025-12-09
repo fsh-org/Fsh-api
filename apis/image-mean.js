@@ -12,7 +12,7 @@ module.exports = {
       default: '5'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

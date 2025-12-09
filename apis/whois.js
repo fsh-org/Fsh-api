@@ -24,7 +24,7 @@ module.exports = {
       default: 'fsh.plus'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['url']) {

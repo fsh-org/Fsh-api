@@ -5,7 +5,7 @@ module.exports = {
   info: 'Make image into ad',
   type: 'post',
   params: [],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

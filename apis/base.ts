@@ -9,7 +9,7 @@ module.exports = {
       default: 'fsh' // An example imput
     }
   ],
-  category: "hidden", // category (only some appear in menu)
+  category: 'hidden', // category (only some appear in menu)
 
   async execute(req, res) {
     

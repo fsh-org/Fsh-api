@@ -15,38 +15,38 @@ module.exports = {
       default: 'cat'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     // No option :(
-    if (!req.query["animal"]) {
-      let opt = ["Cat", "Dog", "Fox", "Duck", "Frog", "Bunny", "Fish", "Alpaca", "Bird"].sort();
-      res.type('text/html').send(`Avaible animals:<br>- ${opt.join("<br>- ")}`);
+    if (!req.query['animal']) {
+      let opt = ['Cat', 'Dog', 'Fox', 'Duck', 'Frog', 'Bunny', 'Fish', 'Alpaca', 'Bird'].sort();
+      res.type('text/html').send(`Avaible animals:<br>- ${opt.join('<br>- ')}`);
       return;
     }
     // Yes option :)
     let img;
-    switch (req.query["animal"]) {
+    switch (req.query['animal']) {
       case 'cat':
-        img = await getIM("https://api.thecatapi.com/v1/images/search")
+        img = await getIM('https://api.thecatapi.com/v1/images/search')
         res.json({
           image: img[0].url
         })
         break;
       case 'dog':
-        img = await getIM("https://dog.ceo/api/breeds/image/random")
+        img = await getIM('https://dog.ceo/api/breeds/image/random')
         res.json({
           image: img.message.replaceAll('\\','')
         })
         break;
       case 'fox':
-        img = await getIM("https://randomfox.ca/floof/")
+        img = await getIM('https://randomfox.ca/floof/')
         res.json({
           image: img.image.replaceAll('\\','')
         })
         break;
       case 'duck':
-        img = await getIM("https://random-d.uk/api/v1/random")
+        img = await getIM('https://random-d.uk/api/v1/random')
         res.json({
           image: img.url
         })
@@ -57,25 +57,25 @@ module.exports = {
         })
         break;
       case 'bunny':
-        img = await getIM("https://api.bunnies.io/v2/loop/random/?media=gif,png")
+        img = await getIM('https://api.bunnies.io/v2/loop/random/?media=gif,png')
         res.json({
-          image: img.media[Math.random() > 0.3 ? "poster" : "gif"]
+          image: img.media[Math.random() > 0.3 ? 'poster' : 'gif']
         })
         break;
       case 'fish':
-        img = await getIM("https://api.sefinek.net/api/v2/random/animal/fish")
+        img = await getIM('https://api.sefinek.net/api/v2/random/animal/fish')
         res.json({
           image: img.message
         })
         break;
       case 'alpaca':
-        img = await getIM("https://api.sefinek.net/api/v2/random/animal/alpaca")
+        img = await getIM('https://api.sefinek.net/api/v2/random/animal/alpaca')
         res.json({
           image: img.message
         })
         break;
       case 'bird':
-        img = await getIM("https://api.sefinek.net/api/v2/random/animal/bird")
+        img = await getIM('https://api.sefinek.net/api/v2/random/animal/bird')
         res.json({
           image: img.message
         })

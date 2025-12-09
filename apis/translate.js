@@ -16,7 +16,7 @@ module.exports = {
       default: 'es'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['text'] || !req.query['lang']) {
@@ -31,10 +31,10 @@ module.exports = {
       res.error('Could not translate', 500)
       return;
     }
-    
+
     res.json({
       text: trans.text,
       source: trans.raw.src
-    })
+    });
   }
 }

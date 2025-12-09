@@ -28,29 +28,29 @@ module.exports = {
       default: 'fshy'
     }
   ],
-  category: "text",
-  
+  category: 'text',
+
   async execute(req, res) {
-    if (!req.query["type"]) {
-      res.error('No conversion type recived')
+    if (!req.query['type']) {
+      res.error('No conversion type recived');
       return;
     }
-    if (!req.query["text"]) {
-      res.error('No text recived')
+    if (!req.query['text']) {
+      res.error('No text recived');
       return;
     }
-    if (req.query["type"] == "encode") {
+    if (req.query['type']==='encode') {
       res.json({
-        text: stringToMorse(req.query["text"])
-      })
+        text: stringToMorse(req.query['text'])
+      });
       return;
     }
-    if (req.query["type"] == "decode") {
+    if (req.query['type']==='decode') {
       res.json({
-        text: morseToString(req.query["text"])
-      })
+        text: morseToString(req.query['text'])
+      });
       return;
     }
-    res.error('Type not valid')
+    res.error('Type not valid');
   }
 }

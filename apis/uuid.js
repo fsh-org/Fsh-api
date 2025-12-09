@@ -1,4 +1,4 @@
-const crypto = require("crypto")
+const crypto = require('node:crypto');
 
 let namespace;
 let name;
@@ -53,9 +53,9 @@ function sid() {
   return characters.charAt(Math.floor(Math.random() * 4));
 }
 function upd(namespace) {
-  if (namespace == "dns") namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
-  if (namespace == "url") namespace = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
-  if (namespace == "oid") namespace = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
+  if (namespace == 'dns') namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+  if (namespace == 'url') namespace = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+  if (namespace == 'oid') namespace = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
   if (namespace == 'x500') namespace = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
   return namespace;
 }
@@ -81,23 +81,23 @@ module.exports = {
       default: ''
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
-    if (!req.query["version"]) {
+    if (!req.query['version']) {
       res.json({
         uuid: `${makeid(8)}-${makeid(4)}-4${makeid(3)}-${sid()}${makeid(3)}-${makeid(12)}`
       })
       return;
     }
-    switch (req.query["version"]) {
+    switch (req.query['version']) {
       case 'help':
         res.send(`Version list (uses DCE 1.1, ISO/IEC 11578:1996 variant)<br><br>nil/null/0 - non unique uuid for testing<br>3 - predictible uuid from name, requires "space" and "name" parameters, space must be exactly url, dns, oid, x500 or a valid uuid<br>4 - random unique uuid<br>5 - same as 3 but uses a different hashing algorithym<br><br>More soon`)
         return;
-      case "5":
-      case "3":
-        namespace = upd(req.query["space"]);
-        name = req.query["name"];
+      case '5':
+      case '3':
+        namespace = upd(req.query['space']);
+        name = req.query['name'];
         if (!namespace || !name) {
           res.error('Include a name and namespace');
           return;
@@ -106,16 +106,16 @@ module.exports = {
           uuid: req.query['version'] === '5' ? generateVersion5UUID(namespace, name) : generateVersion3UUID(namespace, name)
         })
         return;
-      case "4":
+      case '4':
         res.json({
           uuid: `${makeid(8)}-${makeid(4)}-4${makeid(3)}-${sid()}${makeid(3)}-${makeid(12)}`
         })
         return;
-      case "nil":
-      case "null":
-      case "0":
+      case 'nil':
+      case 'null':
+      case '0':
         res.json({
-          uuid: "00000000-0000-0000-0000-000000000000"
+          uuid: '00000000-0000-0000-0000-000000000000'
         })
         return;
     }

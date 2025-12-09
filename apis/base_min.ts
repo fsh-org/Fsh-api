@@ -3,7 +3,7 @@ module.exports = {
   info: 'info',
   type: 'get',
   params: [],
-  category: "hidden",
+  category: 'hidden',
 
   async execute(req, res) {
     

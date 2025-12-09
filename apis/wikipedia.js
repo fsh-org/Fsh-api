@@ -23,7 +23,7 @@ module.exports = {
       default: 'en'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     if (!req.query['page']) {

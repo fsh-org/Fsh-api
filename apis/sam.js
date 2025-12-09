@@ -35,7 +35,7 @@ module.exports = {
       default: 'Hello'
     }
   ],
-  category: "audio",
+  category: 'audio',
 
   async execute(req, res) {
     let text = req.query['text'];

@@ -11,7 +11,7 @@ module.exports = {
       default: '8'
     }
   ],
-  category: "image",
+  category: 'image',
 
   async execute(req, res) {
     if (!req.body || !req.body.length) {

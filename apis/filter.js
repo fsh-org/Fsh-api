@@ -1,14 +1,14 @@
-const fs = require("fs")
+const fs = require('node:fs');
 
-let slurtxt = fs.readFileSync("text/slur.txt", 'utf8').split(',').sort((f,s)=>s.length-f.length);
-let sweartxt = fs.readFileSync("text/swear.txt", 'utf8').split(',').sort((f,s)=>s.length-f.length);
-let adulttxt = fs.readFileSync("text/adult.txt", 'utf8').split(',').sort((f,s)=>s.length-f.length);
+let slurtxt = fs.readFileSync('text/slur.txt', 'utf8').split(',').sort((f,s)=>s.length-f.length);
+let sweartxt = fs.readFileSync('text/swear.txt', 'utf8').split(',').sort((f,s)=>s.length-f.length);
+let adulttxt = fs.readFileSync('text/adult.txt', 'utf8').split(',').sort((f,s)=>s.length-f.length);
 
 function bad(text, words, sie) {
   let copy = text
   for (let w in words) {
     let t = new Array(words[w].length + 1).join(sie);
-    let reg = new RegExp(words[w], "ig")
+    let reg = new RegExp(words[w], 'ig')
     copy = copy.replaceAll(reg, t)
   }
   return [text != copy, text == copy ? text : copy];
@@ -35,14 +35,14 @@ module.exports = {
       default: 'adult,swear,slur'
     }
   ],
-  category: "text",
+  category: 'text',
 
   async execute(req, res) {
     let response;
-    if (req.method == "POST") {
+    if (req.method == 'POST') {
       response = req.body.text;
     } else {
-      response = req.query["text"];
+      response = req.query['text'];
     }
     if (!response) {
       res.json({
@@ -50,30 +50,30 @@ module.exports = {
         swear: false,
         slur: false,
         adult: false,
-        censor: ""
+        censor: ''
       })
       return;
     }
-    const sie = req.query["char"] ?? "#";
-    const cat = req.query["category"] ?? "adult,swear,slur";
+    const sie = req.query['char'] ?? '#';
+    const cat = req.query['category'] ?? 'adult,swear,slur';
 
     let hh;
     let tt = [];
 
     hh = bad(response, sweartxt, sie);
-    if (cat.includes("swear")) {
+    if (cat.includes('swear')) {
       response = hh[1];
     }
     tt.push(hh[0]);
 
     hh = bad(response, slurtxt, sie);
-    if (cat.includes("slur")) {
+    if (cat.includes('slur')) {
       response = hh[1];
     }
     tt.push(hh[0]);
 
     hh = bad(response, adulttxt, sie);
-    if (cat.includes("adult")) {
+    if (cat.includes('adult')) {
       response = hh[1];
     }
     tt.push(hh[0]);
