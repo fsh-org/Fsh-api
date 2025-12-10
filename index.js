@@ -102,18 +102,10 @@ const apisFiles = getAllFiles('.js', path.join(__dirname, 'apis'))
 /* -- Assigning paths to files + Checks -- */
 for (const file of apisFiles) {
   const apiFile = require(file);
-  if (!apiFile['path']) {
-    throw new Error(`[ERROR] The command at ${file} is missing a required "path" property.`);
-  }
-  if (!apiFile['type']) {
-    console.warn(`[WARNING] The command at ${file} is missing "type" property.`);
-  }
-  if (!apiFile['info']) {
-    console.warn(`[WARNING] The command at ${file} is missing "info" property.`);
-  }
-  if (!apiFile['category']) {
-    console.warn(`[WARNING] The command at ${file} is missing "category" property.`);
-  }
+  if (!apiFile['path']) throw new Error(`[ERROR] The command at ${file} is missing a required "path" property.`);
+  if (!apiFile['type']) console.warn(`[WARNING] The command at ${file} is missing "type" property.`);
+  if (!apiFile['info']) console.warn(`[WARNING] The command at ${file} is missing "info" property.`);
+  if (!apiFile['category']) console.warn(`[WARNING] The command at ${file} is missing "category" property.`);
   if ('execute' in apiFile) {
     apis.set(apiFile.path, apiFile);
   } else {
@@ -141,7 +133,7 @@ fastify.get('/', (req, res) => {
     if ((endpoint.params ?? []).length > 0) {
       endpoint.params.forEach(param => {
         params.push(`<div class="r-${param.required ? 'm' : 'o'}">${param.name}</div>`)
-      })
+      });
     }
 
     // Detail element
@@ -170,40 +162,38 @@ fastify.get('/', (req, res) => {
 </div>`;
 
   res.type('text/html').send(fs.readFileSync('html/index.html', 'utf8').replace('{{endpoints}}', html).replace('{{count}}', count));
-})
+});
 
 fastify.get('/search', (req, res) => {
   res.type('text/html').send(fs.readFileSync('html/search.html', 'utf8'));
-})
-
+});
 fastify.get('/requests', (req, res) => {
   res.type('text/html').send(fs.readFileSync('html/requests.html', 'utf8'));
-})
+});
+
+/* -- Static media -- */
+fastify.get('/favicon.ico', (req, res) => {
+  res.type('image/vnd.microsoft.icon').send(fs.readFileSync('html/favicon.ico'));
+});
+fastify.get('/styleapi.css', (req, res) => {
+  res.type('text/css').send(fs.readFileSync('html/styleAPI.css', 'utf8'));
+});
+fastify.get('/requests.json', (req, res) => {
+  res.type('application/json').send(fs.readFileSync('html/requests.json', 'utf8'));
+});
+fastify.get('/robots.txt', (req, res) => {
+  res.type('application/json').send(fs.readFileSync('html/robots.txt', 'utf8'));
+});
 
 // TODO: Remove builder or keep it idk
 fastify.get('/builder', (req, res) => {
   let u = '';
   for (const file of apisFiles) {
-    if (require(file).category != 'hidden') {
-      u = u + `<option value="${require(file).path}">${require(file).path.replace('/','')}</option>`
-    }
+    if (require(file).category === 'hidden') continue;
+    u += `<option value="${require(file).path}">${require(file).path.replace('/','')}</option>`;
   }
   res.type('text/html').send(fs.readFileSync('html/builder.html', 'utf8').replaceAll('{end}', u));
-})
-
-/* -- Static media -- */
-fastify.get('/favicon.ico', (req, res) => {
-  res.type('image/vnd.microsoft.icon').send(fs.readFileSync('html/favicon.ico'));
-})
-fastify.get('/styleapi.css', (req, res) => {
-  res.type('text/css').send(fs.readFileSync('html/styleAPI.css', 'utf8'));
-})
-fastify.get('/requests.json', (req, res) => {
-  res.type('application/json').send(fs.readFileSync('html/requests.json', 'utf8'));
-})
-fastify.get('/robots.txt', (req, res) => {
-  res.type('application/json').send(fs.readFileSync('html/robots.txt', 'utf8'));
-})
+});
 
 /* -- Backend stuff -- */
 fastify.post('/request', async(req, res) => {
@@ -213,15 +203,9 @@ fastify.post('/request', async(req, res) => {
 
     let typ;
     let body = req.body;
-    if (typeof body == 'string') {
-      body = JSON.parse(req.body);
-    }
-    if (['image','video','audio'].includes((body.headers['content-type']??'text/plain').split('/')[0])) {
-      body.body = Buffer.from(body.body.replace(/^data:(image|video|audio)\/\w+;base64,/i, ''), 'base64');
-    }
-    if (body.mime) {
-      typ = body.mime;
-    }
+    if (typeof body === 'string') body = JSON.parse(req.body);
+    if (['image','video','audio'].includes((body.headers['content-type']??'text/plain').split('/')[0])) body.body = Buffer.from(body.body.replace(/^data:(image|video|audio)\/\w+;base64,/i, ''), 'base64');
+    if (body.mime) typ = body.mime;
 
     let now = (new Date()/1);
 
@@ -259,7 +243,7 @@ fastify.post('/request', async(req, res) => {
       msg: err.toString()
     });
   }
-})
+});
 
 /* Fsh pt */
 fastify.get('/pt-console', async(req, res) => {
@@ -320,8 +304,8 @@ fastify.setNotFoundHandler((req,res)=>{
   } else {
     res.status(404).type('text/html').send(fs.readFileSync('html/error.html', 'utf8'));
   }
-})
+});
 
 fastify.listen({ host: process.env.host, port: process.env.port }, ()=>{
   console.log(`Server online at ${process.env.host}:${process.env.port}`);
-})
+});
