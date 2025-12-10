@@ -37,7 +37,7 @@ module.exports = {
     id = id.toString().replaceAll(/[^a-zA-Z0-9_-]/g,'');
 
     if (isYT(id)) {
-      if (fs.existsSync(path.resolve('images/video', `${id}.mp4`))) {
+      if (fs.existsSync(path.resolve('images/video', `${id}.mp4`))&&fs.statSync(path.resolve('images/video', `${id}.mp4`)).size!==0) {
         res.json({
           video: `https://api.fsh.plus/images/video/${id}.mp4`,
           download: `https://api.fsh.plus/download/video/${id}.mp4`
@@ -45,7 +45,7 @@ module.exports = {
         return;
       }
       try {
-        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`)
+        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`);
         ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audioandvideo' })
           .pipe(fs.createWriteStream(path.resolve('images/video', `${id}.mp4`)))
           .on('finish', ()=>{
@@ -59,10 +59,11 @@ module.exports = {
               download: `https://api.fsh.plus/download/video/${id}.mp4`
             });
           })
-          .on('error', () => {
+          .on('error', ()=>{
             res.error('Could not download', 500);
           });
-      } catch (err) {
+      } catch(err) {
+        console.log(err);
         res.error('Could not download', 500);
       }
     } else if (isNG(id)) {

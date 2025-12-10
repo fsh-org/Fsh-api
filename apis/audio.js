@@ -38,7 +38,7 @@ module.exports = {
 
 
     if (isYT(id)) {
-      if (fs.existsSync(path.resolve('images/audio', `${id}.mp3`))) {
+      if (fs.existsSync(path.resolve('images/audio', `${id}.mp3`))&&fs.statSync(path.resolve('images/audio', `${id}.mp3`)).size!==0) {
         res.json({
           audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
           download: `https://api.fsh.plus/download/audio/${id}.mp3`
@@ -46,7 +46,7 @@ module.exports = {
         return;
       }
       try {
-        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`)
+        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`);
         ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audio' })
           .pipe(fs.createWriteStream(path.resolve('images/audio', `${id}.mp3`)))
           .on('finish', ()=>{
@@ -60,10 +60,11 @@ module.exports = {
               download: `https://api.fsh.plus/download/audio/${id}.mp3`
             });
           })
-          .on('error', () => {
+          .on('error', ()=>{
             res.error('Could not download', 500);
           });
-      } catch (err) {
+      } catch(err) {
+        console.log(err);
         res.error('Could not download', 500);
       }
     } else if (isNG(id)) {
