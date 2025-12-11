@@ -3,6 +3,7 @@ const path = require('node:path');
 
 // Youtube
 const ytdl = require('@distube/ytdl-core');
+const YTDLAgent = ytdl.createAgent(JSON.parse(process.env.ytdl??'[]'));
 function isYT(id) {
  return ytdl.validateID(id);
 }
@@ -45,8 +46,8 @@ module.exports = {
         return;
       }
       try {
-        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`);
-        ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audioandvideo' })
+        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`, { agent: YTDLAgent });
+        ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audioandvideo', agent: YTDLAgent })
           .pipe(fs.createWriteStream(path.resolve('images/video', `${id}.mp4`)))
           .on('finish', ()=>{
             if (fs.statSync(path.resolve('images/video', `${id}.mp4`)).size===0) {
