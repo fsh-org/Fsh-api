@@ -4,6 +4,7 @@ const path = require('node:path');
 // Youtube
 const ytdl = require('@distube/ytdl-core');
 const YTDLAgent = ytdl.createAgent(JSON.parse(process.env.ytdl??'[]'));
+let YTNameCache = new Map();
 function isYT(id) {
  return ytdl.validateID(id);
 }
@@ -42,7 +43,7 @@ module.exports = {
       if (fs.existsSync(path.resolve('images/audio', `${id}.mp3`))&&fs.statSync(path.resolve('images/audio', `${id}.mp3`)).size!==0) {
         res.json({
           audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
-          download: `https://api.fsh.plus/download/audio/${id}.mp3`
+          download: `https://api.fsh.plus/download/audio/${id}.mp3${YTNameCache.has(id)?'?title='+YTNameCache.get(id):''}`
         });
         return;
       }
@@ -56,9 +57,11 @@ module.exports = {
               fs.unlink(path.resolve('images/audio', `${id}.mp3`));
               return;
             }
+            let title = `${info.player_response.videoDetails.title} - ${info.player_response.videoDetails.author.replace(' - Topic','')}.mp4`;
+            YTNameCache.set(id, title);
             res.json({
               audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
-              download: `https://api.fsh.plus/download/audio/${id}.mp3`
+              download: `https://api.fsh.plus/download/audio/${id}.mp3?title=${title}`
             });
           })
           .on('error', ()=>{
