@@ -57,7 +57,7 @@ module.exports = {
               fs.unlink(path.resolve('images/audio', `${id}.mp3`));
               return;
             }
-            let title = `${info.player_response.videoDetails.title} - ${info.player_response.videoDetails.author.replace(' - Topic','')}.mp4`;
+            let title = `${info.player_response.videoDetails.title} - ${info.player_response.videoDetails.author.replace(' - Topic','')}.mp3`;
             YTNameCache.set(id, title);
             res.json({
               audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
