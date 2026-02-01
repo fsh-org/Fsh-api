@@ -138,7 +138,11 @@ fastify.get('/', (req, res) => {
 
     // Detail element
     html[endpoint.category ?? 'hidden'] += `<details class="t-${endpoint.type}">
-  <summary>${endpoint.path}${params.length > 0 ? ' | '+params.join(' ') : ''}</summary>
+  <summary>
+    ${endpoint.path}
+    ${params.length > 0 ? ' | '+params.join(' ') : ''}
+    ${endpoint.type==='get'?`<a href="https://api.fsh.plus${endpoint.path}?${endpoint.params.filter(p=>p.required).map(p=>p.name+'='+p.default).join('&')}"><button><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path d="M109.25 0C119.605 0 128 8.395 128 18.75s-8.395 18.75-18.75 18.75H57.5c-11.046 0-20 8.954-20 20v141c0 11.046 8.954 20 20 20h141c11.046 0 20-8.954 20-20v-51.75c0-10.355 8.395-18.75 18.75-18.75S256 136.395 256 146.75V226c0 16.569-13.431 30-30 30H30c-16.568 0-30-13.431-30-30V30C0 13.432 13.432 0 30 0zM156 18.75C156 8.395 164.395 0 174.75 0H236c11.046 0 20 8.954 20 20v61.25c0 10.355-8.395 18.75-18.75 18.75s-18.75-8.395-18.75-18.75V57.5c0-11.046-8.954-20-20-20h-23.75c-10.355 0-18.75-8.395-18.75-18.75"/><path d="M114.742 114.742c-7.323 7.322-7.323 19.194 0 26.516 7.322 7.323 19.194 7.323 26.516 0zM235 21 221.742 7.742l-107 107L128 128l13.258 13.258 107-107z"/></svg></button></a>`:''}
+  </summary>
   ${endpoint.info}
 </details>`
   }
