@@ -1,8 +1,8 @@
 const sharp = require('sharp');
 
 module.exports = {
-  path: '/bi',
-  info: 'Bi overlay on a image',
+  path: '/fshify',
+  info: 'Fsh overlay on a image',
   type: 'post',
   params: [],
   category: 'image',
@@ -15,7 +15,7 @@ module.exports = {
     sharp(req.body)
       .metadata()
       .then(data => {
-        sharp('effects/bi.png')
+        sharp('effects/fsh.png')
           .resize(data.width, data.height)
           .ensureAlpha(0.5)
           .toBuffer()
@@ -28,13 +28,13 @@ module.exports = {
               .then(outputBuffer => {
                 res.json({
                   image: 'data:image/png;base64,' + outputBuffer.toString('base64')
-                })
-              })
-          })
+                });
+              });
+          });
       })
       .catch(() => {
         res.error('Could not generate', 500);
         return;
-      })
+      });
   }
 }
