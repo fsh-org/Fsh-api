@@ -31,10 +31,16 @@ module.exports = {
       return;
     }
 
-    let doc = await wtf.fetch(req.query['page'], {
-      lang: req.query['lang']??'en',
-      'Api-User-Agent': `FshApi/1.0 (User, ${req.clientIp})`
-    });
+    let doc;
+    try {
+      doc = await wtf.fetch(req.query['page'], {
+        lang: req.query['lang']??'en',
+        'Api-User-Agent': `FshApi/1.0 (User, ${req.clientIp})`
+      });
+    } catch(err) {
+      res.error('Could not fetch page');
+      return;
+    }
 
     if (doc===null) {
       res.error('Page not found');
