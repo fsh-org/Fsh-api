@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@distube/ytdl-core": "github:ToddyTheNoobDud/ytdl-core-stuff#e1199f12304bba74831e400aef48c588cb534448",
+    "@distube/ytdl-core": "github:ToddyTheNoobDud/ytdl-core-stuff#bf801acd5edd849a3fb0e22743e8e9fdb6faedb6",
     "@fastify/formbody": "^8.0.2",
     "@fastify/static": "^9.0.0",
     "@huggingface/inference": "^3.15.0",
