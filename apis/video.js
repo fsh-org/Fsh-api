@@ -56,7 +56,7 @@ module.exports = {
               fs.unlink(path.resolve('images/video', `${id}.mp4`));
               return;
             }
-            let title = `${info.player_response.videoDetails.title} - ${info.player_response.videoDetails.author.replace(' - Topic','')}.mp4`;
+            let title = encodeURIComponent(`${info.player_response.videoDetails.title} - ${info.player_response.videoDetails.author.replace(' - Topic','')}.mp4`);
             YTNameCache.set(id, title);
             res.json({
               video: `https://api.fsh.plus/images/video/${id}.mp4`,
