@@ -1,6 +1,5 @@
 const sharp = require('sharp');
 const rewrites = {
-  jpg: 'jpeg',
   jfif: 'jpeg',
   'jpg-large': 'jpeg',
   apng: 'png'
@@ -11,7 +10,13 @@ module.exports = {
   path: '/image-format',
   info: 'Change the format of a image',
   type: 'post',
-  params: [],
+  params: [
+    {
+      name: 'format',
+      required: true,
+      default: 'png'
+    }
+  ],
   category: 'image',
 
   async execute(req, res) {
@@ -25,20 +30,18 @@ module.exports = {
     }
     let format = req.query['format'];
     format = format.toLowerCase().trim();
-    if (rewritesKeys.includes(format)) {
-      format = rewrites[format];
-    }
+    if (rewritesKeys.includes(format)) format = rewrites[format];
     sharp(req.body)
       .toFormat(format)
       .toBuffer()
-      .then(outputBuffer => {
+      .then(outputBuffer=>{
         res.json({
           image: 'data:image/'+format+';base64,' + outputBuffer.toString('base64')
-        })
+        });
       })
-      .catch(() => {
+      .catch(()=>{
         res.error('Could not generate', 500);
         return;
-      })
+      });
   }
 }
