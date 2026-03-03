@@ -5,15 +5,9 @@ const path = require('node:path');
 const ytdl = require('@distube/ytdl-core');
 const YTDLAgent = ytdl.createAgent(JSON.parse(process.env.ytdl??'[]'));
 let YTNameCache = new Map();
-function isYT(id) {
- return ytdl.validateID(id);
-}
 
 // Newgrounds
 let ngcache = new Map();
-function isNG(id) {
-  return (/^[0-9]+$/).test(id);
-}
 
 // Main
 module.exports = {
@@ -38,7 +32,7 @@ module.exports = {
 
     id = id.toString().replaceAll(/[^a-zA-Z0-9_-]/g,'');
 
-    if (isYT(id)) {
+    if (ytdl.validateID(id)) {
       if (fs.existsSync(path.resolve('images/video', `${id}.mp4`))&&fs.statSync(path.resolve('images/video', `${id}.mp4`)).size!==0) {
         res.json({
           video: `https://api.fsh.plus/images/video/${id}.mp4`,
@@ -48,11 +42,11 @@ module.exports = {
       }
       try {
         let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`, { agent: YTDLAgent });
-        ytdl.downloadFromInfo(info, { quality: 'highest', filter: 'audioandvideo', agent: YTDLAgent })
+        ytdl.downloadFromInfo(info, { quality: 'highestvideo', filter: 'audioandvideo', agent: YTDLAgent })
           .pipe(fs.createWriteStream(path.resolve('images/video', `${id}.mp4`)))
           .on('finish', ()=>{
             if (fs.statSync(path.resolve('images/video', `${id}.mp4`)).size===0) {
-              res.error('Could not download', 500);
+              res.error('Could not download file', 500);
               fs.unlink(path.resolve('images/video', `${id}.mp4`));
               return;
             }
@@ -68,9 +62,9 @@ module.exports = {
           });
       } catch(err) {
         console.log(err);
-        res.error('Could not download', 500);
+        res.error('Could not get', 500);
       }
-    } else if (isNG(id)) {
+    } else if ((/^[0-9]+$/).test(id)) {
       if (ngcache.has(id)) {
         res.json({
           video: ngcache.get(id),
