@@ -20,20 +20,21 @@ module.exports = {
         let h = metadata.height;
         sharp(req.body)
           .resize(Math.floor(w/2), Math.floor(h/2))
-          .blur(1)
+          .blur(2)
           .normalise({ lower: 20, upper: 80 })
-          .modulate({ brightness: 1.5, saturation: 3, gamma: 1.5 })
+          .modulate({ brightness: 1.5, saturation: 1.5, gamma: 1.5 })
           .tint('red')
           .convolve({
             width: 3,
             height: 3,
             kernel: [
-              0, -1, 0,
-              -1, 5, -1,
-              0, -1, 0
+              -0.25, -1, -0.25,
+              -1, 6, -1,
+              -0.25, -1, -0.25
             ]
           })
           .sharpen()
+          .dilate(1)
           .toBuffer()
           .then(outputBuffer => {
             sharp(outputBuffer)
