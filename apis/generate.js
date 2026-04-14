@@ -14,7 +14,7 @@ module.exports = {
     {
       name: 'model',
       required: false,
-      default: 'HuggingFaceTB/SmolLM3-3B'
+      default: 'HuggingFaceTB/SmolLM3-3B' // google/gemma-4-26B-A4B-it ?
     },
     {
       name: 'conversation',
@@ -51,7 +51,7 @@ module.exports = {
         conversation: con
       });
     } catch (err) {
-      res.error(err, 500);
+      res.error(err.message, 500);
     }
   }
 }
