@@ -13,11 +13,11 @@
   "dependencies": {
     "@distube/ytdl-core": "github:ToddyTheNoobDud/ytdl-core-stuff#bf801acd5edd849a3fb0e22743e8e9fdb6faedb6",
     "@fastify/formbody": "^8.0.2",
-    "@fastify/static": "^9.0.0",
+    "@fastify/static": "^9.1.0",
     "@huggingface/inference": "^3.15.0",
     "@vitalets/google-translate-api": "^9.2.1",
     "density-clustering": "^1.3.0",
-    "fastify": "^5.8.4",
+    "fastify": "^5.8.5",
     "math-expression-evaluator": "^2.0.7",
     "nanoid": "^5.1.7",
     "qrcode": "^1.5.4",
