@@ -3,55 +3,45 @@ const crypto = require('node:crypto');
 let namespace;
 let name;
 
-function generateVersion5UUID(namespace, name) {
+function namespaceUUID(version, namespace, name) {
   // Parse the namespace UUID
   const namespaceBuffer = Buffer.from(namespace.replace(/-/g, ''), 'hex');
 
   // Concatenate and hash
   const combinedData = Buffer.concat([namespaceBuffer, Buffer.from(name)]);
-  const hashValue = crypto.createHash('sha1').update(combinedData).digest();
+  const hashValue = crypto.createHash(version==='3'?'md5':'sha1').update(combinedData).digest();
 
   // Modify version and variant bits
   const uuidBytes = Buffer.from(hashValue);
-  uuidBytes[6] = (uuidBytes[6] & 0x0f) | 0x50;
+  uuidBytes[6] = (uuidBytes[6] & 0x0f) | (version==='3'?0x30:0x50);
   uuidBytes[8] = (uuidBytes[8] & 0x3f) | 0x80;
 
-  // Format the UUID
-  const uuidString = `${uuidBytes.toString('hex', 0, 4)}-${uuidBytes.toString('hex', 4, 6)}-${uuidBytes.toString('hex', 6, 8)}-${uuidBytes.toString('hex', 8, 10)}-${uuidBytes.toString('hex', 10, 16)}`
-
-  return uuidString;
+  return `${uuidBytes.toString('hex', 0, 4)}-${uuidBytes.toString('hex', 4, 6)}-${uuidBytes.toString('hex', 6, 8)}-${uuidBytes.toString('hex', 8, 10)}-${uuidBytes.toString('hex', 10, 16)}`;
 }
-function generateVersion3UUID(namespace, name) {
-  // Parse the namespace UUID
-  const namespaceBuffer = Buffer.from(namespace.replace(/-/g, ''), 'hex');
+function generateVersion6UUID() {
+  // UUID epoch offset
+  const EPOCH_OFFSET = 12219292800000n;
 
-  // Concatenate and hash
-  const combinedData = Buffer.concat([namespaceBuffer, Buffer.from(name)]);
-  const hashValue = crypto.createHash('md5').update(combinedData).digest();
+  let timestamp = (BigInt(Date.now()) + EPOCH_OFFSET) * 10000n;
 
-  // Modify version and variant bits
-  const uuidBytes = Buffer.from(hashValue);
-  uuidBytes[6] = (uuidBytes[6] & 0x0f) | 0x30;
-  uuidBytes[8] = (uuidBytes[8] & 0x3f) | 0x80;
+  // Rearrange timestamp
+  let timeHigh = Number((timestamp >> 28n) & 0xffffffffn);
+  let timeMid = Number((timestamp >> 12n) & 0xffffn);
+  let timeLow = Number(timestamp & 0xfffn);
 
-  // Format the UUID
-  const uuidString = `${uuidBytes.toString('hex', 0, 4)}-${uuidBytes.toString('hex', 4, 6)}-${uuidBytes.toString('hex', 6, 8)}-${uuidBytes.toString('hex', 8, 10)}-${uuidBytes.toString('hex', 10)}`
+  // Random data
+  let clockSeq = crypto.getRandomValues(new Uint16Array(1))[0] & 0x3fff;
+  let node = crypto.getRandomValues(new Uint8Array(6));
 
-  return uuidString;
+  return [
+    timeHigh.toString(16).padStart(8, '0'),
+    timeMid.toString(16).padStart(4, '0'),
+    ((0x6000 | timeLow).toString(16)).padStart(4, '0'),
+    ((0x8000 | clockSeq).toString(16)).padStart(4, '0'),
+    [...node].map(b=>b.toString(16).padStart(2, '0')).join('')
+  ].join('-');
 }
 
-function makeid(length) {
-  var result = '';
-  var characters = 'abcdef0123456789';
-  for (var i = 0; i < Number(length); i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
-function sid() {
-  var characters = '89ab';
-  return characters.charAt(Math.floor(Math.random() * 4));
-}
 function upd(namespace) {
   if (namespace == 'dns') namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
   if (namespace == 'url') namespace = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
@@ -86,13 +76,20 @@ module.exports = {
   async execute(req, res) {
     if (!req.query['version']) {
       res.json({
-        uuid: `${makeid(8)}-${makeid(4)}-4${makeid(3)}-${sid()}${makeid(3)}-${makeid(12)}`
-      })
+        uuid: crypto.randomUUID()
+      });
       return;
     }
     switch (req.query['version']) {
       case 'help':
-        res.send(`Version list (uses DCE 1.1, ISO/IEC 11578:1996 variant)<br><br>nil/null/0 - non unique uuid for testing<br>3 - predictible uuid from name, requires "space" and "name" parameters, space must be exactly url, dns, oid, x500 or a valid uuid<br>4 - random unique uuid<br>5 - same as 3 but uses a different hashing algorithym<br><br>More soon`)
+        res.send(`Version list (uses DCE 1.1, ISO/IEC 11578:1996 variant)<br><br>nil/null/0 - non unique uuid for testing<br>3 - Predictible uuid from name, requires "space" and "name" parameters, space must be exactly url, dns, oid, x500 or a valid uuid<br>4 - Random unique uuid<br>5 - Same as 3 but different hashing<br>6 - Similar to 1 but better sorting<br><br>More soon`)
+        return;
+      case 'nil':
+      case 'null':
+      case '0':
+        res.json({
+          uuid: '00000000-0000-0000-0000-000000000000'
+        });
         return;
       case '5':
       case '3':
@@ -103,22 +100,20 @@ module.exports = {
           return;
         }
         res.json({
-          uuid: req.query['version'] === '5' ? generateVersion5UUID(namespace, name) : generateVersion3UUID(namespace, name)
-        })
+          uuid: namespaceUUID(req.query['version'], namespace, name)
+        });
         return;
       case '4':
         res.json({
-          uuid: `${makeid(8)}-${makeid(4)}-4${makeid(3)}-${sid()}${makeid(3)}-${makeid(12)}`
-        })
+          uuid: crypto.randomUUID()
+        });
         return;
-      case 'nil':
-      case 'null':
-      case '0':
+      case '6':
         res.json({
-          uuid: '00000000-0000-0000-0000-000000000000'
-        })
-        return;
+          uuid: generateVersion6UUID()
+        });
+        return
     }
-    res.error('No valid version specified')
+    res.error('No valid version specified');
   }
 }
