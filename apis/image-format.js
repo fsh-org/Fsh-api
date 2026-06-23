@@ -2,6 +2,7 @@ const sharp = require('sharp');
 const rewrites = {
   jfif: 'jpeg',
   'jpg-large': 'jpeg',
+  jp2k: 'jp2',
   apng: 'png'
 };
 const rewritesKeys = Object.keys(rewrites);
