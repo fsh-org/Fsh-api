@@ -1,4 +1,4 @@
-let codes = require('../text/httpcodes.js')
+let codes = require('../text/httpcodes.js');
 
 module.exports = {
   path: '/http',
@@ -16,7 +16,7 @@ module.exports = {
   async execute(req, res) {
     if (req.query['code']) {
       let code = codes[String(req.query['code'])];
-      if (code.title?.length) {
+      if (code?.title?.length) {
         res.json(code);
       } else {
         res.error('Code not found');
