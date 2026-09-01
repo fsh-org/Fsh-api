@@ -156,7 +156,7 @@ fastify.get('/', (req, res) => {
   <h2>Image</h2>
   ${html['image']}
 </div>
-<div style="width:300px">
+<div style="flex:1">
   <h2>Audio</h2>
   ${html['audio']}
 </div>
