@@ -1,25 +1,21 @@
-# Open Fsh 1.0
-Released: 09/09/24 (dd/mm/yy)\
-Authored: Fsh org\
-You can find the original license at https://github.com/fsh-org/Open-Fsh-license
+MIT License
 
-## Disclaimer
-This is not a open source license as of version 1.9 of the [open source definition](https://opensource.org/osd), it is a source-available license.
+Copyright (c) 2026 Fsh
 
-## 1. Modification / Derivations
-You may fork, copy, modify, and or change any part of the licensed material provided, all changed aspects shall fall under the same license.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-## 2. Distribution
-You may distribute the licensed material, you must not monetize the distributed licensed material.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-## 3. Use
-You may use the licensed material for any purposes, you must not monetize use of the licensed material but may monetize your material.
-- You can't: Free softwere but pay to use the licensed material.
-- You can: Free softwere and free usage of license material.
-- You can: Paid softwere but licensed material at no additional cost.
-
-## 4. Credit
-You must credit the original authors with the name or online name and a link to the the source visible in clear easy to read text next to the parts used or in a general credits page.
-
-## 5. Warranty
-The licensed material is distributed "AS IS", without warranty of any kind or type, in no event shall the authors be liable for any claim, damages or other caused or related to the oicensed material.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
