@@ -15,13 +15,12 @@ module.exports = {
 
   async execute(req, res) {
     if (!cache) {
-      let dat = await fetch('https://unpkg.com/color-name-list@10.19.0/dist/colornames.min.json', {
+      let dat = await fetch('https://unpkg.com/color-name-list@10/dist/colornames.min.json', {
         headers: {
-          'user-agent': 'api.fsh.plus (if problem contact help@fsh.plus)'
+          'user-agent': 'FshApi/1.0 (contact help@fsh.plus)'
         }
-      })
-      dat = await dat.json();
-      cache = dat
+      });
+      cache = await dat.json();
     }
     let hex = req.query['hex'];
     if (!hex) {

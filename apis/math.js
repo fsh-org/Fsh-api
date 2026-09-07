@@ -14,17 +14,15 @@ module.exports = {
   category: 'text',
 
   async execute(req, res) {
-    const mexp = new Mexp()
+    const mexp = new Mexp();
 
     let rs;
     try {
       rs = String(mexp.eval(req.url.split('line=')[1].split('&')[0].replaceAll('%20','').replaceAll('**','^')));
     } catch (err) {
-      rs = 'invalid expression'
+      rs = 'invalid expression';
     }
 
-    res.json({
-      result: rs
-    })
+    res.json({ result: rs });
   }
 }

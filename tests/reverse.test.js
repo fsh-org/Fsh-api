@@ -7,21 +7,57 @@ describe('Reverse api', () => {
     let req = {query:{}};
     let errored = false;
     let res = {
-      error: function(){errored=true}
+      error: ()=>{errored=true}
     };
     api.execute(req,res);
     assert.strictEqual(errored, true);
   });
-  it('should transform hello to olleh', async () => {
-    let req = {query:{type:'encode',text:'hello'}};
+  it('should keep e to e', async () => {
+    let req = {query:{text:'e'}};
     let errored = false;
     let json = null;
     let res = {
-      error: function(){errored=true},
-      json: function(j){json=j}
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
+    };
+    api.execute(req,res);
+    assert.strictEqual(errored, false);
+    assert.strictEqual(json.text, 'e');
+  });
+  it('should transform hello to olleh', async () => {
+    let req = {query:{text:'hello'}};
+    let errored = false;
+    let json = null;
+    let res = {
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);
     assert.strictEqual(json.text, 'olleh');
+  });
+  it('handles tildes', async () => {
+    let req = {query:{text:'he\u0301y'}};
+    let errored = false;
+    let json = null;
+    let res = {
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
+    };
+    api.execute(req,res);
+    assert.strictEqual(errored, false);
+    assert.strictEqual(json.text, 'ye\u0301h');
+  });
+  it('handles emojis', async () => {
+    let req = {query:{text:'aww 👩‍❤️‍👨'}};
+    let errored = false;
+    let json = null;
+    let res = {
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
+    };
+    api.execute(req,res);
+    assert.strictEqual(errored, false);
+    assert.strictEqual(json.text, '👩‍❤️‍👨 wwa');
   });
 });

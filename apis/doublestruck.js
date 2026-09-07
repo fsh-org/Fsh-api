@@ -65,7 +65,7 @@ const changes = {
 
 module.exports = {
   path: '/doublestruck',
-  info: 'Conver text to double struck unicode',
+  info: 'Convert text to double struck unicode',
   type: 'get',
   params: [
     {
@@ -79,11 +79,11 @@ module.exports = {
   async execute(req, res) {
     let txt = req.query['text'];
     if (!txt) {
-      res.error('Missing text param')
+      res.error('Missing text param');
       return;
     }
     res.json({
-      text: txt.replaceAll(/./g, function(match){return changes[match]??match})
-    })
+      text: txt.replaceAll(/./g, (match)=>changes[match]??match)
+    });
   }
 }

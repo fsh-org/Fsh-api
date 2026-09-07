@@ -7,7 +7,7 @@ describe('Binary api', () => {
     let req = {query:{}};
     let errored = false;
     let res = {
-      error: function(){errored=true}
+      error: ()=>{errored=true}
     };
     api.execute(req,res);
     assert.strictEqual(errored, true);
@@ -16,7 +16,7 @@ describe('Binary api', () => {
     let req = {query:{type:'encode'}};
     let errored = false;
     let res = {
-      error: function(){errored=true}
+      error: ()=>{errored=true}
     };
     api.execute(req,res);
     assert.strictEqual(errored, true);
@@ -25,7 +25,7 @@ describe('Binary api', () => {
     let req = {query:{text:'hello'}};
     let errored = false;
     let res = {
-      error: function(){errored=true}
+      error: ()=>{errored=true}
     };
     api.execute(req,res);
     assert.strictEqual(errored, true);
@@ -34,7 +34,7 @@ describe('Binary api', () => {
     let req = {query:{type:'fjda',text:'hello'}};
     let errored = false;
     let res = {
-      error: function(){errored=true}
+      error: ()=>{errored=true}
     };
     api.execute(req,res);
     assert.strictEqual(errored, true);
@@ -44,8 +44,8 @@ describe('Binary api', () => {
     let errored = false;
     let json = null;
     let res = {
-      error: function(){errored=true},
-      json: function(j){json=j}
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);
@@ -56,8 +56,8 @@ describe('Binary api', () => {
     let errored = false;
     let json = null;
     let res = {
-      error: function(){errored=true},
-      json: function(j){json=j}
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);
@@ -68,8 +68,8 @@ describe('Binary api', () => {
     let errored = false;
     let json = null;
     let res = {
-      error: function(){errored=true},
-      json: function(j){json=j}
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);

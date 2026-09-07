@@ -7,7 +7,7 @@ describe('Status api', () => {
     let req = {query:{}};
     let errored = false;
     let res = {
-      error: function(){errored=true}
+      error: ()=>{errored=true}
     };
     api.execute(req,res);
     assert.strictEqual(errored, true);
@@ -18,9 +18,9 @@ describe('Status api', () => {
     let status = null;
     let json = null;
     let res = {
-      error: function(){errored=true},
-      status: function(s){status=s},
-      json: function(j){json=j}
+      error: ()=>{errored=true},
+      status: (s)=>{status=s},
+      json: (j)=>{json=j}
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);
@@ -33,9 +33,9 @@ describe('Status api', () => {
     let status = null;
     let json = null;
     let res = {
-      error: function(){errored=true},
-      status: function(s){status=s},
-      json: function(j){json=j}
+      error: ()=>{errored=true},
+      status: (s)=>{status=s},
+      json: (j)=>{json=j}
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);

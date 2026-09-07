@@ -7,7 +7,7 @@ describe('Sha256 api', () => {
     let req = {query:{}};
     let errored = false;
     let res = {
-      error: function(){errored=true}
+      error: ()=>{errored=true}
     };
     api.execute(req,res);
     assert.strictEqual(errored, true);
@@ -17,8 +17,8 @@ describe('Sha256 api', () => {
     let errored = false;
     let json = null;
     let res = {
-      error: function(){errored=true},
-      json: function(j){json=j}
+      error: ()=>{errored=true},
+      json: (j)=>{json=j}
     };
     api.execute(req,res);
     assert.strictEqual(errored, false);
