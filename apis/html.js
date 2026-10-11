@@ -19,15 +19,23 @@ module.exports = {
   async execute(req, res) {
     let uri = req.query['url'];
     if (!uri) {
-      res.error('You must provide an url')
+      res.error('You must provide an url');
       return;
     }
-    if (!uri.includes('://')) {
-      uri = 'https://'+uri
+    if (!uri.includes('://')) uri = 'https://'+uri;
+    try {
+      uri = new URL(uri);
+    } catch(err) {
+      res.error('Invalid url');
+      return;
+    }
+    if (uri.hostname==='localhost'||uri.hostname==='::1'||uri.hostname==='[::1]'||uri.hostname.match(/(127|7F)\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/i)) {
+      res.error('Cannot use loopback urls');
+      return;
     }
     try {
       let request = await fetch(uri, {
-        follow: 20,
+        follow: 10,
         redirect: 'follow',
         headers: {
           'user-agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 FshApi/1.0 (User, ${req.pip.replace('::ffff:','')??req.headers['cf-connecting-ip']??req.ip})`,
@@ -52,15 +60,10 @@ module.exports = {
 
       let html = await request.text();
 
-      if (req.query['linkback']) {
+      if (req.query['linkback']==='true') {
         html = html
-          .replaceAll(/srcset=".+?"/g, function(match) {
-            return 'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"';
-          })
-          .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, function(match) {
-            return match.split('"')[0] + '"' + (new URL(match.split('"')[1], uri)) + '"';
-          })
-          .replaceAll('https://google.com/images','https://www.google.com/images')
+          .replaceAll(/srcset=".+?"/g, (match)=>'src="'+match.split('"')[1].split(', ').slice(-1)[0].split(',').slice(-1)[0].split(' ')[0]+'"')
+          .replaceAll(/(href|src)="(?!http:\/\/|https:\/\/).+?"/g, (match)=>match.split('"')[0] + '"' + (new URL(match.split('"')[1], request.url)) + '"');
       }
 
       res.send(html);

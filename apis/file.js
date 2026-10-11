@@ -19,6 +19,16 @@ module.exports = {
     }
     if (!uri.includes('://')) uri = 'https://'+uri;
     try {
+      uri = new URL(uri);
+    } catch(err) {
+      res.error('Invalid url');
+      return;
+    }
+    if (uri.hostname==='localhost'||uri.hostname==='::1'||uri.hostname==='[::1]'||uri.hostname.match(/(127|7F)\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/i)) {
+      res.error('Cannot use loopback urls');
+      return;
+    }
+    try {
       let request = await fetch(uri, {
         follow: 10,
         redirect: 'follow',
