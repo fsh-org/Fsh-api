@@ -65,10 +65,12 @@
         border: none;
         border-radius: 0px;
         border-bottom: 2px var(--bg-2) solid;
-        transition: background 500ms, color 500ms;
+        transition-property: color, border-color, background;
+        transition-duration: 500ms;
       }
       #tabs button:hover, #trr button:hover {
-        background-color: var(--text-3);
+        border-color: var(--text-2);
+        background-color: var(--text-2);
       }
       #tabs button[selected], #trr button[selected] {
         border-color: var(--blue-1);
@@ -106,12 +108,14 @@
 
       .url-bar {
         display: flex;
+        gap: 5px;
         height: 20%;
         max-height: 35px;
         margin: 4px;
         padding: 4px;
         border-radius: 1rem;
         background-color: var(--bg-2);
+        overflow: hidden;
       }
       #type {
         padding: 0px;
@@ -120,7 +124,6 @@
         background: none;
       }
       .divider {
-        margin-inline: 5px;
         border: 1px var(--text-2) solid;
       }
       #url {
@@ -131,22 +134,14 @@
         border-radius: 0.5rem;
         background: none;
       }
-      .api-drop {
-        color: var(--text-1);
-        margin-inline: 5px;
-        border: none;
-        background-color: var(--bg-3);
-      }
-      .sendbtn {
+      .url-bar > button {
         display: flex;
         gap: 5px;
         align-items: center;
         height: 100%;
-        color: var(--text-1);
         border: none;
         background-color: var(--bg-3);
       }
-
       .search {
         width: fit-content;
         margin-left: auto;
@@ -353,53 +348,48 @@
         </select>
         <span class="divider"></span>
         <input id="url" placeholder="https://fsh.plus" onkeyup="if(event.key=='Enter'){send()}" aria-label="Url to request">
-        <button onclick="document.getElementById('apis').showModal()" class="api-drop" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="15"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg></button>
+        <button onclick="document.getElementById('apis').showModal()" aria-label="Fsh apis"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M222.048 60.6656C229.965 52.9629 242.627 53.1361 250.33 61.0523C258.032 68.9688 257.859 81.6306 249.943 89.3336L142.031 194.334C138.121 198.138 133.053 200.02 127.998 199.998C122.942 200.02 117.874 198.138 113.964 194.334L6.05228 89.3336C-1.86377 81.6306 -2.03716 68.9687 5.66556 61.0523C13.3684 53.136 26.0302 52.9631 33.9468 60.6656L127.998 152.177L222.048 60.6656Z"/></svg></button>
         <dialog id="apis">
           <button class="modal-close" onclick="this.parentElement.close()">x</button>
           <h1 style="margin:0;text-align:center;">Fsh endpoints</h1>
           <div class="search">
             <input placeholder="Search..." id="search" onkeyup="search()">
-            <svg onclick="search()" height="14" style="margin-right:10px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+            <svg onclick="search()" style="margin-right:10px" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path fill-rule="evenodd" d="M165 100C165 135.899 135.899 165 100 165C64.1015 165 35 135.899 35 100C35 64.1015 64.1015 35 100 35C135.899 35 165 64.1015 165 100ZM155.148 183.432C139.339 193.902 120.382 200 100 200C44.7715 200 0 155.228 0 100C0 44.7715 44.7715 0 100 0C155.228 0 200 44.7715 200 100C200 120.382 193.902 139.339 183.432 155.148L249.866 221.582C257.676 229.392 257.676 242.055 249.866 249.866C242.055 257.676 229.392 257.676 221.582 249.866L155.148 183.432Z"/></svg>
           </div>
           <div id="lis"></div>
           <script>
             const catIcon = {
-              text: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M89.8313 16.254C78.9863 16.254 70.0618 16.8183 63.0578 17.9471C56.2796 19.0758 50.6312 21.4462 46.1125 25.0582C41.8197 28.6702 38.3176 33.7496 35.6064 40.2963C33.1211 46.6173 30.7487 55.0829 28.4894 65.6931H19L21.3723 0H239.628L242 65.6931H232.511C230.251 55.0829 227.766 46.6173 225.055 40.2963C222.569 33.7496 219.18 28.6702 214.888 25.0582C210.595 21.4462 204.946 19.0758 197.942 17.9471C190.938 16.8183 181.901 16.254 170.83 16.254H150.157V214.349C150.157 221.347 150.608 226.991 151.512 231.28C152.416 235.57 154.11 238.956 156.596 241.439C159.307 243.922 163.035 245.728 167.78 246.857C172.75 247.76 179.189 248.437 187.097 248.889V256H74.5805V248.889C82.4884 248.437 88.8146 247.76 93.5593 246.857C98.304 245.728 101.919 243.81 104.404 241.101C107.116 238.166 108.81 234.215 109.488 229.249C110.392 224.282 110.843 217.735 110.843 209.608V16.254H89.8313Z"/></svg>',
-              image: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 40C0 28.9543 8.95431 20 20 20H236C247.046 20 256 28.9543 256 40V215C256 226.046 247.046 235 236 235H20C8.95431 235 0 226.046 0 215V40ZM78 68C78 81.8071 66.8071 93 53 93C39.1929 93 28 81.8071 28 68C28 54.1929 39.1929 43 53 43C66.8071 43 78 54.1929 78 68ZM150.135 91.8679C153.266 86.7107 160.734 86.7107 163.865 91.8679L234.817 208.76C238.075 214.127 234.22 221 227.952 221H142.029H86.048H26.9705C20.3787 221 16.6463 213.367 20.6525 208.08L78.1821 132.152C81.3664 127.949 87.6335 127.949 90.8179 132.152L110.176 157.7L150.135 91.8679Z"/></svg>',
+              text: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M72.5096 256C71.9573 256 71.5096 255.552 71.5096 255V238.941C71.5096 238.389 71.9573 237.941 72.5096 237.941H79.7382C84.9855 237.941 89.7557 237.463 94.0489 236.507C98.5806 235.312 102.158 233.041 104.782 229.695C107.644 226.109 109.075 220.932 109.075 214V17.9272H74.7295C67.8127 17.9272 62.3269 19.3614 58.2723 22.2297C54.2176 24.859 51.2362 28.4444 49.3281 32.986C47.42 37.2885 46.1082 42.0691 45.3927 47.3277L43.7065 61.8604C43.648 62.3647 43.2209 62.7451 42.7132 62.7451H26.0289C25.4655 62.7451 25.0133 62.2798 25.0293 61.7166L26.7611 0.971502C26.7766 0.430536 27.2195 0 27.7607 0H227.239C227.78 0 228.223 0.430535 228.239 0.971502L229.971 61.7166C229.987 62.2798 229.535 62.7451 228.971 62.7451H212.287C211.779 62.7451 211.352 62.3647 211.294 61.8604L209.607 47.3277C209.13 42.0691 207.819 37.2885 205.672 32.986C203.764 28.4444 200.782 24.859 196.728 22.2297C192.673 19.3614 187.068 17.9272 179.913 17.9272H145.209V214C145.209 221.41 146.521 225.866 149.145 229.69C151.768 233.275 155.346 235.315 159.878 236.51C164.41 237.705 169.299 237.941 174.546 237.941H181.775C182.327 237.941 182.775 238.389 182.775 238.941V255C182.775 255.552 182.327 256 181.775 256H72.5096Z"/></svg>',
+              image: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path fill-rule="evenodd" d="M0 40C0 28.9543 8.95431 20 20 20H236C247.046 20 256 28.9543 256 40V215C256 226.046 247.046 235 236 235H20C8.95431 235 0 226.046 0 215V40ZM78 68C78 81.8071 66.8071 93 53 93C39.1929 93 28 81.8071 28 68C28 54.1929 39.1929 43 53 43C66.8071 43 78 54.1929 78 68ZM150.135 91.8679C153.266 86.7107 160.734 86.7107 163.865 91.8679L234.817 208.76C238.075 214.127 234.22 221 227.952 221H142.029H86.048H26.9705C20.3787 221 16.6463 213.367 20.6525 208.08L78.1821 132.152C81.3664 127.949 87.6335 127.949 90.8179 132.152L110.176 157.7L150.135 91.8679Z"/></svg>',
               audio: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M144 23.875C144 15.6598 150.692 8.89306 158.826 10.0472C168.438 11.4111 177.863 14.0985 186.861 18.0583C200.449 24.0386 212.796 32.8041 223.196 43.8543C233.596 54.9045 241.846 68.0229 247.475 82.4607C253.103 96.8984 256 112.373 256 128C256 143.627 253.103 159.102 247.475 173.539C241.846 187.977 233.596 201.096 223.196 212.146C212.796 223.196 200.449 231.961 186.861 237.942C177.863 241.902 168.438 244.589 158.826 245.953C150.692 247.107 144 240.34 144 232.125C144 223.91 150.717 217.39 158.788 215.856C164.725 214.728 170.546 212.921 176.145 210.456C186.337 205.971 195.597 199.397 203.397 191.109C211.197 182.822 217.384 172.983 221.606 162.155C225.827 151.326 228 139.72 228 128C228 116.28 225.827 104.674 221.606 93.8455C217.384 83.0172 211.197 73.1784 203.397 64.8907C195.597 56.6031 186.337 50.029 176.145 45.5438C170.546 43.0794 164.726 41.2721 158.788 40.1439C150.717 38.6103 144 32.0902 144 23.875Z"/><path d="M143.5 64.3875C143.5 56.9938 149.546 50.8729 156.808 52.2643C161.876 53.2354 166.844 54.7609 171.627 56.8232C180.545 60.6677 188.647 66.3027 195.472 73.4063C202.297 80.51 207.711 88.9433 211.405 98.2247C215.099 107.506 217 117.454 217 127.5C217 137.546 215.099 147.494 211.405 156.775C207.711 166.057 202.297 174.49 195.472 181.594C188.647 188.697 180.545 194.332 171.627 198.177C166.844 200.239 161.876 201.765 156.808 202.736C149.546 204.127 143.5 198.006 143.5 190.613C143.5 183.219 149.616 177.409 156.699 175.29C158.422 174.774 160.12 174.157 161.783 173.44C167.579 170.941 172.846 167.278 177.282 162.661C181.718 158.044 185.237 152.562 187.638 146.529C190.039 140.496 191.275 134.03 191.275 127.5C191.275 120.97 190.039 114.504 187.638 108.471C185.237 102.438 181.718 96.9565 177.282 92.3391C172.846 87.7217 167.579 84.059 161.783 81.5601C160.12 80.8431 158.422 80.226 156.699 79.7104C149.616 77.5911 143.5 71.7812 143.5 64.3875Z"/><path d="M0 84C0 72.9543 8.95431 64 20 64H43.0513C46.8724 64 50.5493 62.5418 53.3318 59.923L114.259 2.57959C116.02 0.922635 118.346 0 120.764 0C128.626 0 135 6.37375 135 14.2362V241.764C135 249.626 128.626 256 120.764 256C118.346 256 116.02 255.077 114.259 253.42L53.3318 196.077C50.5493 193.458 46.8724 192 43.0513 192H20C8.9543 192 0 183.046 0 172V84Z"/></svg>'
             };
             let data;
             function search() {
-              let search = document.getElementById('search').value;
-              let filtered = [];
-              Object.keys(data.endpoints).forEach(end => {
-                if (data.endpoints[end].path.includes(search) || data.endpoints[end].info.includes(search) || data.endpoints[end].params.join(',').includes(search)) {
-                  filtered.push(data.endpoints[end]);
-                }
-              })
-              let h = '';
-              filtered.forEach(ee => {
-                h += `<div onclick="document.getElementById('url').value='api.fsh.plus${ee.path}';document.getElementById('type').value='${ee.type.toUpperCase()}';" class="card-api">
-  <p style="display:flex;gap:5px;align-items:center;margin:0;">${catIcon[ee.category]??'?'} ${ee.path}${ee.params.length > 0 ? ' | ' : ''}${ee.params.map(p=>`${p.name}${p.required ? '*' : ''}`).join(' ')}</p>
-  <span style="cursor:pointer">${ee.info}</span>
-</div>`;
-              })
-              document.getElementById('lis').innerHTML = h;
+              let search = document.getElementById('search').value.toLowerCase();
+              document.getElementById('lis').innerHTML = Object.values(data.endpoints)
+                .filter(end=>end.path.includes(search)||end.info.toLowerCase().includes(search)||end.params.join(',').includes(search))
+                .map(end=>`<div onclick="document.getElementById('url').value='${location.host}${end.path}';document.getElementById('type').value='${end.type.toUpperCase()}'" class="card-api">
+  <p style="display:flex;gap:5px;align-items:center;margin:0;">${catIcon[end.category]??'?'} ${end.path}${end.params.length > 0 ? ' | ' : ''}${end.params.map(p=>`${p.name}${p.required?'*':''}`).join(' ')}</p>
+  <span style="cursor:pointer">${end.info}</span>
+</div>`)
+                .join('');
             }
-            fetch('/apis').then(async da => {
-              da = await da.json();
-              data = da;
-              search();
-            })
+            fetch('/apis')
+              .then(apis=>apis.json())
+              .then(apis=>{
+                data = apis;
+                search();
+              });
           </script>
         </dialog>
-        <button onclick="send()" class="sendbtn" aria-label="Send request">Send <svg xmlns="http://www.w3.org/2000/svg" width="17" viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></button>
+        <button onclick="send()" aria-label="Send request">Send <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path d="M240.772 120.273C246.865 123.165 246.865 131.835 240.772 134.727L19.2293 239.874C12.5566 243.041 5.52289 236.245 8.45783 229.467L43.5297 148.472C44.8279 145.474 47.5088 143.299 50.7102 142.647L110.635 130.44C113.837 129.787 113.837 125.213 110.635 124.56L50.7102 112.352C47.5088 111.7 44.8279 109.525 43.5297 106.527L8.45792 25.5326C5.52295 18.7546 12.5566 11.9595 19.2294 15.1264L240.772 120.273Z"/></svg></button>
       </div>
       <p id="res"></p>
     </div>
     <script>
       Split(['div[slot="start"]', 'div[slot="end"]'], {
-        sizes: [25, 75]
+        sizes: [25, 75],
+        minSize: 0
       });
       function formatBytes(bytes) {
         bytes = Number(bytes);
