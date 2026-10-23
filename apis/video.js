@@ -1,9 +1,12 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const { pipeline } = require('node:stream/promises');
+const { spawn } = require('node:child_process');
+const ffmpegPath = require('ffmpeg-static');
 
 // Youtube
-const ytdl = require('@distube/ytdl-core');
-const YTDLAgent = ytdl.createAgent(JSON.parse(process.env.ytdl??'[]'));
+const { Ytdl, parseVideoId, Quality, chooseFormat } = require('@distube/ytdl-core');
+const yt = new Ytdl(process.env.ytdl?{ cookie: process.env.ytdl }:{});
 let YTNameCache = new Map();
 
 // Newgrounds
@@ -32,8 +35,9 @@ module.exports = {
 
     id = id.toString().replaceAll(/[^a-zA-Z0-9_-]/g,'');
 
-    if (ytdl.validateID(id)) {
-      if (fs.existsSync(path.resolve('images/video', `${id}.mp4`))&&fs.statSync(path.resolve('images/video', `${id}.mp4`)).size!==0) {
+    if (parseVideoId(id)) {
+      let videoPath = path.resolve('images', 'video', `${id}.mp4`);
+      if (fs.existsSync(videoPath)&&fs.statSync(videoPath).size!==0) {
         res.json({
           video: `https://api.fsh.plus/images/video/${id}.mp4`,
           download: `https://api.fsh.plus/download/video/${id}.mp4${YTNameCache.has(id)?'?title='+YTNameCache.get(id):''}`
@@ -41,25 +45,73 @@ module.exports = {
         return;
       }
       try {
-        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`, { agent: YTDLAgent });
-        ytdl.downloadFromInfo(info, { quality: 'highestvideo', filter: 'audioandvideo', agent: YTDLAgent })
-          .pipe(fs.createWriteStream(path.resolve('images/video', `${id}.mp4`)))
-          .on('finish', ()=>{
-            if (fs.statSync(path.resolve('images/video', `${id}.mp4`)).size===0) {
-              res.error('Could not download file', 500);
-              fs.unlink(path.resolve('images/video', `${id}.mp4`));
-              return;
-            }
-            let title = encodeURIComponent(`${info.player_response.videoDetails.title} - ${info.player_response.videoDetails.author.replace(' - Topic','')}.mp4`);
-            YTNameCache.set(id, title);
-            res.json({
-              video: `https://api.fsh.plus/images/video/${id}.mp4`,
-              download: `https://api.fsh.plus/download/video/${id}.mp4?title=${title}`
-            });
-          })
-          .on('error', ()=>{
-            res.error('Could not download', 500);
+        let info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
+        let title = encodeURIComponent(`${info.videoDetails.title} - ${info.videoDetails.author.name.replace(' - Topic','')}.mp4`);
+        YTNameCache.set(id, title);
+
+        // Get video, download, check
+        let videoFormat = chooseFormat(info.formats, {
+          quality: Quality.HighestVideo,
+          filter: { hasVideo: true }
+        });
+        if (!videoFormat) {
+          res.error('Could not get video', 500);
+          return;
+        }
+        let rawVideoPath = path.resolve('images', 'video', `${id}_raw.mp4`);
+        await pipeline(
+          yt.download(info, { format: videoFormat }),
+          fs.createWriteStream(rawVideoPath)
+        );
+        if (fs.statSync(rawVideoPath).size===0) {
+          res.error('Could not download video', 500);
+          fs.unlinkSync(rawVideoPath);
+          return;
+        }
+
+        // Get audio, download
+        let audioFormat = null;
+        let audioPath = null;
+        if (!videoFormat.hasAudio) {
+          audioFormat = chooseFormat(info.formats, {
+            quality: Quality.HighestAudio,
+            filter: { hasAudio: true, hasVideo: false }
           });
+          audioPath = path.resolve('images', 'audio', `${id}.mp3`);
+          if (!fs.existsSync(audioPath)) await pipeline(
+            yt.download(info, { format: audioFormat }),
+            fs.createWriteStream(audioPath)
+          );
+        }
+
+        if (audioFormat) {
+          fs.renameSync(rawVideoPath, videoPath);
+          res.json({
+            video: `https://api.fsh.plus/images/video/${id}.mp4`,
+            download: `https://api.fsh.plus/download/video/${id}.mp4?title=${title}`
+          });
+          return;
+        }
+
+        // Mux them
+        let ffmpeg = spawn(ffmpegPath, [
+          '-y',
+          '-i', rawVideoPath, '-i', audioPath,
+          '-map', '0:v:0', '-map', '1:a:0',
+          '-c', 'copy', '-shortest', videoPath
+        ]);
+
+        ffmpeg.on('close', (code)=>{
+          fs.unlinkSync(rawVideoPath);
+          if (code!==0) {
+            res.error('Could not mux', 500);
+            return;
+          }
+          res.json({
+            video: `https://api.fsh.plus/images/video/${id}.mp4`,
+            download: `https://api.fsh.plus/download/video/${id}.mp4?title=${title}`
+          });
+        });
       } catch(err) {
         console.log(err);
         res.error('Could not get', 500);

@@ -2,8 +2,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 // Youtube
-const ytdl = require('@distube/ytdl-core');
-const YTDLAgent = ytdl.createAgent(JSON.parse(process.env.ytdl??'[]'));
+const { Ytdl, parseVideoId, Quality } = require('@distube/ytdl-core');
+const yt = new Ytdl(process.env.ytdl?{ cookie: process.env.ytdl }:{});
 let YTNameCache = new Map();
 
 // Newgrounds
@@ -32,8 +32,9 @@ module.exports = {
 
     id = id.toString().replaceAll(/[^a-zA-Z0-9_-]/g,'');
 
-    if (ytdl.validateID(id)) {
-      if (fs.existsSync(path.resolve('images/audio', `${id}.mp3`))&&fs.statSync(path.resolve('images/audio', `${id}.mp3`)).size!==0) {
+    if (parseVideoId(id)) {
+      let audioPath = path.resolve('images', 'audio', `${id}.mp3`);
+      if (fs.existsSync(audioPath)&&fs.statSync(audioPath).size!==0) {
         res.json({
           audio: `https://api.fsh.plus/images/audio/${id}.mp3`,
           download: `https://api.fsh.plus/download/audio/${id}.mp3${YTNameCache.has(id)?'?title='+YTNameCache.get(id):''}`
@@ -41,16 +42,16 @@ module.exports = {
         return;
       }
       try {
-        let info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${id}`, { agent: YTDLAgent });
-        ytdl.downloadFromInfo(info, { quality: 'highestaudio', filter: 'audio', agent: YTDLAgent })
-          .pipe(fs.createWriteStream(path.resolve('images/audio', `${id}.mp3`)))
+        let info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
+        yt.download(info, { quality: Quality.HighestAudio, filter: { hasAudio: true, hasVideo: false } })
+          .pipe(fs.createWriteStream(audioPath))
           .on('finish', ()=>{
-            if (fs.statSync(path.resolve('images/audio', `${id}.mp3`)).size===0) {
+            if (fs.statSync(audioPath).size===0) {
               res.error('Could not download file', 500);
-              fs.unlink(path.resolve('images/audio', `${id}.mp3`));
+              fs.unlinkSync(audioPath);
               return;
             }
-            let title = encodeURIComponent(`${info.player_response.videoDetails.title} - ${info.player_response.videoDetails.author.replace(' - Topic','')}.mp3`);
+            let title = encodeURIComponent(`${info.videoDetails.title} - ${info.videoDetails.author.name.replace(' - Topic','')}.mp3`);
             YTNameCache.set(id, title);
             res.json({
               audio: `https://api.fsh.plus/images/audio/${id}.mp3`,

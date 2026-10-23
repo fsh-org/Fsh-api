@@ -11,13 +11,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@distube/ytdl-core": "github:ToddyTheNoobDud/ytdl-core-stuff#5c779c07ba6a0636bcc894c0ba1d09ceec7028bb",
+    "@distube/ytdl-core": "^5.0.1",
     "@fastify/formbody": "^9.0.1",
     "@fastify/static": "^10.1.7",
     "@huggingface/inference": "^3.15.0",
     "@vitalets/google-translate-api": "^9.2.1",
     "density-clustering": "^1.3.0",
     "fastify": "^5.12.7",
+    "ffmpeg-static": "^5.3.0",
     "math-expression-evaluator": "^2.0.7",
     "nanoid": "^6.0.2",
     "qrcode": "^1.5.4",
@@ -32,6 +33,7 @@
     "yt-search": "^2.10.4"
   },
   "allowScripts": {
-    "wtf_wikipedia@10.4.2": true
+    "wtf_wikipedia@10.4.2": true,
+    "ffmpeg-static@5.3.0": true
   }
 }
